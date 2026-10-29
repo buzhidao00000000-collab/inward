@@ -258,6 +258,16 @@ body{margin:0}
 @keyframes iw-photo-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-photo-loading .iw-attachment::before{animation:none}}
 </style>
+<style>
+.iw-photo-viewer{position:fixed;inset:0;width:100%;max-width:none;height:100%;max-height:none;margin:0;padding:56px 16px;border:0;background:#17131deF;color:#fff;overflow:hidden;box-sizing:border-box}
+.iw-photo-viewer[open]{display:flex;align-items:center;justify-content:center}
+.iw-photo-viewer::backdrop{background:#17131d}
+.iw-photo-viewer>img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:4px}
+.iw-photo-viewer-close{position:absolute;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:grid;place-items:center;width:44px;height:44px;padding:8px;border:0;border-radius:50%;background:#ffffff25;color:#fff;cursor:pointer}
+.iw-photo-viewer-close svg{width:28px;height:28px;fill:currentColor}
+#inward-preview .iw-attachment>img,#inward-preview .iw-message-photo{cursor:zoom-in}
+#inward-preview .iw-attachment>img:focus-visible,#inward-preview .iw-message-photo:focus-visible{outline:2px solid #805fe3;outline-offset:3px}
+</style>
 <script>
 (()=>{
 const root=document.getElementById('inward-preview'),phone=root.querySelector('.iw-phone'),welcome=root.querySelector('.iw-welcome'),messages=root.querySelector('.iw-messages'),input=root.querySelector('input'),popover=root.querySelector('.iw-overlay'),records=root.querySelector('.iw-records'),heading=root.querySelector('h3'),note=root.querySelector('.iw-sheet-note'),meta=root.querySelector('small');
@@ -275,8 +285,44 @@ attachmentRow.innerHTML='<div class="iw-attachment"><img alt="Selected photo"><s
 inputShell.insertBefore(attachmentRow,textRow);
 const attachmentImage=attachmentRow.querySelector('img');
 attachmentImage.decoding='async';
+const photoViewer=document.createElement('dialog');
+photoViewer.className='iw-photo-viewer';
+photoViewer.setAttribute('aria-label','Full photo preview');
+const fullPhoto=document.createElement('img');
+const closeViewerButton=document.createElement('button');
+closeViewerButton.type='button';
+closeViewerButton.className='iw-photo-viewer-close';
+closeViewerButton.setAttribute('aria-label','Close photo preview');
+closeViewerButton.append(attachmentRow.querySelector('.iw-remove-photo svg').cloneNode(true));
+photoViewer.append(fullPhoto,closeViewerButton);
+document.body.append(photoViewer);
+function openPhotoViewer(photo){
+ if(!photo)return;
+ fullPhoto.src=photo.originalUrl||photo.url;
+ fullPhoto.alt=photo.name;
+ if(!photoViewer.open)photoViewer.showModal();
+}
+closeViewerButton.addEventListener('click',()=>photoViewer.close());
+photoViewer.addEventListener('click',event=>{if(event.target===photoViewer)photoViewer.close()});
+photoViewer.addEventListener('close',()=>fullPhoto.removeAttribute('src'));
+function enablePhotoPreview(image,getPhoto){
+ image.tabIndex=0;
+ image.setAttribute('role','button');
+ image.setAttribute('aria-label','View full photo');
+ image.addEventListener('click',event=>{event.stopPropagation();openPhotoViewer(getPhoto())});
+ image.addEventListener('keydown',event=>{
+  if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();openPhotoViewer(getPhoto())}
+ });
+}
+enablePhotoPreview(attachmentImage,()=>selectedPhoto);
+function releasePhoto(photo){
+ if(!photo)return;
+ URL.revokeObjectURL(photo.url);
+ if(photo.originalUrl&&photo.originalUrl!==photo.url)URL.revokeObjectURL(photo.originalUrl);
+}
+
 function clearPhoto(release=true){
- if(release&&selectedPhoto)URL.revokeObjectURL(selectedPhoto.url);
+ if(release)releasePhoto(selectedPhoto);
  selectedPhoto=null;
  attachmentRow.hidden=true;
  attachmentImage.removeAttribute('src');
@@ -323,7 +369,7 @@ function history(){popover.dataset.content='history';heading.textContent='Histor
 function show(button,type){if(active===button){close();return}close();active=button;button.setAttribute('aria-expanded','true');records.replaceChildren();note.textContent='';meta.textContent='';if(type==='moments'){heading.textContent='Today’s recordings';popover.dataset.content='moments';samples.forEach(([t,s])=>{const b=document.createElement('button'),body=document.createElement('span'),time=document.createElement('time');time.textContent=t;body.append(time,document.createTextNode(s));b.append(body);b.onclick=()=>{input.value='I recorded: “'+s+'” — help me explore this.';close();input.focus()};records.append(b)})}else if(type==='history'){history()}else{heading.textContent=type==='profile'||type==='me'?'Me':type==='relax'?'Relax':'Report';note.textContent='Coming soon'}popover.hidden=false;position()}
 root.querySelectorAll('[data-action]').forEach(b=>{b.setAttribute('aria-expanded','false');b.onclick=()=>show(b,b.dataset.action)});root.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>b.dataset.tab==='dialogue'?close():show(b,b.dataset.tab)});
 document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!active?.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',position);
-function redraw(){messages.replaceChildren();welcome.hidden=sent.length>0;sent.forEach((s,index)=>{const b=document.createElement('div');b.className='iw-bubble';const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';b.append(image)}b.append(document.createTextNode(s));messages.append(b)})}
+function redraw(){messages.replaceChildren();welcome.hidden=sent.length>0;sent.forEach((s,index)=>{const b=document.createElement('div');b.className='iw-bubble';const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';enablePhotoPreview(image,()=>photo);b.append(image)}b.append(document.createTextNode(s));messages.append(b)})}
 function restore(state){const p=state?.privateContent;if(p?.version===2&&Array.isArray(p.conversations)&&Array.isArray(p.messages)){conversations=p.conversations.filter(c=>typeof c.id==='string'&&Array.isArray(c.messages)).map(c=>({id:c.id,messages:c.messages.filter(s=>typeof s==='string')}));sent=p.messages.filter(s=>typeof s==='string');currentId=typeof p.currentId==='string'?p.currentId:makeId()}else if(Array.isArray(state?.modelContent?.messages)){sent=state.modelContent.messages.filter(s=>typeof s==='string');conversations=[];currentId=makeId();sync()}redraw()}
 restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState)restore(e.detail.globals.widgetState)});
 function selectDraftChoice(category,label){
@@ -378,8 +424,9 @@ photoInput.addEventListener('change',async()=>{
  const file=photoInput.files[0];
  if(!file)return;
  if(!file.type.startsWith('image/')){photoInput.value='';return}
- if(selectedPhoto)URL.revokeObjectURL(selectedPhoto.url);
- const photo={url:URL.createObjectURL(file),name:file.name};
+ if(selectedPhoto)releasePhoto(selectedPhoto);
+ const originalUrl=URL.createObjectURL(file);
+ const photo={url:originalUrl,originalUrl,name:file.name};
  selectedPhoto=photo;
  attachmentImage.removeAttribute('src');
  attachmentImage.alt=file.name;
@@ -410,7 +457,7 @@ photoInput.addEventListener('change',async()=>{
   const originalURL=photo.url;
   photo.url=previewURL;
   attachmentImage.src=photo.url;
-  URL.revokeObjectURL(originalURL);
+  if(originalURL!==photo.originalUrl)URL.revokeObjectURL(originalURL);
  }catch(error){/* Keep the original preview when compression is unsupported. */}
 });
 attachmentImage.addEventListener('load',()=>{
