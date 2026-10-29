@@ -233,9 +233,47 @@ body{margin:0}
 @keyframes iw-feeling-in{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-feeling-options button{animation:none}}
 </style>
+<style>
+#inward-preview .iw-composer{align-items:flex-end}
+#inward-preview .iw-input{height:auto;min-height:40px;display:flex;flex-direction:column;align-items:stretch}
+#inward-preview .iw-text-row{display:flex;align-items:center;min-width:0;width:100%}
+#inward-preview .iw-text-row input{flex:1;min-width:0;font-weight:400}
+#inward-preview .iw-input.iw-has-photo{padding:10px 8px 2px;border:1px solid #ddd4ec;border-radius:22px;background:linear-gradient(145deg,#ffffffd9,#f2edf980);box-shadow:inset 0 1px 1px #fff;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+#inward-preview .iw-has-photo .iw-composer-outline{display:none}
+#inward-preview .iw-attachment-row{display:flex;padding:0 2px 8px;min-width:0}
+#inward-preview .iw-attachment{position:relative;width:80px;height:80px;flex-shrink:0}
+#inward-preview .iw-attachment>img{display:block;width:100%;height:100%;object-fit:cover;border-radius:14px;border:1px solid #ffffffb0}
+#inward-preview .iw-remove-photo{position:absolute;top:-5px;right:-5px;width:22px;height:22px;display:grid;place-items:center;padding:0;border-radius:50%;background:#514a5ce6;color:#fff;font-size:18px;font-weight:400;line-height:1;border:2px solid #fff}
+#inward-preview .iw-message-photo{display:block;max-width:100%;max-height:220px;object-fit:contain;border-radius:12px;margin-bottom:6px}
+</style>
 <script>
 (()=>{
 const root=document.getElementById('inward-preview'),phone=root.querySelector('.iw-phone'),welcome=root.querySelector('.iw-welcome'),messages=root.querySelector('.iw-messages'),input=root.querySelector('input'),popover=root.querySelector('.iw-overlay'),records=root.querySelector('.iw-records'),heading=root.querySelector('h3'),note=root.querySelector('.iw-sheet-note'),meta=root.querySelector('small');
+const messagePhotos=new Map();
+let selectedPhoto=null;
+const inputShell=root.querySelector('.iw-input');
+const textRow=document.createElement('div');
+textRow.className='iw-text-row';
+inputShell.append(textRow);
+textRow.append(root.querySelector('.iw-cloud-button'),input);
+const attachmentRow=document.createElement('div');
+attachmentRow.className='iw-attachment-row';
+attachmentRow.hidden=true;
+attachmentRow.innerHTML='<div class="iw-attachment"><img alt="Selected photo"><button type="button" class="iw-remove-photo" aria-label="Remove photo">×</button></div>';
+inputShell.insertBefore(attachmentRow,textRow);
+const attachmentImage=attachmentRow.querySelector('img');
+function clearPhoto(release=true){
+ if(release&&selectedPhoto)URL.revokeObjectURL(selectedPhoto.url);
+ selectedPhoto=null;
+ attachmentRow.hidden=true;
+ attachmentImage.removeAttribute('src');
+ inputShell.classList.remove('iw-has-photo');
+ photoInput.value='';
+}
+// Keep input focus and the keyboard viewport stable while removing an attachment.
+attachmentRow.querySelector('button').addEventListener('pointerdown',event=>event.preventDefault());
+root.querySelector('.iw-send').addEventListener('pointerdown',event=>event.preventDefault());
+attachmentRow.querySelector('button').addEventListener('click',()=>clearPhoto());
 const plusURI='data:image/svg+xml;base64,PCEtLSBAbGljZW5zZSBsdWNpZGUtc3RhdGljIHYwLjQ2OC4wIC0gSVNDIC0tPgo8c3ZnCiAgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtcGx1cyIKICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgd2lkdGg9IjI0IgogIGhlaWdodD0iMjQiCiAgdmlld0JveD0iMCAwIDI0IDI0IgogIGZpbGw9Im5vbmUiCiAgc3Ryb2tlPSIjNjI1YjcwIgogIHN0cm9rZS13aWR0aD0iMiIKICBzdHJva2UtbGluZWNhcD0icm91bmQiCiAgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIKPgogIDxwYXRoIGQ9Ik01IDEyaDE0IiAvPgogIDxwYXRoIGQ9Ik0xMiA1djE0IiAvPgo8L3N2Zz4K';
 const deviceStage=document.createElement('div');deviceStage.className='iw-device-stage';phone.before(deviceStage);deviceStage.append(phone);function fitDevice(){
  const scale=Math.min(1,deviceStage.clientWidth/432);
@@ -266,11 +304,11 @@ function sync(){if(!sent.length)return;const entry={id:currentId,messages:sent.s
 function persist(){sync();const saved=conversations.slice(0,8).map(c=>({id:c.id,messages:c.messages.slice(-6).map(m=>m.slice(0,500))}));const current=sent.slice(-6).map(m=>m.slice(0,500));while(JSON.stringify({saved,current}).length>11000&&saved.length>1)saved.pop();window.openai?.setWidgetState?.({modelContent:{screen:'INWARD Dialogue',messages:current.slice(-8)},privateContent:{version:2,currentId,messages:current,conversations:saved}}).catch(()=>{})}
 function close(){popover.hidden=true;if(active)active.setAttribute('aria-expanded','false');active=null}
 function position(){if(!active)return;const p=phone.getBoundingClientRect(),raw=active.getBoundingClientRect(),scale=p.width/phone.offsetWidth,b={left:p.left+(raw.left-p.left)/scale,top:p.top+(raw.top-p.top)/scale,bottom:p.top+(raw.bottom-p.top)/scale,width:raw.width/scale};const inset=phone.clientLeft,width=Math.min(310,phone.clientWidth-24);popover.style.width=width+'px';const left=Math.max(12,Math.min(b.left-p.left-inset,phone.clientWidth-width-12));popover.style.left=left+'px';const above=b.top-p.top-inset,below=b.bottom-p.top-inset;const height=popover.offsetHeight;popover.style.top=Math.max(12,above>height+20?above-height-10:Math.min(below+10,phone.clientHeight-height-12))+'px'}
-function history(){popover.dataset.content='history';heading.textContent='History';sync();const add=document.createElement('button'),icon=document.createElement('img'),label=document.createElement('span');add.type='button';add.dataset.newDialogue='true';icon.src=plusURI;icon.className='iw-icon';icon.alt='';label.textContent='New dialogue';add.append(icon,label);add.onclick=()=>{sync();currentId=makeId();sent=[];input.value='';redraw();close();persist();input.focus()};records.append(add);conversations.forEach(c=>{const b=document.createElement('button'),title=document.createElement('span');b.type='button';title.className='iw-history-title';title.textContent=c.messages[0];b.setAttribute('aria-current',String(c.id===currentId));b.append(title);b.onclick=()=>{sync();currentId=c.id;sent=c.messages.slice();input.value='';redraw();close();persist()};records.append(b)})}
+function history(){popover.dataset.content='history';heading.textContent='History';sync();const add=document.createElement('button'),icon=document.createElement('img'),label=document.createElement('span');add.type='button';add.dataset.newDialogue='true';icon.src=plusURI;icon.className='iw-icon';icon.alt='';label.textContent='New dialogue';add.append(icon,label);add.onclick=()=>{sync();currentId=makeId();sent=[];input.value='';clearPhoto();redraw();close();persist();input.focus()};records.append(add);conversations.forEach(c=>{const b=document.createElement('button'),title=document.createElement('span');b.type='button';title.className='iw-history-title';title.textContent=c.messages[0];b.setAttribute('aria-current',String(c.id===currentId));b.append(title);b.onclick=()=>{sync();currentId=c.id;sent=c.messages.slice();input.value='';clearPhoto();redraw();close();persist()};records.append(b)})}
 function show(button,type){if(active===button){close();return}close();active=button;button.setAttribute('aria-expanded','true');records.replaceChildren();note.textContent='';meta.textContent='';if(type==='moments'){heading.textContent='Today’s recordings';popover.dataset.content='moments';samples.forEach(([t,s])=>{const b=document.createElement('button'),body=document.createElement('span'),time=document.createElement('time');time.textContent=t;body.append(time,document.createTextNode(s));b.append(body);b.onclick=()=>{input.value='I recorded: “'+s+'” — help me explore this.';close();input.focus()};records.append(b)})}else if(type==='history'){history()}else{heading.textContent=type==='profile'||type==='me'?'Me':type==='relax'?'Relax':'Report';note.textContent='Coming soon'}popover.hidden=false;position()}
 root.querySelectorAll('[data-action]').forEach(b=>{b.setAttribute('aria-expanded','false');b.onclick=()=>show(b,b.dataset.action)});root.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>b.dataset.tab==='dialogue'?close():show(b,b.dataset.tab)});
 document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!active?.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',position);
-function redraw(){messages.replaceChildren();welcome.hidden=sent.length>0;sent.forEach(s=>{const b=document.createElement('div');b.className='iw-bubble';b.textContent=s;messages.append(b)})}
+function redraw(){messages.replaceChildren();welcome.hidden=sent.length>0;sent.forEach((s,index)=>{const b=document.createElement('div');b.className='iw-bubble';const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';b.append(image)}b.append(document.createTextNode(s));messages.append(b)})}
 function restore(state){const p=state?.privateContent;if(p?.version===2&&Array.isArray(p.conversations)&&Array.isArray(p.messages)){conversations=p.conversations.filter(c=>typeof c.id==='string'&&Array.isArray(c.messages)).map(c=>({id:c.id,messages:c.messages.filter(s=>typeof s==='string')}));sent=p.messages.filter(s=>typeof s==='string');currentId=typeof p.currentId==='string'?p.currentId:makeId()}else if(Array.isArray(state?.modelContent?.messages)){sent=state.modelContent.messages.filter(s=>typeof s==='string');conversations=[];currentId=makeId();sync()}redraw()}
 restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState)restore(e.detail.globals.widgetState)});
 function selectDraftChoice(category,label){
@@ -298,7 +336,7 @@ function selectDraftChoice(category,label){
  input.focus();
  input.setSelectionRange(input.value.length,input.value.length);
 }
-root.querySelectorAll('.iw-options button').forEach(b=>b.onclick=()=>{close();selectDraftChoice('topic',b.dataset.optionText||b.textContent.trim())});root.querySelector('form').onsubmit=e=>{e.preventDefault();if(!input.value.trim())return;close();sent.push(input.value.trim());input.value='';redraw();persist()};
+root.querySelectorAll('.iw-options button').forEach(b=>b.onclick=()=>{close();selectDraftChoice('topic',b.dataset.optionText||b.textContent.trim())});root.querySelector('form').onsubmit=e=>{e.preventDefault();if(!input.value.trim()&&!selectedPhoto)return;close();if(selectedPhoto){messagePhotos.set(currentId+':'+sent.length,selectedPhoto);clearPhoto(false)}sent.push(input.value.trim());input.value='';redraw();persist()};
 
 const quickActions=root.querySelector('.iw-quick-actions');
 const feelingButton=quickActions.querySelector('[data-quick-action="feeling"]');
@@ -311,6 +349,17 @@ photoInput.hidden=true;
 photoInput.id='iw-photo-input';
 photoInput.setAttribute('aria-label','Choose a photo');
 quickActions.after(photoInput);
+photoInput.addEventListener('change',()=>{
+ const file=photoInput.files[0];
+ if(!file)return;
+ if(!file.type.startsWith('image/')){photoInput.value='';return}
+ if(selectedPhoto)URL.revokeObjectURL(selectedPhoto.url);
+ selectedPhoto={url:URL.createObjectURL(file),name:file.name};
+ attachmentImage.src=selectedPhoto.url;
+ attachmentImage.alt=file.name;
+ attachmentRow.hidden=false;
+ inputShell.classList.add('iw-has-photo');
+});
 postButton.setAttribute('aria-label','Add a photo');
 postButton.addEventListener('click',()=>{
  // Keep this call in the tap handler: browsers require a direct user gesture.
