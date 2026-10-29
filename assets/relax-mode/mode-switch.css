@@ -1,0 +1,11 @@
+
+#inward-preview .iw-relax-mode-switch{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;width:172px;height:46px;isolation:isolate;z-index:2}
+#inward-preview .iw-relax-mode-switch button{display:block;position:relative;flex:0 0 86px;width:86px;height:46px;min-width:0;padding:0;border:0;border-radius:23px;background:transparent;box-shadow:none;color:#8f8f8f;line-height:0}
+#inward-preview .iw-relax-mode-switch svg{display:block;width:86px;height:46px;overflow:visible;pointer-events:none}
+#inward-preview .iw-relax-mode-switch .iw-mode-active{color:#805fe3}
+#inward-preview .iw-mode-highlight{opacity:0;transition:opacity .18s ease}
+#inward-preview .iw-mode-active .iw-mode-highlight,#inward-preview .iw-glass-pressed .iw-mode-highlight{opacity:1}
+#inward-preview .iw-relax-mode-switch button:focus-visible{outline:2px solid #b37fff;outline-offset:-3px}
+#inward-preview .iw-meditate-view{height:100%;min-height:100%;display:grid;place-items:center;text-align:center}
+#inward-preview .iw-meditate-placeholder h2{font-size:26px;line-height:34px;font-weight:500;color:#746080;margin:0 0 10px}
+#inward-preview .iw-meditate-placeholder p{font-size:15px;line-height:22px;font-weight:400;color:#9d90a8;margin:0}
