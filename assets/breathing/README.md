@@ -11,8 +11,10 @@ Original SVG artwork and outline labels were supplied by the user. No external l
 
 Start moves the front-facing expression toward the right-facing artwork over 0.38 seconds. Changes between inhale and exhale take 0.28 seconds. The nose uses two opaque, continuously morphing lobes, rather than crossfading overlapping expressions; its outline follows the same motion. Eye positions remain fixed during each breathing phase.
 
-Both circular backgrounds scale uniformly about their shared center from 1 to 2/3 during inhale, then return to 1 during exhale. The inhaling nose and its outline grow by 18%. The exhaling mouth grows by 18%. Wind lines flow toward the upper left for inhale and lower right for exhale.
+Both circular backgrounds scale uniformly about their shared center from 1 to 5/6 during inhale, then return to 1 during exhale. The inhaling nose and its outline grow by 18%. The exhaling mouth grows by 18%. Wind lines flow toward the upper left for inhale and lower right for exhale.
 
 End eases the last displayed pose back to rest in 0.45 seconds, including the circles and feature sizes. Leaving Relax ends the exercise without clearing the Dialogue draft.
 
 `window.InwardBreathing.start()` and `.end()` control the current scene. `.sample(milliseconds)` returns a pure timeline sample for deterministic timing checks.
+
+Inhale/Exhale outline labels crossfade over 0.3 seconds. Facial shapes still morph without opacity crossfades. The exhale mouth retains its lower original position and grows about its own center, keeping it separate from both nose dots throughout the cycle and End return.
