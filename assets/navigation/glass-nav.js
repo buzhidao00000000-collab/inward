@@ -7,21 +7,21 @@ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let selected=buttons.findIndex(button=>button.classList.contains('iw-active'));
 let position=0,velocity=0,target=0,width=0,barWidth=0,frame=0,last=0,pending=false;
 function paint(){
- const speed=Math.min(1,Math.abs(velocity)/950);
+ const speed=Math.min(1,Math.abs(velocity)/650);
  const stretch=reduceMotion.matches?1:1+speed*.075;
  selection.style.width=width+'px';
  selection.style.transform=`translateX(${position}px) scale(${stretch},${1-(stretch-1)*.28})`;
  // Reflection trails the moving capsule slightly, then settles at its upper rim.
  nav.style.setProperty('--iw-glint-x',(position+width/2-velocity*.012)+'px');
- nav.style.setProperty('--iw-glint-strength',String(reduceMotion.matches ? .15 : .15+speed*.75));
- selection.style.setProperty('--iw-local-glint',Math.max(-12,Math.min(12,-velocity*.012))+'px');
+ nav.style.setProperty('--iw-glint-strength',String(reduceMotion.matches ? .32 : .38+speed*.62));
+ selection.style.setProperty('--iw-local-glint',Math.max(-18,Math.min(18,-velocity*.02))+'px');
  nav.dataset.navPosition=position.toFixed(3);
 }
 function tick(now){
  const dt=Math.min(.04,Math.max(0,(now-last)/1000));last=now;
  // Closed-form damped spring: changing target retains the current position and
  // velocity, so rapid taps redirect the same capsule instead of restarting it.
- const omega=22,damping=.86,frequency=omega*Math.sqrt(1-damping*damping);
+ const omega=12,damping=.9,frequency=omega*Math.sqrt(1-damping*damping);
  const offset=position-target,a=offset,b=(velocity+damping*omega*offset)/frequency;
  const decay=Math.exp(-damping*omega*dt),cos=Math.cos(frequency*dt),sin=Math.sin(frequency*dt);
  position=target+decay*(a*cos+b*sin);

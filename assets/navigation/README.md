@@ -7,3 +7,5 @@ The user supplied `original.svg`. Its icon paths, label outlines, frame and sele
 Reference researched on GitHub: https://github.com/UlviShabanbayli/domvybe-liquid-tabs (MIT). Its spring-driven glass-lens concept and rim highlights informed the implementation; its source code is not bundled or required.
 
 Dialogue and Relax retain their workflows. Report and Me retain the existing Coming soon status, presented as tab views so the active tab and page title stay consistent.
+
+Visual tuning: slower spring (angular frequency 12, damping ratio 0.9) keeps the capsule travel readable. Normal-composited white/lilac rim highlights and a stronger translucent gray lens replace the low-contrast screen blend. Real click traces verify intermediate positions and visible highlight tracking.
