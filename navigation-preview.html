@@ -86,7 +86,7 @@ const scene=selection.querySelector('.iw-nav-lens-scene-frame'),sceneSvg=selecti
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let selected=buttons.findIndex(b=>b.classList.contains('iw-active'));
 let position=0,target=0,width=0,barWidth=0,feedback=0,pending=false,playback=null,shapePlayback=null,generation=0,lastX=0,lastTime=0,pointer=null,drop=false,suppressClick=false;
-nav.dataset.engine='motion-14.7.1';nav.dataset.build='nav6-video-lens';
+nav.dataset.engine='motion-14.7.1';nav.dataset.build='nav7-compact-lens';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function currentX(){const t=getComputedStyle(selection).transform;return t==='none'?position:new DOMMatrixReadOnly(t).m41}
 function rounded(x,y,w,h){const r=Math.min(w,h)/2;return `M${x+r},${y}H${x+w-r}A${r},${r} 0 0 1 ${x+w},${y+r}V${y+h-r}A${r},${r} 0 0 1 ${x+w-r},${y+h}H${x+r}A${r},${r} 0 0 1 ${x},${y+h-r}V${y+r}A${r},${r} 0 0 1 ${x+r},${y}Z`}
@@ -94,7 +94,7 @@ function optics(x){
  const active=nav.dataset.motion!=='idle';
  if(!active){for(const art of arts){art.style.maskImage='';art.style.webkitMaskImage=''}return}
  const style=getComputedStyle(selection),w=parseFloat(style.width),h=parseFloat(style.height),margin=parseFloat(style.marginLeft)||0,top=parseFloat(style.top);
- const lensLeft=x+margin,center=x+width/2,lift=clamp((h-55)/50,0,1),zoom=1+.22*lift;
+ const lensLeft=x+margin,center=x+width/2,lift=clamp((h-55)/23,0,1),zoom=1+.22*lift;
  scene.style.width=barWidth+'px';scene.style.height='70px';sceneSvg.style.width=barWidth+'px';sceneSvg.style.height='70px';
  scene.style.transform=`translate(${w/2-center*zoom}px,${h/2-35*zoom}px) scale(${zoom})`;
  for(let i=0;i<buttons.length;i++){
@@ -131,7 +131,7 @@ function move(immediate=false){
  if(!nav.clientWidth){pending=true;return}pending=false;
  const from=stop(),isDrop=drop;drop=false;target=buttons[selected].offsetLeft;width=buttons[selected].offsetWidth;
  if(immediate){rest();return}
- const version=++generation,lift=nav.clientHeight*1.5,liftTop=(nav.clientHeight-lift)/2,lensWidth=width*1.5;
+ const version=++generation,lift=nav.clientHeight+8,liftTop=(nav.clientHeight-lift)/2,lensWidth=width*1.22;
  nav.dataset.motion=isDrop?'landing':'moving';lastX=from.x;lastTime=performance.now();
  reflect(from.x);
  playback=window.Motion.animateMini(selection,{transform:[`translateX(${from.x}px)`,`translateX(${target}px)`]},{duration:isDrop?.18:reduceMotion.matches?.21:.26,delay:isDrop?0:reduceMotion.matches?.02:.035,ease:[.4,0,.2,1]});
@@ -154,8 +154,8 @@ nav.addEventListener('pointermove',event=>{
  if(!pointer.dragging){
   const from=stop();pointer.startLeft=from.x;pointer.dragging=true;nav.setPointerCapture(event.pointerId);
   nav.dataset.motion='moving';width=buttons[selected].offsetWidth;
-  const expanded=width*1.5;
-  shapePlayback=window.Motion.animateMini(selection,{height:[from.height+'px','105px'],top:[from.top+'px','-17.5px'],width:[from.width+'px',expanded+'px'],marginLeft:[from.margin+'px',-(expanded-width)/2+'px']},{duration:.1,ease:'easeOut'});
+  const expanded=width*1.22;
+  shapePlayback=window.Motion.animateMini(selection,{height:[from.height+'px','78px'],top:[from.top+'px','-4px'],width:[from.width+'px',expanded+'px'],marginLeft:[from.margin+'px',-(expanded-width)/2+'px']},{duration:.1,ease:'easeOut'});
   lastX=from.x;lastTime=performance.now();feedback=requestAnimationFrame(follow);
  }
  event.preventDefault();const x=clamp(pointer.startLeft+delta,buttons[0].offsetLeft,buttons[buttons.length-1].offsetLeft);
