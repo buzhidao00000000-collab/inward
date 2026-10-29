@@ -252,6 +252,8 @@ body{margin:0}
 <style>
 #inward-preview .iw-photo-loading .iw-attachment{background:#ece6f2;border-radius:14px}
 #inward-preview .iw-photo-loading .iw-attachment>img{opacity:0}
+#inward-preview .iw-photo-status{display:none}
+#inward-preview .iw-photo-loading .iw-photo-status{display:block;position:absolute;bottom:6px;left:0;width:100%;text-align:center;font-size:10px;line-height:14px;font-weight:400;color:#786d86}
 #inward-preview .iw-photo-loading .iw-attachment::before{content:"";position:absolute;left:28px;top:28px;width:20px;height:20px;border:2px solid #cdbedc;border-top-color:#805fe3;border-radius:50%;animation:iw-photo-spin .8s linear infinite}
 @keyframes iw-photo-spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-photo-loading .iw-attachment::before{animation:none}}
@@ -269,7 +271,7 @@ textRow.append(root.querySelector('.iw-cloud-button'),input);
 const attachmentRow=document.createElement('div');
 attachmentRow.className='iw-attachment-row';
 attachmentRow.hidden=true;
-attachmentRow.innerHTML='<div class="iw-attachment"><img alt="Selected photo"><button type="button" class="iw-remove-photo" aria-label="Remove photo"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="32 32 448 448"><path d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,208-93.31,208-208S370.69,48,256,48Zm75.31,260.69a16,16,0,1,1-22.62,22.62L256,278.63l-52.69,52.68a16,16,0,0,1-22.62-22.62L233.37,256l-52.68-52.69a16,16,0,0,1,22.62-22.62L256,233.37l52.69-52.68a16,16,0,0,1,22.62,22.62L278.63,256Z"/></svg></button></div>';
+attachmentRow.innerHTML='<div class="iw-attachment"><img alt="Selected photo"><span class="iw-photo-status" role="status">Photo added</span><button type="button" class="iw-remove-photo" aria-label="Remove photo"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="32 32 448 448"><path d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,208-93.31,208-208S370.69,48,256,48Zm75.31,260.69a16,16,0,1,1-22.62,22.62L256,278.63l-52.69,52.68a16,16,0,0,1-22.62-22.62L233.37,256l-52.68-52.69a16,16,0,0,1,22.62-22.62L256,233.37l52.69-52.68a16,16,0,0,1,22.62,22.62L278.63,256Z"/></svg></button></div>';
 inputShell.insertBefore(attachmentRow,textRow);
 const attachmentImage=attachmentRow.querySelector('img');
 attachmentImage.decoding='async';
@@ -391,14 +393,22 @@ photoInput.addEventListener('change',async()=>{
  try{
   await attachmentImage.decode();
   if(selectedPhoto!==photo)return;
-  // Let the browser paint the original preview before background compression.
-  await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+  // Paint the original photo first, then wait for idle time before compression.
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  await new Promise(resolve=>{
+   if(typeof requestIdleCallback==='function')requestIdleCallback(resolve,{timeout:1500});
+   else setTimeout(resolve,250);
+  });
   if(selectedPhoto!==photo)return;
   const preview=await makePhotoPreview(file,attachmentImage);
   // A removed, replaced or sent photo must not reappear after processing finishes.
   if(selectedPhoto!==photo||preview===file)return;
+  const previewURL=URL.createObjectURL(preview);
+  const preparedImage=new Image();preparedImage.src=previewURL;
+  try{await preparedImage.decode()}catch(error){URL.revokeObjectURL(previewURL);return}
+  if(selectedPhoto!==photo){URL.revokeObjectURL(previewURL);return}
   const originalURL=photo.url;
-  photo.url=URL.createObjectURL(preview);
+  photo.url=previewURL;
   attachmentImage.src=photo.url;
   URL.revokeObjectURL(originalURL);
  }catch(error){/* Keep the original preview when compression is unsupported. */}
