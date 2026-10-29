@@ -273,7 +273,32 @@ document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contain
 function redraw(){messages.replaceChildren();welcome.hidden=sent.length>0;sent.forEach(s=>{const b=document.createElement('div');b.className='iw-bubble';b.textContent=s;messages.append(b)})}
 function restore(state){const p=state?.privateContent;if(p?.version===2&&Array.isArray(p.conversations)&&Array.isArray(p.messages)){conversations=p.conversations.filter(c=>typeof c.id==='string'&&Array.isArray(c.messages)).map(c=>({id:c.id,messages:c.messages.filter(s=>typeof s==='string')}));sent=p.messages.filter(s=>typeof s==='string');currentId=typeof p.currentId==='string'?p.currentId:makeId()}else if(Array.isArray(state?.modelContent?.messages)){sent=state.modelContent.messages.filter(s=>typeof s==='string');conversations=[];currentId=makeId();sync()}redraw()}
 restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState)restore(e.detail.globals.widgetState)});
-root.querySelectorAll('.iw-options button').forEach(b=>b.onclick=()=>{close();input.value=b.dataset.optionText||b.textContent.trim();input.focus()});root.querySelector('form').onsubmit=e=>{e.preventDefault();if(!input.value.trim())return;close();sent.push(input.value.trim());input.value='';redraw();persist()};
+function selectDraftChoice(category,label){
+ // Read the current draft so manual edits and clearing the input are respected.
+ let rest=input.value.trim(),feeling='',topic='';
+ const feelingButtons=Array.from(root.querySelectorAll('[data-feeling]'));
+ for(const button of feelingButtons){
+  const name=button.querySelector('span').textContent.trim(),prefix='Feeling：'+name;
+  if(rest===prefix||rest.startsWith(prefix+' ')){
+   feeling=name;rest=rest.slice(prefix.length).trimStart();break;
+  }
+ }
+ const topicButtons=Array.from(root.querySelectorAll('.iw-options button'));
+ for(const button of topicButtons){
+  const text=button.dataset.optionText||button.textContent.trim();
+  if(rest===text||rest.startsWith(text+' ')){
+   topic=text;rest=rest.slice(text.length).trimStart();break;
+  }
+ }
+ if(category==='feeling')feeling=label;else topic=label;
+ input.value=[feeling?'Feeling：'+feeling:'',topic,rest].filter(Boolean).join(' ');
+ feelingButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.querySelector('span').textContent.trim()===feeling)));
+ topicButtons.forEach(button=>button.setAttribute('aria-pressed',String((button.dataset.optionText||button.textContent.trim())===topic)));
+ input.dispatchEvent(new Event('input',{bubbles:true}));
+ input.focus();
+ input.setSelectionRange(input.value.length,input.value.length);
+}
+root.querySelectorAll('.iw-options button').forEach(b=>b.onclick=()=>{close();selectDraftChoice('topic',b.dataset.optionText||b.textContent.trim())});root.querySelector('form').onsubmit=e=>{e.preventDefault();if(!input.value.trim())return;close();sent.push(input.value.trim());input.value='';redraw();persist()};
 
 const quickActions=root.querySelector('.iw-quick-actions');
 const feelingButton=quickActions.querySelector('[data-quick-action="feeling"]');
@@ -343,12 +368,7 @@ function toggleFeelings(open){
 feelingButton.addEventListener('click',()=>toggleFeelings(feelingOptions.hidden));
 feelingOptions.querySelectorAll('button').forEach(button=>{
  button.addEventListener('click',()=>{
-  feelingOptions.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));
-  button.setAttribute('aria-pressed','true');
-  input.value='Feeling：'+button.querySelector('span').textContent.trim();
-  input.dispatchEvent(new Event('input',{bubbles:true}));
-  input.focus();
-  input.setSelectionRange(input.value.length,input.value.length);
+  selectDraftChoice('feeling',button.querySelector('span').textContent.trim());
  });
 });
 document.addEventListener('pointerdown',event=>{
