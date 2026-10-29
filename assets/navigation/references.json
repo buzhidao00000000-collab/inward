@@ -16,5 +16,11 @@
     "usage": "Actual Motion.animateMini runtime, bundled locally and inline for standalone/offline use.",
     "npm_tarball_integrity_verified": "sha512-o+q7MExUC0RuCUF62HxF9v+fNVX7pUMYZqlyigQJJFAgAsmnnSlAOYeG41hGYkamxFR0rdBA0KXpaBJ28/GGAw==",
     "browser_bundle_sha256": "9d626ab329c703b3fa824651166973900fd425a84b752f2f53411ad85b3e923e"
+  },
+  "user_video_reference": {
+    "filename": "1596833036.mp4",
+    "duration_seconds": 11.9,
+    "frames_per_second": 30,
+    "studied": "Convex lens enlargement, icon/text magnification and edge bending, continuous drag and release-to-settle. Original INWARD colors preserved."
   }
 }
