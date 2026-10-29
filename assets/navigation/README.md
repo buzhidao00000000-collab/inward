@@ -4,7 +4,7 @@ The user supplied `original.svg`. Icon and label paths remain from that artwork.
 
 ## Animation
 
-The official Motion 14.7.1 browser build is vendored and embedded inline. `glass-nav.js` calls `Motion.animateMini` to animate the capsule transform using the browser Web Animations API, with a 0.62-second transition. Interrupted animations retain the current painted position before retargeting. A lightweight render callback tracks the native transform for soft lighting. Resize and keyboard handling preserve alignment; reduced-motion preferences are respected.
+The official Motion 14.7.1 browser build is vendored and embedded inline. `glass-nav.js` calls `Motion.animateMini` to animate the capsule transform using the browser Web Animations API, with a 35ms follow delay and a 0.26-second horizontal transition. Interrupted animations retain the current painted position before retargeting. A lightweight render callback tracks the native transform for soft lighting. Resize and keyboard handling preserve alignment; reduced-motion preferences are respected.
 
 ## Glass
 
@@ -20,4 +20,6 @@ The implementation was restudied against rdev/liquid-glass-react's source: separ
 
 The source SVG, split navigation markup, CSS, controller and vendor runtime are kept in this directory. Both application entry HTML files embed the CSS and scripts for offline use. Dialogue/Relax behavior and drafts are preserved; Report and Me remain Coming soon tab views.
 
-Visible-motion fix: reduced-motion mode now uses a shorter 0.45-second non-bouncy transition instead of skipping animation entirely. The normal transition remains 0.62 seconds. The darker translucent gray capsule improves movement visibility. `../../navigation-preview.html` is a standalone review page at a new URL, avoiding old application-page caches.
+Visible-motion fix: reduced-motion mode retains a short non-bouncy transition rather than skipping animation entirely. The darker translucent gray capsule improves movement visibility. `../../navigation-preview.html` is a standalone review page at a new URL, avoiding old application-page caches.
+
+Glass-lift revision: button color changes immediately. Horizontal travel follows after 35ms and lasts 260ms (20ms / 210ms in reduced-motion mode). A synchronized 400ms shape animation raises the capsule from 55px to 105px in a 70px bar, centered at top -17.5px, then returns it to 55px / 7.5px. This extends 25% of bar height above and below it. Navigation overflow is visible; backdrop blur lives on a separate rounded base layer. During moving/landing states the capsule remains translucent with blur and soft rim highlights, becoming gray only once the landing finishes. Interrupted transitions retain position, height and top values. The standalone preview uses the same controller and CSS.
