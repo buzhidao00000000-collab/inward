@@ -249,6 +249,13 @@ body{margin:0}
 #inward-preview .iw-remove-photo:active{background:#eee8f6;color:#322b3d}
 #inward-preview .iw-message-photo{display:block;max-width:100%;max-height:220px;object-fit:contain;border-radius:12px;margin-bottom:6px}
 </style>
+<style>
+#inward-preview .iw-photo-loading .iw-attachment{background:#ece6f2;border-radius:14px}
+#inward-preview .iw-photo-loading .iw-attachment>img{opacity:0}
+#inward-preview .iw-photo-loading .iw-attachment::before{content:"";position:absolute;left:28px;top:28px;width:20px;height:20px;border:2px solid #cdbedc;border-top-color:#805fe3;border-radius:50%;animation:iw-photo-spin .8s linear infinite}
+@keyframes iw-photo-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#inward-preview .iw-photo-loading .iw-attachment::before{animation:none}}
+</style>
 <script>
 (()=>{
 const root=document.getElementById('inward-preview'),phone=root.querySelector('.iw-phone'),welcome=root.querySelector('.iw-welcome'),messages=root.querySelector('.iw-messages'),input=root.querySelector('input'),popover=root.querySelector('.iw-overlay'),records=root.querySelector('.iw-records'),heading=root.querySelector('h3'),note=root.querySelector('.iw-sheet-note'),meta=root.querySelector('small');
@@ -262,14 +269,17 @@ textRow.append(root.querySelector('.iw-cloud-button'),input);
 const attachmentRow=document.createElement('div');
 attachmentRow.className='iw-attachment-row';
 attachmentRow.hidden=true;
-attachmentRow.innerHTML='<div class="iw-attachment"><img alt="Selected photo"><button type="button" class="iw-remove-photo" aria-label="Remove photo"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="0 0 512 512"><path d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,208-93.31,208-208S370.69,48,256,48Zm75.31,260.69a16,16,0,1,1-22.62,22.62L256,278.63l-52.69,52.68a16,16,0,0,1-22.62-22.62L233.37,256l-52.68-52.69a16,16,0,0,1,22.62-22.62L256,233.37l52.69-52.68a16,16,0,0,1,22.62,22.62L278.63,256Z"/></svg></button></div>';
+attachmentRow.innerHTML='<div class="iw-attachment"><img alt="Selected photo"><button type="button" class="iw-remove-photo" aria-label="Remove photo"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="32 32 448 448"><path d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,208-93.31,208-208S370.69,48,256,48Zm75.31,260.69a16,16,0,1,1-22.62,22.62L256,278.63l-52.69,52.68a16,16,0,0,1-22.62-22.62L233.37,256l-52.68-52.69a16,16,0,0,1,22.62-22.62L256,233.37l52.69-52.68a16,16,0,0,1,22.62,22.62L278.63,256Z"/></svg></button></div>';
 inputShell.insertBefore(attachmentRow,textRow);
 const attachmentImage=attachmentRow.querySelector('img');
+attachmentImage.decoding='async';
 function clearPhoto(release=true){
  if(release&&selectedPhoto)URL.revokeObjectURL(selectedPhoto.url);
  selectedPhoto=null;
  attachmentRow.hidden=true;
  attachmentImage.removeAttribute('src');
+ attachmentRow.classList.remove('iw-photo-loading');
+ attachmentRow.removeAttribute('aria-busy');
  inputShell.classList.remove('iw-has-photo');
  photoInput.value='';
 }
@@ -352,16 +362,52 @@ photoInput.hidden=true;
 photoInput.id='iw-photo-input';
 photoInput.setAttribute('aria-label','Choose a photo');
 quickActions.after(photoInput);
-photoInput.addEventListener('change',()=>{
+async function makePhotoPreview(file,image){
+ if(file.size<=512*1024)return file;
+ const ratio=Math.min(1,1024/image.naturalWidth,1024/image.naturalHeight);
+ const width=Math.max(1,Math.round(image.naturalWidth*ratio)),height=Math.max(1,Math.round(image.naturalHeight*ratio));
+ const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+ canvas.getContext('2d').drawImage(image,0,0,width,height);
+ const type=file.type==='image/jpeg'?'image/jpeg':'image/webp';
+ const blob=await new Promise(resolve=>canvas.toBlob(resolve,type,.82));
+ return blob&&blob.size<file.size?blob:file;
+}
+photoInput.addEventListener('change',async()=>{
  const file=photoInput.files[0];
  if(!file)return;
  if(!file.type.startsWith('image/')){photoInput.value='';return}
  if(selectedPhoto)URL.revokeObjectURL(selectedPhoto.url);
- selectedPhoto={url:URL.createObjectURL(file),name:file.name};
- attachmentImage.src=selectedPhoto.url;
+ const photo={url:URL.createObjectURL(file),name:file.name};
+ selectedPhoto=photo;
+ attachmentImage.removeAttribute('src');
  attachmentImage.alt=file.name;
  attachmentRow.hidden=false;
+ attachmentRow.classList.add('iw-photo-loading');
+ attachmentRow.setAttribute('aria-busy','true');
  inputShell.classList.add('iw-has-photo');
+ // Display first; do not block the first preview on resizing or encoding.
+ attachmentImage.src=photo.url;
+ if(file.size<=512*1024)return;
+ try{
+  await attachmentImage.decode();
+  if(selectedPhoto!==photo)return;
+  // Let the browser paint the original preview before background compression.
+  await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+  if(selectedPhoto!==photo)return;
+  const preview=await makePhotoPreview(file,attachmentImage);
+  // A removed, replaced or sent photo must not reappear after processing finishes.
+  if(selectedPhoto!==photo||preview===file)return;
+  const originalURL=photo.url;
+  photo.url=URL.createObjectURL(preview);
+  attachmentImage.src=photo.url;
+  URL.revokeObjectURL(originalURL);
+ }catch(error){/* Keep the original preview when compression is unsupported. */}
+});
+attachmentImage.addEventListener('load',()=>{
+ attachmentRow.classList.remove('iw-photo-loading');attachmentRow.removeAttribute('aria-busy');
+});
+attachmentImage.addEventListener('error',()=>{
+ attachmentRow.classList.remove('iw-photo-loading');attachmentRow.removeAttribute('aria-busy');
 });
 postButton.setAttribute('aria-label','Add a photo');
 postButton.addEventListener('click',()=>{
