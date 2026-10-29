@@ -343,9 +343,12 @@ function toggleFeelings(open){
 feelingButton.addEventListener('click',()=>toggleFeelings(feelingOptions.hidden));
 feelingOptions.querySelectorAll('button').forEach(button=>{
  button.addEventListener('click',()=>{
-  const selected=button.getAttribute('aria-pressed')!=='true';
   feelingOptions.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));
-  button.setAttribute('aria-pressed',String(selected));
+  button.setAttribute('aria-pressed','true');
+  input.value='Feeling：'+button.querySelector('span').textContent.trim();
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+  input.focus();
+  input.setSelectionRange(input.value.length,input.value.length);
  });
 });
 document.addEventListener('pointerdown',event=>{
