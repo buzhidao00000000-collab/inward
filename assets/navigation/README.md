@@ -33,3 +33,5 @@ The traveling lens now expands to 1.5 times the normal slot width while keeping 
 Pointer capture supports continuous mouse/touch dragging with a movement threshold. Release chooses the closest tab and settles in 220ms. Normal clicks keep the earlier fast follow timing. Interrupted interactions preserve width, height, margin and position. This is a web adaptation of the material rather than the native iOS renderer.
 
 Compact size adjustment: traveling/dragged lens height is now 78px in the 70px navigation bar (4px above and below), down from 105px. Width expands to 1.22 times the normal slot, down from 1.5. Optical magnification and drag/settle behavior are retained. The optical lift fraction is normalized to the new 23px height increase.
+
+Shared-controller revision: mount configuration now supplies item attributes, event names, source scene, resting dimensions and source-art insets. Both the bottom navigation and centered Relax mode control use this controller, with separate refraction IDs and state.

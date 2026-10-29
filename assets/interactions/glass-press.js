@@ -7,7 +7,7 @@ function resolve(node){
  const element=node instanceof Element?node:node?.parentElement;
  const control=element?.closest('#inward-preview button,.iw-photo-viewer-close,#breath-toggle');
  if(!control||control.disabled||control.getAttribute('aria-disabled')==='true')return null;
- return {control,surface:control.matches('[data-tab]')?control.closest('.iw-glass-nav'):control};
+ return {control,surface:control.matches('[data-tab],[data-relax-mode]')?control.closest('.iw-glass-nav'):control};
 }
 function refresh(surface){surface.classList.toggle('iw-glass-pressed',Array.from(held.values()).some(record=>record.surface===surface))}
 function begin(key,record){if(held.has(key))return;held.set(key,record);refresh(record.surface)}
