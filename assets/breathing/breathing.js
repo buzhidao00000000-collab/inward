@@ -38,11 +38,20 @@ function sample(ms,initial=poses.idle){
 const svg=document.getElementById('iw-breathing');if(!svg)return;
 const find=id=>svg.querySelector('#'+id);
 const left=find('breath-eye-left'),right=find('breath-eye-right'),mouth=find('breath-mouth');
-const startButton=find('breath-start'),endButton=find('breath-end'),startText=find('breath-start-text'),status=find('breath-status');
+const toggleButton=find('breath-toggle'),startArt=find('breath-start-art'),endArt=find('breath-end-art'),status=find('breath-status');
 const path=values=>'M'+values.slice(0,2).map(n=>n.toFixed(3)).join(',')+'C'+values.slice(2).map(n=>n.toFixed(3)).join(',')+'Z';
 const nosePath=values=>path(values).slice(0,-1)+'L'+values.slice(0,2).map(n=>n.toFixed(3)).join(',')+'Z';
 let mode='idle',raf=0,startedAt=0,initialPose=poses.idle,returnAt=0,returnFrom=null;
 let current={pose:poses.idle,phase:'idle',labelIn:0,labelEx:0,time:0};
+function updateButton(){
+ const active=mode!=='idle';
+ startArt.style.display=active?'none':'';
+ endArt.style.display=active?'':'none';
+ toggleButton.setAttribute('aria-label',active?'End breathing':'Start breathing');
+ toggleButton.setAttribute('aria-pressed',String(active));
+ toggleButton.setAttribute('aria-disabled',String(mode==='ending'));
+}
+
 function apply(state){
  const p=state.pose;current=state;
  left.setAttribute('d',path(p.left));right.setAttribute('d',path(p.right));mouth.setAttribute('d',path(p.mouth));
@@ -68,23 +77,23 @@ function frame(now){
  else if(mode==='ending'){
   const progress=clamp((now-returnAt)/(RETURN*1000)),t=ease(progress);
   apply({pose:mix(returnFrom.pose,poses.idle,t),phase:progress===1?'idle':'ending',labelIn:returnFrom.labelIn*(1-t),labelEx:returnFrom.labelEx*(1-t),time:returnFrom.time+(now-returnAt)});
-  if(progress===1){mode='idle';startButton.setAttribute('aria-disabled','false');startText.textContent='Start';svg.dataset.running='false';return}
+  if(progress===1){mode='idle';updateButton();svg.dataset.running='false';return}
  }else return;
  raf=requestAnimationFrame(frame);
 }
 function start(){
  if(mode==='breathing')return;
  cancelAnimationFrame(raf);initialPose=current.pose;mode='breathing';startedAt=performance.now();
- startButton.setAttribute('aria-disabled','true');startText.textContent='Started';svg.dataset.running='true';frame(startedAt);
+ updateButton();svg.dataset.running='true';frame(startedAt);
 }
 function end(){
  if(mode==='idle'||mode==='ending')return;
  const now=performance.now();returnFrom=current;
- cancelAnimationFrame(raf);mode='ending';returnAt=now;startButton.setAttribute('aria-disabled','false');startText.textContent='Start';frame(now);
+ cancelAnimationFrame(raf);mode='ending';returnAt=now;updateButton();frame(now);
 }
 function activate(button,action){button.addEventListener('click',action);button.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();action()}})}
-activate(startButton,start);activate(endButton,end);
+activate(toggleButton,()=>{if(mode==='idle')start();else if(mode==='breathing')end()});
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')end()});
-apply(current);svg.dataset.running='false';
+apply(current);svg.dataset.running='false';updateButton();
 window.InwardBreathing=Object.freeze({start,end,sample:ms=>sample(ms),get phase(){return current.phase},get mode(){return mode}});
 })();

@@ -18,3 +18,5 @@ End eases the last displayed pose back to rest in 0.45 seconds, including the ci
 `window.InwardBreathing.start()` and `.end()` control the current scene. `.sample(milliseconds)` returns a pure timeline sample for deterministic timing checks.
 
 Inhale/Exhale outline labels crossfade over 0.8 seconds. Facial shapes still morph without opacity crossfades. The exhale mouth retains its lower original position and grows about its own center, keeping it separate from both nose dots throughout the cycle and End return.
+
+Single-button revision: user-supplied Start/End SVG artwork is displayed in one centered 188x45 control. Idle shows Start only; breathing shows End only. End keeps its artwork while the pose returns to rest, briefly disables repeat activation, then restores Start. Pointer and Enter/Space activation share the same control. Original supplied files are retained as `start-button.svg` and `end-button.svg`.
