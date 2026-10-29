@@ -1,11 +1,21 @@
 # INWARD glass navigation
 
-The user supplied `original.svg`. Its icon paths, label outlines, frame and selected-capsule geometry are preserved. `navigation.html` contains the split inline layers; selection color follows `currentColor`.
+The user supplied `original.svg`. Icon and label paths remain from that artwork. The same capsule moves between the four tabs.
 
-`glass-nav.js` animates one selected capsule with a damped spring, slight motion-dependent stretch, and following rim highlights. `glass-nav.css` uses CSS backdrop filtering; no third-party runtime or network request is needed. Keyboard arrow keys/Home/End and `prefers-reduced-motion` are supported. A ResizeObserver keeps the selection aligned after viewport changes.
+## Animation
 
-Reference researched on GitHub: https://github.com/UlviShabanbayli/domvybe-liquid-tabs (MIT). Its spring-driven glass-lens concept and rim highlights informed the implementation; its source code is not bundled or required.
+The official Motion 14.7.1 browser build is vendored and embedded inline. `glass-nav.js` calls `Motion.animateMini` to animate the capsule transform using the browser Web Animations API, with a 0.62-second transition. Interrupted animations retain the current painted position before retargeting. A lightweight render callback tracks the native transform for soft lighting. Resize and keyboard handling preserve alignment; reduced-motion preferences are respected.
 
-Dialogue and Relax retain their workflows. Report and Me retain the existing Coming soon status, presented as tab views so the active tab and page title stay consistent.
+## Glass
 
-Visual tuning: slower spring (angular frequency 12, damping ratio 0.9) keeps the capsule travel readable. Normal-composited white/lilac rim highlights and a stronger translucent gray lens replace the low-contrast screen blend. Real click traces verify intermediate positions and visible highlight tracking.
+The implementation was restudied against rdev/liquid-glass-react's source: separate sharp content, blurred glass and masked border layers; directional low-intensity gradients instead of a bright white hotspot. CSS and WebKit mask/backdrop declarations provide the rim treatment without introducing React or relying on Chromium-only displacement filters.
+
+## References and package provenance
+
+- https://github.com/rdev/liquid-glass-react — approximately 6,551 GitHub stars and 133,657 monthly npm downloads at the 2026-10-29 check. Used as a visual/implementation reference.
+- https://github.com/motiondivision/motion — approximately 34,641 GitHub stars and 94,742,950 monthly npm downloads at the check. Actual animation runtime used.
+- Counts were read from GitHub repository pages and npm registry search metadata. They are time-specific observations, recorded in `references.json`.
+- The Motion npm tarball's SHA-512 was verified against registry metadata before using its bundle. Bundle SHA-256 and package provenance are in `references.json`.
+- Licenses are retained in `vendor/`.
+
+The source SVG, split navigation markup, CSS, controller and vendor runtime are kept in this directory. Both application entry HTML files embed the CSS and scripts for offline use. Dialogue/Relax behavior and drafts are preserved; Report and Me remain Coming soon tab views.

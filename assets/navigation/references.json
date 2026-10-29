@@ -1,0 +1,20 @@
+{
+  "checked_on": "2026-10-29",
+  "glass_reference": {
+    "repository": "https://github.com/rdev/liquid-glass-react",
+    "stars_observed": 6551,
+    "npm_package": "liquid-glass-react",
+    "monthly_downloads_observed": 133657,
+    "usage": "Studied source and adapted soft masked rim/highlight approach; no React runtime introduced."
+  },
+  "animation_dependency": {
+    "repository": "https://github.com/motiondivision/motion",
+    "stars_observed": 34641,
+    "npm_package": "motion",
+    "monthly_downloads_observed": 94742950,
+    "version": "14.7.1",
+    "usage": "Actual Motion.animateMini runtime, bundled locally and inline for standalone/offline use.",
+    "npm_tarball_integrity_verified": "sha512-o+q7MExUC0RuCUF62HxF9v+fNVX7pUMYZqlyigQJJFAgAsmnnSlAOYeG41hGYkamxFR0rdBA0KXpaBJ28/GGAw==",
+    "browser_bundle_sha256": "9d626ab329c703b3fa824651166973900fd425a84b752f2f53411ad85b3e923e"
+  }
+}

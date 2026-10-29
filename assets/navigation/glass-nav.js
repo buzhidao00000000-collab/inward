@@ -5,51 +5,60 @@ const buttons=Array.from(nav.querySelectorAll('[data-tab]'));
 const selection=nav.querySelector('.iw-nav-selection');
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let selected=buttons.findIndex(button=>button.classList.contains('iw-active'));
-let position=0,velocity=0,target=0,width=0,barWidth=0,frame=0,last=0,pending=false;
-function paint(){
- const speed=Math.min(1,Math.abs(velocity)/650);
- const stretch=reduceMotion.matches?1:1+speed*.075;
- selection.style.width=width+'px';
- selection.style.transform=`translateX(${position}px) scale(${stretch},${1-(stretch-1)*.28})`;
- // Reflection trails the moving capsule slightly, then settles at its upper rim.
- nav.style.setProperty('--iw-glint-x',(position+width/2-velocity*.012)+'px');
- nav.style.setProperty('--iw-glint-strength',String(reduceMotion.matches ? .32 : .38+speed*.62));
- selection.style.setProperty('--iw-local-glint',Math.max(-18,Math.min(18,-velocity*.02))+'px');
- nav.dataset.navPosition=position.toFixed(3);
+let position=0,target=0,width=0,barWidth=0,feedback=0,pending=false,playback=null,generation=0,lastX=0,lastTime=0;
+nav.dataset.engine='motion-14.7.1';
+function currentX(){
+ const transform=getComputedStyle(selection).transform;
+ return transform==='none'?position:new DOMMatrixReadOnly(transform).m41;
 }
-function tick(now){
- const dt=Math.min(.04,Math.max(0,(now-last)/1000));last=now;
- // Closed-form damped spring: changing target retains the current position and
- // velocity, so rapid taps redirect the same capsule instead of restarting it.
- const omega=12,damping=.9,frequency=omega*Math.sqrt(1-damping*damping);
- const offset=position-target,a=offset,b=(velocity+damping*omega*offset)/frequency;
- const decay=Math.exp(-damping*omega*dt),cos=Math.cos(frequency*dt),sin=Math.sin(frequency*dt);
- position=target+decay*(a*cos+b*sin);
- velocity=decay*((b*frequency-damping*omega*a)*cos+(-a*frequency-damping*omega*b)*sin);
- if(Math.abs(position-target)<.04&&Math.abs(velocity)<.5){position=target;velocity=0;paint();nav.dataset.motion='idle';frame=0;return}
- paint();frame=requestAnimationFrame(tick);
+function reflect(x,velocity=0){
+ position=x;nav.dataset.navPosition=x.toFixed(3);
+ const fraction=Math.max(0,Math.min(1,(x+width/2)/Math.max(1,barWidth)));
+ nav.style.setProperty('--iw-light-angle',(110+fraction*65)+'deg');
+ nav.style.setProperty('--iw-glint-x',(x+width/2)+'px');
+ selection.style.setProperty('--iw-local-light',(48+Math.max(-18,Math.min(18,-velocity*.016)))+'%');
+}
+function stop(){
+ const x=currentX();
+ generation++;
+ if(playback){playback.stop();playback=null}
+ cancelAnimationFrame(feedback);feedback=0;
+ selection.style.transform=`translateX(${x}px)`;
+ return x;
+}
+function follow(now){
+ const x=currentX(),dt=Math.max(1,now-lastTime);
+ reflect(x,(x-lastX)*1000/dt);lastX=x;lastTime=now;
+ if(playback)feedback=requestAnimationFrame(follow);
 }
 function move(immediate=false){
  nav.dataset.selected=buttons[selected].dataset.tab;
- // A focused mobile composer temporarily hides the navigation. Wait until it
- // is visible before measuring, rather than animating toward zero-sized tabs.
  if(!nav.clientWidth){pending=true;return}
  pending=false;
+ const from=stop();
  target=buttons[selected].offsetLeft;width=buttons[selected].offsetWidth;
- if(immediate||reduceMotion.matches){cancelAnimationFrame(frame);frame=0;position=target;velocity=0;paint();nav.dataset.motion='idle';return}
- nav.dataset.motion='moving';
- if(!frame){last=performance.now();frame=requestAnimationFrame(tick)}
+ selection.style.width=width+'px';
+ if(immediate||reduceMotion.matches){selection.style.transform=`translateX(${target}px)`;reflect(target);nav.dataset.motion='idle';return}
+ const version=++generation;
+ nav.dataset.motion='moving';lastX=from;lastTime=performance.now();
+ // Motion's mini DOM animation uses the browser's Web Animations API. The same
+ // persistent capsule is retargeted from its currently painted transform.
+ playback=window.Motion.animateMini(selection,{transform:[`translateX(${from}px)`,`translateX(${target}px)`]},{duration:.62,ease:[.4,0,.2,1]});
+ feedback=requestAnimationFrame(follow);
+ playback.then(()=>{
+  if(version!==generation)return;
+  playback=null;cancelAnimationFrame(feedback);feedback=0;
+  selection.style.transform=`translateX(${target}px)`;reflect(target);nav.dataset.motion='idle';
+ });
 }
 function measure(){
- const nextWidth=nav.clientWidth;if(!nextWidth)return;
- if(nextWidth===barWidth){if(pending)move();return}
- if(barWidth)position*=nextWidth/barWidth;
- barWidth=nextWidth;move(true);
+ const next=nav.clientWidth;if(!next)return;
+ if(next===barWidth){if(pending)move();return}
+ barWidth=next;move(true);
 }
 document.addEventListener('inward:tabchange',event=>{
  const index=buttons.findIndex(button=>button.dataset.tab===event.detail.tab);
- if(index<0)return;
- selected=index;move();
+ if(index<0)return;selected=index;move();
 });
 nav.addEventListener('keydown',event=>{
  const current=buttons.indexOf(document.activeElement);if(current<0)return;
@@ -62,6 +71,5 @@ nav.addEventListener('keydown',event=>{
  event.preventDefault();buttons[next].focus();buttons[next].click();
 });
 reduceMotion.addEventListener('change',()=>move(true));
-new ResizeObserver(measure).observe(nav);
-measure();
+new ResizeObserver(measure).observe(nav);measure();
 })();
