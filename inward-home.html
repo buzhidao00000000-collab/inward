@@ -325,7 +325,7 @@ body{margin:0}
 <style>
 #inward-preview nav.iw-glass-nav{position:relative;isolation:isolate;display:block;width:100%;height:70px;min-height:70px;padding:0;border:0;border-radius:35px;background:#ffffff0f;box-shadow:inset 0 1px 1px #ffffff99,inset 0 -1px 2px #b9b4c314,0 4px 14px #7463860a;backdrop-filter:blur(24px) saturate(140%);-webkit-backdrop-filter:blur(24px) saturate(140%);overflow:hidden;--iw-glint-x:54px;--iw-light-angle:120deg}
 #inward-preview .iw-nav-frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-#inward-preview .iw-nav-selection{position:absolute;left:0;top:7.5px;width:23.262032%;height:55px;border-radius:27.5px;background:#e6e5ebb8;backdrop-filter:blur(10px) saturate(130%);-webkit-backdrop-filter:blur(10px) saturate(130%);pointer-events:none;z-index:1;transform:translateX(11px);will-change:transform;box-shadow:inset 0 0 0 .5px #ffffffa6,inset 0 1px 2px #ffffff8c,inset 0 -1px 2px #a499b126,0 1px 2px #6657770a}
+#inward-preview .iw-nav-selection{position:absolute;left:0;top:7.5px;width:23.262032%;height:55px;border-radius:27.5px;background:#dedbe6e0;backdrop-filter:blur(10px) saturate(130%);-webkit-backdrop-filter:blur(10px) saturate(130%);pointer-events:none;z-index:1;transform:translateX(11px);will-change:transform;box-shadow:inset 0 0 0 .5px #ffffffa6,inset 0 1px 2px #ffffff8c,inset 0 -1px 2px #a499b126,0 1px 2px #6657770a}
 #inward-preview .iw-nav-selection::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(var(--iw-light-angle),#ffffff08 0%,#ffffffd9 32%,#ffffff3b 62%,#b9a7cd29 80%,#ffffff0a 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 #inward-preview .iw-nav-selection::after{content:"";position:absolute;inset:1px;border-radius:inherit;background:radial-gradient(ellipse 58px 29px at var(--iw-local-light,48%) 0%,#ffffff52,transparent 78%);pointer-events:none}
 #inward-preview .iw-nav-reflection{position:absolute;inset:0;z-index:2;padding:1px;border-radius:inherit;pointer-events:none;background:linear-gradient(var(--iw-light-angle),#ffffff0a 4%,#ffffffcc 30%,#ffffff33 54%,#b7a6cc26 74%,#ffffff14 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.85}
@@ -748,6 +748,7 @@ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let selected=buttons.findIndex(button=>button.classList.contains('iw-active'));
 let position=0,target=0,width=0,barWidth=0,feedback=0,pending=false,playback=null,generation=0,lastX=0,lastTime=0;
 nav.dataset.engine='motion-14.7.1';
+nav.dataset.build='nav4-visible-motion';
 function currentX(){
  const transform=getComputedStyle(selection).transform;
  return transform==='none'?position:new DOMMatrixReadOnly(transform).m41;
@@ -779,12 +780,12 @@ function move(immediate=false){
  const from=stop();
  target=buttons[selected].offsetLeft;width=buttons[selected].offsetWidth;
  selection.style.width=width+'px';
- if(immediate||reduceMotion.matches){selection.style.transform=`translateX(${target}px)`;reflect(target);nav.dataset.motion='idle';return}
+ if(immediate){selection.style.transform=`translateX(${target}px)`;reflect(target);nav.dataset.motion='idle';return}
  const version=++generation;
  nav.dataset.motion='moving';lastX=from;lastTime=performance.now();
  // Motion's mini DOM animation uses the browser's Web Animations API. The same
  // persistent capsule is retargeted from its currently painted transform.
- playback=window.Motion.animateMini(selection,{transform:[`translateX(${from}px)`,`translateX(${target}px)`]},{duration:.62,ease:[.4,0,.2,1]});
+ playback=window.Motion.animateMini(selection,{transform:[`translateX(${from}px)`,`translateX(${target}px)`]},{duration:reduceMotion.matches ? .45 : .62,ease:[.4,0,.2,1]});
  feedback=requestAnimationFrame(follow);
  playback.then(()=>{
   if(version!==generation)return;

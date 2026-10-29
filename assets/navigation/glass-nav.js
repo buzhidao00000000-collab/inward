@@ -7,6 +7,7 @@ const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let selected=buttons.findIndex(button=>button.classList.contains('iw-active'));
 let position=0,target=0,width=0,barWidth=0,feedback=0,pending=false,playback=null,generation=0,lastX=0,lastTime=0;
 nav.dataset.engine='motion-14.7.1';
+nav.dataset.build='nav4-visible-motion';
 function currentX(){
  const transform=getComputedStyle(selection).transform;
  return transform==='none'?position:new DOMMatrixReadOnly(transform).m41;
@@ -38,12 +39,12 @@ function move(immediate=false){
  const from=stop();
  target=buttons[selected].offsetLeft;width=buttons[selected].offsetWidth;
  selection.style.width=width+'px';
- if(immediate||reduceMotion.matches){selection.style.transform=`translateX(${target}px)`;reflect(target);nav.dataset.motion='idle';return}
+ if(immediate){selection.style.transform=`translateX(${target}px)`;reflect(target);nav.dataset.motion='idle';return}
  const version=++generation;
  nav.dataset.motion='moving';lastX=from;lastTime=performance.now();
  // Motion's mini DOM animation uses the browser's Web Animations API. The same
  // persistent capsule is retargeted from its currently painted transform.
- playback=window.Motion.animateMini(selection,{transform:[`translateX(${from}px)`,`translateX(${target}px)`]},{duration:.62,ease:[.4,0,.2,1]});
+ playback=window.Motion.animateMini(selection,{transform:[`translateX(${from}px)`,`translateX(${target}px)`]},{duration:reduceMotion.matches ? .45 : .62,ease:[.4,0,.2,1]});
  feedback=requestAnimationFrame(follow);
  playback.then(()=>{
   if(version!==generation)return;
