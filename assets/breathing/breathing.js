@@ -32,7 +32,7 @@ function sample(ms,initial=poses.idle){
   if(local>=CHANGE)pose.mouthScale=1+.18*ease((local-CHANGE)/(8-CHANGE));
   pose.circleScale=MIN_CIRCLE+(1-MIN_CIRCLE)*ease(local/8);
  }
- const fade=ease(local/.3);
+ const fade=ease(local/.8);
  return {pose,phase,labelIn:phase==='inhale'?fade:1-fade,labelEx:phase==='exhale'?fade:cycle===0?0:1-fade,time:ms};
 }
 const svg=document.getElementById('iw-breathing');if(!svg)return;

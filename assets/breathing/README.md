@@ -17,4 +17,4 @@ End eases the last displayed pose back to rest in 0.45 seconds, including the ci
 
 `window.InwardBreathing.start()` and `.end()` control the current scene. `.sample(milliseconds)` returns a pure timeline sample for deterministic timing checks.
 
-Inhale/Exhale outline labels crossfade over 0.3 seconds. Facial shapes still morph without opacity crossfades. The exhale mouth retains its lower original position and grows about its own center, keeping it separate from both nose dots throughout the cycle and End return.
+Inhale/Exhale outline labels crossfade over 0.8 seconds. Facial shapes still morph without opacity crossfades. The exhale mouth retains its lower original position and grows about its own center, keeping it separate from both nose dots throughout the cycle and End return.
