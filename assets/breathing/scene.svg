@@ -7,6 +7,14 @@
 #iw-breathing .breath-control:focus-visible rect{stroke:#805fe3;stroke-width:2}
 #iw-breathing .breath-control:hover .breath-button-glass{filter:brightness(1.025)}
 #iw-breathing .breath-control text{pointer-events:none;font-size:15px;font-weight:400;fill:#71627f;text-anchor:middle;dominant-baseline:middle}
+#inward-preview button:not([data-tab]),.iw-photo-viewer-close{scale:1;transform-origin:center;transition:scale .18s cubic-bezier(.2,.8,.2,1),transform .18s ease;-webkit-touch-callout:none}
+#inward-preview button.iw-glass-pressed:not([data-tab]),.iw-photo-viewer-close.iw-glass-pressed{scale:1.065;transition:scale .09s cubic-bezier(.2,.8,.2,1),transform .18s ease}
+#breath-toggle .breath-button-glass{transform:scale(1);transform-origin:center;transition:transform .18s cubic-bezier(.2,.8,.2,1);will-change:transform}
+#breath-toggle.iw-glass-pressed .breath-button-glass{transform:scale(1.07);transition-duration:.09s}
+#inward-preview nav.iw-glass-nav .iw-nav-selection{scale:1;transition:scale .18s cubic-bezier(.2,.8,.2,1),background-color .1s ease,box-shadow .1s ease}
+#inward-preview nav.iw-glass-nav.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.065;transition-duration:.09s}
+@media(prefers-reduced-motion:reduce){#inward-preview button.iw-glass-pressed:not([data-tab]),.iw-photo-viewer-close.iw-glass-pressed{scale:1.025;transition-duration:.06s}#breath-toggle.iw-glass-pressed .breath-button-glass{transform:scale(1.025);transition-duration:.06s}#inward-preview nav.iw-glass-nav.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.025;transition-duration:.06s}}
+
 </style>
 <defs><linearGradient id="breath-core-gradient" x1="147" y1="84.5" x2="146.5" y2="258" gradientUnits="userSpaceOnUse"><stop offset="0.166535" stop-color="#805FE3"/><stop offset="1" stop-color="#564098"/></linearGradient></defs>
 <circle id="breath-halo" cx="144" cy="144" r="144" fill="#E1C5FF" fill-opacity="0.3"/>

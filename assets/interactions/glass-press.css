@@ -1,0 +1,7 @@
+#inward-preview button:not([data-tab]),.iw-photo-viewer-close{scale:1;transform-origin:center;transition:scale .18s cubic-bezier(.2,.8,.2,1),transform .18s ease;-webkit-touch-callout:none}
+#inward-preview button.iw-glass-pressed:not([data-tab]),.iw-photo-viewer-close.iw-glass-pressed{scale:1.065;transition:scale .09s cubic-bezier(.2,.8,.2,1),transform .18s ease}
+#breath-toggle .breath-button-glass{transform:scale(1);transform-origin:center;transition:transform .18s cubic-bezier(.2,.8,.2,1);will-change:transform}
+#breath-toggle.iw-glass-pressed .breath-button-glass{transform:scale(1.07);transition-duration:.09s}
+#inward-preview nav.iw-glass-nav .iw-nav-selection{scale:1;transition:scale .18s cubic-bezier(.2,.8,.2,1),background-color .1s ease,box-shadow .1s ease}
+#inward-preview nav.iw-glass-nav.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.065;transition-duration:.09s}
+@media(prefers-reduced-motion:reduce){#inward-preview button.iw-glass-pressed:not([data-tab]),.iw-photo-viewer-close.iw-glass-pressed{scale:1.025;transition-duration:.06s}#breath-toggle.iw-glass-pressed .breath-button-glass{transform:scale(1.025);transition-duration:.06s}#inward-preview nav.iw-glass-nav.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.025;transition-duration:.06s}}

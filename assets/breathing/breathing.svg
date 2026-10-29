@@ -7,6 +7,14 @@
 #iw-breathing .breath-control:focus-visible rect{stroke:#805fe3;stroke-width:2}
 #iw-breathing .breath-control:hover .breath-button-glass{filter:brightness(1.025)}
 #iw-breathing .breath-control text{pointer-events:none;font-size:15px;font-weight:400;fill:#71627f;text-anchor:middle;dominant-baseline:middle}
+#inward-preview button:not([data-tab]),.iw-photo-viewer-close{scale:1;transform-origin:center;transition:scale .18s cubic-bezier(.2,.8,.2,1),transform .18s ease;-webkit-touch-callout:none}
+#inward-preview button.iw-glass-pressed:not([data-tab]),.iw-photo-viewer-close.iw-glass-pressed{scale:1.065;transition:scale .09s cubic-bezier(.2,.8,.2,1),transform .18s ease}
+#breath-toggle .breath-button-glass{transform:scale(1);transform-origin:center;transition:transform .18s cubic-bezier(.2,.8,.2,1);will-change:transform}
+#breath-toggle.iw-glass-pressed .breath-button-glass{transform:scale(1.07);transition-duration:.09s}
+#inward-preview nav.iw-glass-nav .iw-nav-selection{scale:1;transition:scale .18s cubic-bezier(.2,.8,.2,1),background-color .1s ease,box-shadow .1s ease}
+#inward-preview nav.iw-glass-nav.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.065;transition-duration:.09s}
+@media(prefers-reduced-motion:reduce){#inward-preview button.iw-glass-pressed:not([data-tab]),.iw-photo-viewer-close.iw-glass-pressed{scale:1.025;transition-duration:.06s}#breath-toggle.iw-glass-pressed .breath-button-glass{transform:scale(1.025);transition-duration:.06s}#inward-preview nav.iw-glass-nav.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.025;transition-duration:.06s}}
+
 </style>
 <defs><linearGradient id="breath-core-gradient" x1="147" y1="84.5" x2="146.5" y2="258" gradientUnits="userSpaceOnUse"><stop offset="0.166535" stop-color="#805FE3"/><stop offset="1" stop-color="#564098"/></linearGradient></defs>
 <circle id="breath-halo" cx="144" cy="144" r="144" fill="#E1C5FF" fill-opacity="0.3"/>
@@ -156,6 +164,46 @@ activate(toggleButton,()=>{if(mode==='idle')start();else if(mode==='breathing')e
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')end()});
 apply(current);svg.dataset.running='false';updateButton();
 window.InwardBreathing=Object.freeze({start,end,sample:ms=>sample(ms),get phase(){return current.phase},get mode(){return mode}});
+})();
+
+(()=>{
+'use strict';
+if(window.__inwardGlassPressInstalled)return;
+window.__inwardGlassPressInstalled=true;
+const held=new Map();
+function resolve(node){
+ const element=node instanceof Element?node:node?.parentElement;
+ const control=element?.closest('#inward-preview button,.iw-photo-viewer-close,#breath-toggle');
+ if(!control||control.disabled||control.getAttribute('aria-disabled')==='true')return null;
+ return {control,surface:control.matches('[data-tab]')?control.closest('.iw-glass-nav'):control};
+}
+function refresh(surface){surface.classList.toggle('iw-glass-pressed',Array.from(held.values()).some(record=>record.surface===surface))}
+function begin(key,record){if(held.has(key))return;held.set(key,record);refresh(record.surface)}
+function end(key){const record=held.get(key);if(!record)return;held.delete(key);refresh(record.surface)}
+function releaseAll(){for(const key of Array.from(held.keys()))end(key)}
+document.addEventListener('pointerdown',event=>{
+ if(event.button>0)return;
+ const target=resolve(event.target);if(!target)return;
+ begin('pointer:'+event.pointerId,{...target,x:event.clientX,y:event.clientY});
+},true);
+for(const type of ['pointerup','pointercancel','lostpointercapture'])document.addEventListener(type,event=>end('pointer:'+event.pointerId),true);
+document.addEventListener('pointermove',event=>{
+ const key='pointer:'+event.pointerId,record=held.get(key);if(!record)return;
+ // A horizontal drag or page scroll hands control back to its own gesture.
+ if(Math.hypot(event.clientX-record.x,event.clientY-record.y)>9){end(key);return}
+ const box=record.control.getBoundingClientRect();
+ if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)end(key);
+},true);
+document.addEventListener('keydown',event=>{
+ if(event.repeat||![' ','Enter'].includes(event.key))return;
+ const target=resolve(event.target);if(target)begin('key:'+event.key,target);
+},true);
+document.addEventListener('keyup',event=>end('key:'+event.key),true);
+document.addEventListener('focusout',event=>{
+ for(const [key,record] of held)if(key.startsWith('key:')&&record.control.contains(event.target)&&!record.control.contains(event.relatedTarget))end(key);
+},true);
+window.addEventListener('blur',releaseAll);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseAll()});
 })();
 
 ]]></script></svg>
