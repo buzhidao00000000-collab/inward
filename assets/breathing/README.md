@@ -11,7 +11,7 @@ Original SVG artwork and outline labels were supplied by the user. No external l
 
 Start moves the front-facing expression toward the right-facing artwork over 0.38 seconds. Changes between inhale and exhale take 0.28 seconds. The nose uses two opaque, continuously morphing lobes, rather than crossfading overlapping expressions; its outline follows the same motion. Eye positions remain fixed during each breathing phase.
 
-Both circular backgrounds scale uniformly about their shared center from 1 to 5/6 during inhale, then return to 1 during exhale. The inhaling nose and its outline grow by 18%. The exhaling mouth grows by 18%. Wind lines flow toward the upper left for inhale and lower right for exhale.
+Both circular backgrounds scale uniformly about their shared center from 1 to 7/6 during inhale, then return to 1 during exhale. The inhaling nose and its outline grow by 18%. The exhaling mouth grows by 18%. Wind lines flow toward the upper left for inhale and lower right for exhale.
 
 End eases the last displayed pose back to rest in 0.45 seconds, including the circles and feature sizes. Leaving Relax ends the exercise without clearing the Dialogue draft.
 
@@ -22,3 +22,5 @@ Inhale/Exhale outline labels crossfade over 0.8 seconds. Facial shapes still mor
 Single-button revision: user-supplied Start/End SVG artwork is displayed in one centered 188x45 control. Idle shows Start only; breathing shows End only. End keeps its artwork while the pose returns to rest, briefly disables repeat activation, then restores Start. Pointer and Enter/Space activation share the same control. Original supplied files are retained as `start-button.svg` and `end-button.svg`.
 
 Button material: the user SVG labels sit over a neutral transparent glass capsule, matching the navigation glass base: backdrop blur/saturation, masked white/gray rim, and soft inset/shadow highlights. No solid purple stroke or lavender solid-fill shell is used. An SVG foreignObject holds the HTML glass surface; the SVG hit rectangle preserves focus and click behavior.
+
+Breathing direction revision: inhale expands both circles from the resting size to 7/6; exhale shrinks them back to rest. This mirrors the previous contraction amplitude while preserving the supplied idle size and the 5s/8s timing. Wind strokes are now the lighter yellow #F0D99C.
