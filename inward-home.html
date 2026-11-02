@@ -1085,8 +1085,8 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let current=1,target=1,velocity=0,raf=0,last=0,drag=null,suppressClick=false,wheelTimer=0,entrance=1;
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 function paint(){
- cards.forEach((card,i)=>{const d=i-current,dist=Math.abs(d),scale=1-.16*Math.min(dist,2),x=10+26*d*d,y=158+d*107,angle=d*9;
- card.style.transform=`translate3d(${x+(1-entrance)*65}px,${y}px,0) rotate(${angle}deg) scale(${scale*entrance})`;
+ cards.forEach((card,i)=>{const d=i-current,dist=Math.abs(d),scale=1-.16*Math.min(dist,2),x=10+26*d*d,y=158+d*107;
+ card.style.transform=`translate3d(${x+(1-entrance)*65}px,${y}px,0) scale(${scale*entrance})`;
  card.style.opacity=String(clamp(1-dist*.19,.3,1)*entrance);card.style.zIndex=String(10-Math.round(dist*2));});
 }
 function tick(now){
