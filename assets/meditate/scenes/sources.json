@@ -22,5 +22,41 @@
     "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_large_canyon_with_a_sunset_with_Badlands_National_Park_in_the_background.jpg",
     "sha256": "f3542998a2984a47013b921bfabee306eaa4d492fc76113eff5896a3d8a8af08",
     "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-5.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_mountain_range_with_dark_clouds.jpg",
+    "sha256": "a07f85449ba74a0d725a3660525e6cfb61fca94930a1ee60af544efda733f4f8",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-6.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_mountain_range_with_snow_on_top_01.jpg",
+    "sha256": "f553d689714bba2447800c2b70a04f7819f6f898ef1fb28b5271824042d4e838",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-7.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_snowy_mountain_with_a_lake_in_the_middle.jpg",
+    "sha256": "9d51e26feb24df66f6287ca95583518665772014933eb634f01554a4abc79360",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-8.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/calm/a_house_on_stilts_on_a_lake.jpg",
+    "sha256": "82dd0e218c48a03abf5fac6724c92b18eb64d287748cd548127ed014c0752097",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-9.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/calm/a_rocky_landscape_with_trees_and_water_in_the_background.jpg",
+    "sha256": "2f8c90738d245861695d39b1a1d997d742ebe23ac02f5beaa6d0d6bb1af7fcb0",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-10.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_beach_with_waves_and_cliffs.jpg",
+    "sha256": "fb982a9e46f8988635f8aa8da806e957e861a66221ea96ecf5c437ba74e6fe8c",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
   }
 ]
