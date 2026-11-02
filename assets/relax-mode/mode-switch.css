@@ -1,5 +1,5 @@
 
-#inward-preview .iw-relax-mode-switch{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;width:172px;height:46px;isolation:isolate;z-index:2}
+#inward-preview .iw-relax-mode-switch{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;width:172px;height:46px;border-radius:23px;isolation:isolate;z-index:2}
 #inward-preview .iw-relax-mode-switch button{display:block;position:relative;flex:0 0 86px;width:86px;height:46px;min-width:0;padding:0;border:0;border-radius:23px;background:transparent;box-shadow:none;color:#8f8f8f;line-height:0}
 #inward-preview .iw-relax-mode-switch button>svg{display:block;width:86px;height:46px;overflow:visible;pointer-events:none}
 #inward-preview .iw-relax-mode-switch .iw-mode-active{color:#805fe3}

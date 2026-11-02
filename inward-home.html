@@ -22,6 +22,17 @@ body{margin:0}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-meditate-placeholder h2{color:#fff;text-shadow:0 2px 12px #17102b80}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-meditate-placeholder p{color:#e6dff7;text-shadow:0 1px 8px #17102b80}
 </style>
+<style>
+/* Softer glass edges over the dark Meditate artwork. */
+#inward-preview.iw-show-relax[data-relax-mode=meditate] nav.iw-glass-nav{box-shadow:0 4px 16px #100b2520}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-nav-frame{visibility:hidden}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-nav-reflection{opacity:.12}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-nav-selection{background-color:#d9cfed38;box-shadow:inset 0 1px 2px #ffffff18,0 2px 8px #100b251a}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-nav-selection::before{opacity:.12}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-nav-selection::after{opacity:.35}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-relax-mode-switch::before{box-shadow:inset 0 1px 1px #ffffff14,0 2px 8px #100b2510}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-tools button::before{border-color:transparent;box-shadow:inset 0 1px 2px #ffffff1a,0 2px 8px #100b2520}
+</style>
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -932,7 +943,7 @@ if(top){
 </script>
 <style>
 
-#inward-preview .iw-relax-mode-switch{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;width:172px;height:46px;isolation:isolate;z-index:2}
+#inward-preview .iw-relax-mode-switch{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;width:172px;height:46px;border-radius:23px;isolation:isolate;z-index:2}
 #inward-preview .iw-relax-mode-switch button{display:block;position:relative;flex:0 0 86px;width:86px;height:46px;min-width:0;padding:0;border:0;border-radius:23px;background:transparent;box-shadow:none;color:#8f8f8f;line-height:0}
 #inward-preview .iw-relax-mode-switch button>svg{display:block;width:86px;height:46px;overflow:visible;pointer-events:none}
 #inward-preview .iw-relax-mode-switch .iw-mode-active{color:#805fe3}
