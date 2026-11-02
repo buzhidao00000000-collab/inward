@@ -1,0 +1,26 @@
+[
+  {
+    "file": "scene-1.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_tree_in_a_body_of_water_with_mountains_in_the_background.jpg",
+    "sha256": "c39ef4e8de2d5bbce8478bad9af022a1433134083713710d3e3309bd2aabbafc",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-2.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_road_with_lights_on_the_side_of_a_body_of_water.jpg",
+    "sha256": "71558b10a5353cb6a49af7dee0243312b2867abee0e02ee471c972b3a3c520cd",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-3.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_lake_with_snow_covered_mountains_in_the_background.jpg",
+    "sha256": "544888b85e8092ef908cba48b5f6cb9f1cdcbab0bf13f928030622f248177d9d",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  },
+  {
+    "file": "scene-4.jpg",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_large_canyon_with_a_sunset_with_Badlands_National_Park_in_the_background.jpg",
+    "sha256": "f3542998a2984a47013b921bfabee306eaa4d492fc76113eff5896a3d8a8af08",
+    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+  }
+]
