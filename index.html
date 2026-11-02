@@ -40,7 +40,14 @@ body{margin:0}
 </style>
 <style>
 /* A lighter selected mode capsule gives the purple label more contrast. */
-#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-relax-mode-switch .iw-nav-selection{background-color:rgba(242,235,255,.86)}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-relax-mode-switch .iw-nav-selection{background-color:rgba(242,235,255,.86);z-index:1}
+</style>
+<style>
+#inward-preview .iw-meditate-controls{position:absolute;left:22px;top:210px;z-index:2;display:none;flex-direction:column;gap:22px}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-meditate-controls{display:flex}
+#inward-preview .iw-meditate-controls button{display:grid;place-items:center;width:44px;height:44px;min-height:44px;padding:1px;border:0;border-radius:14px;background:transparent;box-shadow:none;touch-action:manipulation}
+#inward-preview .iw-meditate-controls img{display:block;width:42px;height:42px;pointer-events:none}
+#inward-preview .iw-meditate-controls button:focus-visible{outline:2px solid #d3c0ff;outline-offset:3px}
 </style>
 </head>
 <body>
@@ -388,6 +395,16 @@ meditateBackground.className='iw-meditate-background';
 meditateBackground.src='assets/meditate/background.svg';
 meditateBackground.alt='';meditateBackground.setAttribute('aria-hidden','true');
 phone.prepend(meditateBackground);
+const meditateControls=document.createElement('div');
+meditateControls.className='iw-meditate-controls';
+meditateControls.setAttribute('role','group');meditateControls.setAttribute('aria-label','Meditation controls');
+for(const [name,label] of [['scenery','Scenery'],['audio','Audio']]){
+ const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',label);
+ const icon=document.createElement('img');icon.src='assets/meditate/'+name+'-button.svg';icon.alt='';
+ button.append(icon);meditateControls.append(button);
+}
+phone.append(meditateControls);
+
 const relaxView=document.createElement('section');
 relaxView.className='iw-relax-view';
 relaxView.setAttribute('aria-label','Breathing exercise');
