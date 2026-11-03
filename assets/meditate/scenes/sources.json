@@ -48,13 +48,6 @@
     "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
-    "file": "scene-8.jpg",
-    "theme": "Desert",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_sand_dunes_in_the_desert.jpg",
-    "sha256": "a965e819ed30be4a39e92cd4a8ab26a669ef25665fc3947fb23d530788482e03",
-    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
-  },
-  {
     "file": "scene-9.jpg",
     "theme": "Meadow",
     "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/flowers/a_blue_sky_with_white_clouds_and_small_white_flowers.jpg",

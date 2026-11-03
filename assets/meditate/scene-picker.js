@@ -32,7 +32,8 @@ function tick(now){
  if(drag||Math.abs(target-current)>.001||Math.abs(velocity)>.01||entrance<1)raf=requestAnimationFrame(tick);
  else{current=target=wrap(target);velocity=0;raf=0;last=0;paint()}
 }
-function updateCardArt(){cards.forEach((card,i)=>{const item=items[i],url=i===selected&&!picker.hidden?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
+function updateCardArt(){cards.forEach((card,i)=>{const item=items[i],url=i===selected&&!picker.hidden&&!reduced.matches?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
+reduced.addEventListener('change',updateCardArt);
 function animate(){if(!raf){last=0;raf=requestAnimationFrame(tick)}}
 async function choose(index){
  target=Math.round(index);selected=wrap(target);cards.forEach((c,i)=>c.setAttribute('aria-pressed',String(i===selected)));status.textContent=`${label}: ${items[selected].name}, ${selected+1} of ${items.length}`;animate();
@@ -65,15 +66,14 @@ function release(event,cancelled=false){
 picker.addEventListener('pointerup',event=>release(event));picker.addEventListener('pointercancel',event=>release(event,true));
 picker.addEventListener('wheel',event=>{event.preventDefault();target+=event.deltaY*.005;animate();clearTimeout(wheelTimer);wheelTimer=setTimeout(()=>choose(Math.round(target)),120)},{passive:false});
 picker.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close();trigger.focus();return}const step=['ArrowDown','ArrowRight'].includes(event.key)?1:['ArrowUp','ArrowLeft'].includes(event.key)?-1:0;if(step||event.key==='Home'||event.key==='End'){event.preventDefault();choose(event.key==='Home'?nearest(0):event.key==='End'?nearest(lastIndex):Math.round(target)+step)}});
-document.addEventListener('pointerdown',event=>{if(!picker.hidden&&!picker.contains(event.target)&&!trigger.contains(event.target)&&!event.target.closest('.iw-sound-player'))close()});
+document.addEventListener('pointerdown',event=>{if(!picker.hidden&&!picker.contains(event.target)&&!trigger.contains(event.target))close()});
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')close()});
 document.addEventListener('inward:relaxmodechange',event=>{if(event.detail.mode!=='meditate')close()});
 paint();
 const wheel={close,get isOpen(){return !picker.hidden}};wheels.push(wheel);return wheel;
 
 }
-const names=['Starry lake','Aurora','Fireflies','Seaside','Misty forest','Rainy lake','Waterfall','Desert dunes','Wildflower sky','Moonlit landscape'];
-const scenes=names.map((name,i)=>({name,art:`assets/meditate/scenes/scene-${i+1}.${i===2?'svg':'jpg'}`}));
+const scenes=[[1,'Starry lake'],[2,'Aurora'],[3,'Fireflies'],[4,'Seaside'],[5,'Misty forest'],[6,'Rainy lake'],[7,'Waterfall'],[9,'Wildflower sky'],[10,'Moonlit landscape']].map(([number,name])=>({name,art:`assets/meditate/scenes/scene-${number}.${number===3?'svg':'jpg'}`}));
 const layers=[base,base.cloneNode()];layers[1].style.opacity='0';base.after(layers[1]);let front=0,loadVersion=0;
 async function changeScene(index,status){
  const version=++loadVersion,url=scenes[index].art,preload=new Image();preload.src=url;
@@ -83,24 +83,33 @@ createWheel({id:'iw-scene-picker',trigger:sceneTrigger,items:scenes,label:'Medit
 const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.svg`,still:`assets/meditate/sound-art/${key}.still.svg`}));
 const audio=new Audio();audio.loop=true;audio.preload='none';audio.volume=.45;
 let activeSound=-1,playVersion=0;
-const controls=document.createElement('div');controls.className='iw-sound-player';controls.hidden=true;
-const title=document.createElement('span');title.className='iw-sound-title';title.textContent='Choose a sound';title.setAttribute('aria-live','polite');
-const play=document.createElement('button');play.type='button';play.textContent='Play';play.setAttribute('aria-label','Play ambient sound');play.disabled=true;
-const volume=document.createElement('input');volume.type='range';volume.min='0';volume.max='1';volume.step='.01';volume.value='.45';volume.setAttribute('aria-label','Ambient sound volume');
-const credits=document.createElement('a');credits.href='assets/meditate/sounds/credits.html';credits.target='_blank';credits.rel='noopener';credits.textContent='Sound credits';
-controls.append(title,play,volume,credits);phone.append(controls);
-function syncPlayer(){play.textContent=audio.paused?'Play':'Pause';play.setAttribute('aria-label',audio.paused?'Play ambient sound':'Pause ambient sound');soundTrigger.setAttribute('aria-pressed',String(!audio.paused));controls.hidden=activeSound<0;}
+const meditationButton=root.querySelector('.iw-meditate-start');
+const soundStatus=document.createElement('span');soundStatus.className='iw-scene-picker-status';soundStatus.setAttribute('aria-live','polite');phone.append(soundStatus);
+function syncPlayer(){
+ const playing=!audio.paused;
+ soundTrigger.setAttribute('aria-pressed',String(playing));
+ if(meditationButton){
+  meditationButton.setAttribute('aria-label',playing?'End meditation':'Start meditation');
+  meditationButton.setAttribute('aria-pressed',String(playing));
+  const image=meditationButton.querySelector('img');
+  image.src=playing?'assets/breathing/end-button.svg':'assets/meditate/start-button.svg';image.alt=playing?'End':'Start';
+ }
+}
 async function startAudio(){
  const version=++playVersion;
- try{await audio.play();if(version!==playVersion)return;title.textContent=sounds[activeSound].name;syncPlayer()}catch{if(version===playVersion){title.textContent='Tap Play to start audio';syncPlayer()}}
+ try{await audio.play();if(version!==playVersion)return;soundStatus.textContent=`Playing ${sounds[activeSound].name}`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
 }
 function changeSound(index,status){
- activeSound=index;audio.pause();audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;play.disabled=false;title.textContent=sounds[index].name;controls.hidden=false;status.textContent=`Playing ${sounds[index].name}`;startAudio();
+ activeSound=index;audio.pause();audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;status.textContent=`Selected ${sounds[index].name}`;startAudio();
 }
 createWheel({id:'iw-sound-picker',trigger:soundTrigger,items:sounds,label:'Ambient sounds',kind:'sound',onChoose:changeSound});
-play.addEventListener('click',()=>{if(audio.paused)startAudio();else{++playVersion;audio.pause();syncPlayer()}});
-volume.addEventListener('input',()=>{audio.volume=Number(volume.value)});
-audio.addEventListener('play',syncPlayer);audio.addEventListener('pause',syncPlayer);audio.addEventListener('error',()=>{title.textContent='Audio could not load. Choose again.';syncPlayer()});
+const credits=document.createElement('a');credits.className='iw-sound-credits';credits.href='assets/meditate/sounds/credits.html';credits.target='_blank';credits.rel='noopener';credits.textContent='Sound credits';root.querySelector('#iw-sound-picker').append(credits);
+meditationButton?.addEventListener('click',()=>{
+ if(audio.paused){if(activeSound<0){if(soundTrigger.getAttribute('aria-expanded')!=='true')soundTrigger.click()}else startAudio()}
+ else{++playVersion;audio.pause();soundStatus.textContent='Meditation ended';syncPlayer()}
+});
+audio.addEventListener('play',syncPlayer);audio.addEventListener('pause',syncPlayer);audio.addEventListener('error',()=>{soundStatus.textContent='Audio could not load. Choose again.';syncPlayer()});
+syncPlayer();
 function stopWhenLeaving(){++playVersion;audio.pause();syncPlayer()}
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')stopWhenLeaving()});
 document.addEventListener('inward:relaxmodechange',event=>{if(event.detail.mode!=='meditate')stopWhenLeaving()});
