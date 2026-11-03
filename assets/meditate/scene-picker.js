@@ -1,14 +1,15 @@
 (()=>{
 'use strict';
 const root=document.getElementById('inward-preview');if(!root)return;
-const phone=root.querySelector('.iw-phone'),trigger=root.querySelector('.iw-meditate-controls button[aria-label="Scenery"]'),base=root.querySelector('.iw-meditate-background');
-if(!trigger||!base)return;
-const urls=Array.from({length:10},(_,i)=>`assets/meditate/scenes/scene-${i+1}.jpg`);
-const count=urls.length,lastIndex=count-1;
-const layers=[base,base.cloneNode()];layers[1].style.opacity='0';base.after(layers[1]);
-let front=0,loadVersion=0,selected=-1;
-const picker=document.createElement('div');picker.className='iw-scene-picker';picker.id='iw-scene-picker';picker.hidden=true;picker.setAttribute('role','group');picker.setAttribute('aria-label','Meditation scenery');picker.tabIndex=-1;
-const cards=urls.map((url,i)=>{const button=document.createElement('button');button.className='iw-scene-card';button.type='button';button.setAttribute('aria-label',`Choose scenery ${i+1}`);button.setAttribute('aria-pressed',String(i===selected));const img=document.createElement('img');img.src=url;img.alt='';img.draggable=false;button.append(img);picker.append(button);return button});
+const phone=root.querySelector('.iw-phone'),base=root.querySelector('.iw-meditate-background');
+const sceneTrigger=root.querySelector('.iw-meditate-controls button[aria-label="Scenery"]'),soundTrigger=root.querySelector('.iw-meditate-controls button[aria-label="Audio"]');
+if(!base||!sceneTrigger||!soundTrigger)return;
+const wheels=[];
+function createWheel({id,trigger,items,label,kind,onChoose}){
+let selected=-1;
+const count=items.length,lastIndex=count-1;
+const picker=document.createElement('div');picker.className='iw-scene-picker '+(id==='iw-sound-picker'?'iw-sound-picker':'');picker.id=id;picker.hidden=true;picker.setAttribute('role','group');picker.setAttribute('aria-label',label);picker.tabIndex=-1;
+const cards=items.map((item,i)=>{const button=document.createElement('button');button.className='iw-scene-card';button.type='button';button.setAttribute('aria-label',`Choose ${kind} ${i+1}: ${item.name}`);button.setAttribute('aria-pressed',String(i===selected));const img=document.createElement('img');img.src=item.art;img.alt='';img.draggable=false;button.append(img);const caption=document.createElement('span');caption.className='iw-media-card-caption';caption.textContent=item.name;button.append(caption);picker.append(button);return button});
 const status=document.createElement('span');status.className='iw-scene-picker-status';status.setAttribute('aria-live','polite');picker.append(status);phone.append(picker);
 trigger.setAttribute('aria-controls',picker.id);trigger.setAttribute('aria-expanded','false');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -33,24 +34,18 @@ function tick(now){
 }
 function animate(){if(!raf){last=0;raf=requestAnimationFrame(tick)}}
 async function choose(index){
- target=Math.round(index);selected=wrap(target);cards.forEach((c,i)=>c.setAttribute('aria-pressed',String(i===selected)));status.textContent=`Scenery ${selected+1} of ${urls.length}`;animate();
- const version=++loadVersion,url=urls[selected],preload=new Image();preload.src=url;
- try{await preload.decode()}catch{return}
- if(version!==loadVersion)return;
- const next=1-front;layers[next].src=url;
- try{await layers[next].decode()}catch{return}
- if(version!==loadVersion)return;
- layers[next].style.opacity='1';layers[front].style.opacity='0';front=next;
+ target=Math.round(index);selected=wrap(target);cards.forEach((c,i)=>c.setAttribute('aria-pressed',String(i===selected)));status.textContent=`${label}: ${items[selected].name}, ${selected+1} of ${items.length}`;animate();
+ onChoose(selected,status);
 }
-function open(){picker.hidden=false;root.classList.add('iw-scene-picker-open');trigger.setAttribute('aria-expanded','true');current=target=selected<0?1:selected;velocity=0;entrance=reduced.matches?1:.8;animate();picker.focus({preventScroll:true})}
+function open(){for(const other of wheels)other.close();picker.hidden=false;root.classList.add('iw-scene-picker-open');trigger.setAttribute('aria-expanded','true');current=target=selected<0?0:selected;velocity=0;entrance=reduced.matches?1:.8;animate();picker.focus({preventScroll:true})}
 function close(){
- picker.hidden=true;root.classList.remove('iw-scene-picker-open');trigger.setAttribute('aria-expanded','false');
+ if(picker.hidden)return;picker.hidden=true;root.classList.remove('iw-scene-picker-open');trigger.setAttribute('aria-expanded','false');
  if(drag&&picker.hasPointerCapture(drag.id))picker.releasePointerCapture(drag.id);drag=null;
  cancelAnimationFrame(raf);raf=0;last=0;clearTimeout(wheelTimer);
 }
 trigger.addEventListener('click',()=>picker.hidden?open():close());
 cards.forEach((c,i)=>c.addEventListener('click',event=>{if(suppressClick&&event.detail){suppressClick=false;return}choose(nearest(i))}));
-picker.addEventListener('pointerdown',event=>{if(event.button>0)return;suppressClick=false;velocity=0;drag={id:event.pointerId,y:event.clientY,start:current,lastY:event.clientY,time:performance.now(),speed:0,moved:false,scale:phone.getBoundingClientRect().width/phone.offsetWidth};});
+picker.addEventListener('pointerdown',event=>{if(event.button>0)return;event.preventDefault();suppressClick=false;velocity=0;drag={id:event.pointerId,y:event.clientY,start:current,lastY:event.clientY,time:performance.now(),speed:0,moved:false,scale:phone.getBoundingClientRect().width/phone.offsetWidth};});
 picker.addEventListener('pointermove',event=>{
  if(!drag||event.pointerId!==drag.id)return;
  const delta=(event.clientY-drag.y)/drag.scale;
@@ -69,8 +64,44 @@ function release(event,cancelled=false){
 picker.addEventListener('pointerup',event=>release(event));picker.addEventListener('pointercancel',event=>release(event,true));
 picker.addEventListener('wheel',event=>{event.preventDefault();target+=event.deltaY*.005;animate();clearTimeout(wheelTimer);wheelTimer=setTimeout(()=>choose(Math.round(target)),120)},{passive:false});
 picker.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close();trigger.focus();return}const step=['ArrowDown','ArrowRight'].includes(event.key)?1:['ArrowUp','ArrowLeft'].includes(event.key)?-1:0;if(step||event.key==='Home'||event.key==='End'){event.preventDefault();choose(event.key==='Home'?nearest(0):event.key==='End'?nearest(lastIndex):Math.round(target)+step)}});
-document.addEventListener('pointerdown',event=>{if(!picker.hidden&&!picker.contains(event.target)&&!trigger.contains(event.target))close()});
+document.addEventListener('pointerdown',event=>{if(!picker.hidden&&!picker.contains(event.target)&&!trigger.contains(event.target)&&!event.target.closest('.iw-sound-player'))close()});
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')close()});
 document.addEventListener('inward:relaxmodechange',event=>{if(event.detail.mode!=='meditate')close()});
 paint();
+const wheel={close,get isOpen(){return !picker.hidden}};wheels.push(wheel);return wheel;
+
+}
+const names=['Starry lake','Aurora','Fireflies','Seaside','Misty forest','Rainy lake','Waterfall','Desert dunes','Wildflower sky','Moonlit landscape'];
+const scenes=names.map((name,i)=>({name,art:`assets/meditate/scenes/scene-${i+1}.${i===2?'svg':'jpg'}`}));
+const layers=[base,base.cloneNode()];layers[1].style.opacity='0';base.after(layers[1]);let front=0,loadVersion=0;
+async function changeScene(index,status){
+ const version=++loadVersion,url=scenes[index].art,preload=new Image();preload.src=url;
+ try{await preload.decode();if(version!==loadVersion)return;const next=1-front;layers[next].src=url;await layers[next].decode();if(version!==loadVersion)return;layers[next].style.opacity='1';layers[front].style.opacity='0';front=next;}catch{status.textContent='Image could not load. Please choose again.'}
+}
+createWheel({id:'iw-scene-picker',trigger:sceneTrigger,items:scenes,label:'Meditation scenery',kind:'scenery',onChoose:changeScene});
+const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.svg`}));
+const audio=new Audio();audio.loop=true;audio.preload='none';audio.volume=.45;
+let activeSound=-1,playVersion=0;
+const controls=document.createElement('div');controls.className='iw-sound-player';controls.hidden=true;
+const title=document.createElement('span');title.className='iw-sound-title';title.textContent='Choose a sound';title.setAttribute('aria-live','polite');
+const play=document.createElement('button');play.type='button';play.textContent='Play';play.setAttribute('aria-label','Play ambient sound');play.disabled=true;
+const volume=document.createElement('input');volume.type='range';volume.min='0';volume.max='1';volume.step='.01';volume.value='.45';volume.setAttribute('aria-label','Ambient sound volume');
+const credits=document.createElement('a');credits.href='assets/meditate/sounds/credits.html';credits.target='_blank';credits.rel='noopener';credits.textContent='Sound credits';
+controls.append(title,play,volume,credits);phone.append(controls);
+function syncPlayer(){play.textContent=audio.paused?'Play':'Pause';play.setAttribute('aria-label',audio.paused?'Play ambient sound':'Pause ambient sound');soundTrigger.setAttribute('aria-pressed',String(!audio.paused));controls.hidden=activeSound<0;}
+async function startAudio(){
+ const version=++playVersion;
+ try{await audio.play();if(version!==playVersion)return;title.textContent=sounds[activeSound].name;syncPlayer()}catch{if(version===playVersion){title.textContent='Tap Play to start audio';syncPlayer()}}
+}
+function changeSound(index,status){
+ activeSound=index;audio.pause();audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;play.disabled=false;title.textContent=sounds[index].name;controls.hidden=false;status.textContent=`Playing ${sounds[index].name}`;startAudio();
+}
+createWheel({id:'iw-sound-picker',trigger:soundTrigger,items:sounds,label:'Ambient sounds',kind:'sound',onChoose:changeSound});
+play.addEventListener('click',()=>{if(audio.paused)startAudio();else{++playVersion;audio.pause();syncPlayer()}});
+volume.addEventListener('input',()=>{audio.volume=Number(volume.value)});
+audio.addEventListener('play',syncPlayer);audio.addEventListener('pause',syncPlayer);audio.addEventListener('error',()=>{title.textContent='Audio could not load. Choose again.';syncPlayer()});
+function stopWhenLeaving(){++playVersion;audio.pause();syncPlayer()}
+document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')stopWhenLeaving()});
+document.addEventListener('inward:relaxmodechange',event=>{if(event.detail.mode!=='meditate')stopWhenLeaving()});
+window.addEventListener('pagehide',stopWhenLeaving);
 })();

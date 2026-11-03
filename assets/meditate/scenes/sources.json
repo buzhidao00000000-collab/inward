@@ -1,62 +1,71 @@
 [
   {
     "file": "scene-1.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_tree_in_a_body_of_water_with_mountains_in_the_background.jpg",
-    "sha256": "c39ef4e8de2d5bbce8478bad9af022a1433134083713710d3e3309bd2aabbafc",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Starry lake",
+    "source": "User-supplied background.svg embedded photograph"
   },
   {
     "file": "scene-2.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_road_with_lights_on_the_side_of_a_body_of_water.jpg",
-    "sha256": "71558b10a5353cb6a49af7dee0243312b2867abee0e02ee471c972b3a3c520cd",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Aurora",
+    "source": "https://github.com/adi1090x/dynamic-wallpaper/blob/65d515de0dc0625a3c405cfb232aee4f0048c5c4/images/aurora/0.jpg",
+    "sha256": "dd60b0569110e4412163549fbe425013ec820937c052e2fca9a9225341e16450",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
     "file": "scene-3.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_lake_with_snow_covered_mountains_in_the_background.jpg",
-    "sha256": "544888b85e8092ef908cba48b5f6cb9f1cdcbab0bf13f928030622f248177d9d",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Firefly forest",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_forest_with_moss_and_trees.jpg",
+    "sha256": "84d027f9304f759e74cce9342e7d3800c63bb82d45de910b22dd775243e75e01",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations.",
+    "animation": "scene-3.svg overlays animated firefly lights on the sourced forest photograph; not a firefly photograph."
   },
   {
     "file": "scene-4.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_large_canyon_with_a_sunset_with_Badlands_National_Park_in_the_background.jpg",
-    "sha256": "f3542998a2984a47013b921bfabee306eaa4d492fc76113eff5896a3d8a8af08",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Coast",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_beach_with_waves_and_cliffs.jpg",
+    "sha256": "1df81a20894d5f0e93c24295cbcce47dafaa4d3607d6431ba525512111ac0fe7",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
     "file": "scene-5.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_mountain_range_with_dark_clouds.jpg",
-    "sha256": "a07f85449ba74a0d725a3660525e6cfb61fca94930a1ee60af544efda733f4f8",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Forest",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_forest_of_trees_with_fog.jpg",
+    "sha256": "c9da531a5dbf0401d04d74f7849de754face02e21fd238afd0d7e86445ffd6a2",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
     "file": "scene-6.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_mountain_range_with_snow_on_top_01.jpg",
-    "sha256": "f553d689714bba2447800c2b70a04f7819f6f898ef1fb28b5271824042d4e838",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Rainy lake",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/dreamcore/a_body_of_water_with_rain_falling_on_it.jpg",
+    "sha256": "bfdbbde139f3440279af6294ae53e0c6e64d6a6dd80108537b7c508572bf3eea",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
     "file": "scene-7.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/mountain/a_snowy_mountain_with_a_lake_in_the_middle.jpg",
-    "sha256": "9d51e26feb24df66f6287ca95583518665772014933eb634f01554a4abc79360",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Waterfall",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/calm/a_large_waterfall_with_fog_and_trees.jpg",
+    "sha256": "03d9610b34759c64d12bbd8ef1c2c4e7b3938f9c797818c0f7b35cab7fdc2e96",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
     "file": "scene-8.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/calm/a_house_on_stilts_on_a_lake.jpg",
-    "sha256": "82dd0e218c48a03abf5fac6724c92b18eb64d287748cd548127ed014c0752097",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Desert",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_sand_dunes_in_the_desert.jpg",
+    "sha256": "a965e819ed30be4a39e92cd4a8ab26a669ef25665fc3947fb23d530788482e03",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
     "file": "scene-9.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/calm/a_rocky_landscape_with_trees_and_water_in_the_background.jpg",
-    "sha256": "2f8c90738d245861695d39b1a1d997d742ebe23ac02f5beaa6d0d6bb1af7fcb0",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Meadow",
+    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/flowers/a_blue_sky_with_white_clouds_and_small_white_flowers.jpg",
+    "sha256": "43aaf9a5bd811df210c8d565cb3aec6955ec85938928af5c3a301c0f62b30f7d",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   },
   {
     "file": "scene-10.jpg",
-    "source": "https://github.com/dharmx/walls/blob/6bf4d733ebf2b484a37c17d742eb47e5139e6a14/nature/a_beach_with_waves_and_cliffs.jpg",
-    "sha256": "fb982a9e46f8988635f8aa8da806e957e861a66221ea96ecf5c437ba74e6fe8c",
-    "processing": "Resized to 1600px wide JPEG for local web delivery; no recoloring."
+    "theme": "Moonlit landscape",
+    "source": "https://github.com/adi1090x/dynamic-wallpaper/blob/65d515de0dc0625a3c405cfb232aee4f0048c5c4/images/moon/0.jpg",
+    "sha256": "da146b086f326559101fa227311674257bbd027c4558db93e88018fbd56931e4",
+    "processing": "Web JPEG resize; no recoloring. Aurora and moon images are sourced illustrations."
   }
 ]

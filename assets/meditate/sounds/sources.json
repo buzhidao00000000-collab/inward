@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/rafaelmardojai/blanket",
+  "commit": "bbc88ed3b9dfa8b21805d77286f3183abf88f36f",
+  "processing": "Up to first 40 seconds, one-second tail/head overlap crossfade to prepare looping, AAC 96 kb/s. Browser loop timing can depend on device.",
+  "licenses": "SOUNDS_LICENSING.md and credits.html",
+  "files": [
+    "pink-noise.m4a",
+    "waves.m4a",
+    "white-noise.m4a",
+    "rain.m4a",
+    "summer-night.m4a",
+    "birds.m4a",
+    "wind.m4a",
+    "fireplace.m4a",
+    "stream.m4a"
+  ]
+}
