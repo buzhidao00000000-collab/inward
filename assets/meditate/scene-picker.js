@@ -82,18 +82,10 @@ async function changeScene(index,status){
  try{await preload.decode();if(version!==loadVersion)return;const next=1-front;layers[next].src=url;await layers[next].decode();if(version!==loadVersion)return;layers[next].style.opacity='1';layers[front].style.opacity='0';front=next;}catch{status.textContent='Image could not load. Please choose again.'}
 }
 createWheel({id:'iw-scene-picker',trigger:sceneTrigger,items:scenes,label:'Meditation scenery',kind:'scenery',onChoose:changeScene});
-const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.svg`,still:`assets/meditate/sound-art/${key}.still.svg`}));
+const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.gif`,still:`assets/meditate/sound-art/${key}.still.svg`}));
 const audio=new Audio();audio.loop=true;audio.preload='none';audio.volume=.45;
 let activeSound=-1,playVersion=0;
 const meditationButton=root.querySelector('.iw-meditate-start');
-const soundPreview=document.createElement('img');soundPreview.className='iw-meditate-sound-preview';soundPreview.hidden=true;
-root.querySelector('.iw-meditate-scene').prepend(soundPreview);
-const reducedPreview=matchMedia('(prefers-reduced-motion: reduce)');
-function updateSoundPreview(){
- if(activeSound<0)return;
- const sound=sounds[activeSound];soundPreview.src=reducedPreview.matches?sound.still:sound.art;soundPreview.alt=sound.name;soundPreview.hidden=false;root.classList.add('iw-sound-selected');
-}
-reducedPreview.addEventListener('change',updateSoundPreview);
 const soundStatus=document.createElement('span');soundStatus.className='iw-scene-picker-status';soundStatus.setAttribute('aria-live','polite');phone.append(soundStatus);
 function syncPlayer(){
  const playing=!audio.paused;
@@ -110,7 +102,7 @@ async function startAudio(){
  try{await audio.play();if(version!==playVersion)return;soundStatus.textContent=`Playing ${sounds[activeSound].name}`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
 }
 function changeSound(index,status){
- stopMeditation();activeSound=index;audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;status.textContent=`Selected ${sounds[index].name}. Press Start to begin.`;updateSoundPreview();
+ stopMeditation();activeSound=index;audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;status.textContent=`Selected ${sounds[index].name}. Press Start to begin.`;root.classList.add('iw-sound-selected');
 }
 createWheel({id:'iw-sound-picker',trigger:soundTrigger,items:sounds,label:'Ambient sounds',kind:'sound',onChoose:changeSound});
 meditationButton?.addEventListener('click',()=>{

@@ -9,7 +9,4 @@
 #inward-preview .iw-meditate-placeholder{transition:opacity .2s ease}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-meditate-background{transition-duration:.12s}}
 #inward-preview .iw-media-card-caption{position:absolute;inset:auto 0 0;padding:14px 10px 8px;color:#fff;background:linear-gradient(transparent,#0b0714bb);font-size:13px;line-height:18px;text-align:left;text-shadow:0 1px 3px #0008;pointer-events:none}
-#inward-preview .iw-meditate-sound-preview{position:absolute;left:0;top:86px;width:288px;height:162px;object-fit:cover;border-radius:20px;pointer-events:none}
-#inward-preview .iw-meditate-sound-preview[hidden]{display:none}
 #inward-preview.iw-sound-selected .iw-meditate-placeholder{display:none}
-#inward-preview.iw-scene-picker-open .iw-meditate-sound-preview{visibility:hidden}
