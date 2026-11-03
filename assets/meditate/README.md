@@ -1,6 +1,6 @@
 # Meditate scenery picker
 
-The Scenery button opens a curved ten-card photo wheel inside Meditate. Drag vertically to follow the cards; release to snap with damped spring motion. Clicking a card, scrolling a wheel, or using arrow/Home/End keys selects a scene. Escape, clicking outside, leaving Relax, or switching to Breathe closes the picker. The chosen background remains selected while navigating within the page.
+The Scenery button opens a curved ten-card photo wheel inside Meditate. Drag vertically to follow the cards; release to snap with damped spring motion. The wheel loops continuously in either direction: scene 10 connects to scene 1 without reversing or hitting an end. Card placement uses the nearest wrapped offset; offscreen recycling happens outside the visible arc. Cards always stay upright. Clicking a card, scrolling a wheel, or using arrow/Home/End keys selects a scene. Escape, clicking outside, leaving Relax, or switching to Breathe closes the picker. The chosen background remains selected while navigating within the page.
 
 The ten landscape photos are stored in `scenes/`, with source URLs and SHA-256 checksums in `scenes/sources.json`. They are resized JPEGs delivered from the repository; runtime requests to external image services are unnecessary. The original user-supplied night-sky background remains the initial background until a card is selected.
 
