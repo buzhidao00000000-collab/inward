@@ -1090,7 +1090,7 @@ function createWheel({id,trigger,items,label,kind,onChoose}){
 let selected=-1;
 const count=items.length,lastIndex=count-1;
 const picker=document.createElement('div');picker.className='iw-scene-picker '+(id==='iw-sound-picker'?'iw-sound-picker':'');picker.id=id;picker.hidden=true;picker.setAttribute('role','group');picker.setAttribute('aria-label',label);picker.tabIndex=-1;
-const cards=items.map((item,i)=>{const button=document.createElement('button');button.className='iw-scene-card';button.type='button';button.setAttribute('aria-label',`Choose ${kind} ${i+1}: ${item.name}`);button.setAttribute('aria-pressed',String(i===selected));const img=document.createElement('img');img.src=item.art;img.alt='';img.draggable=false;button.append(img);const caption=document.createElement('span');caption.className='iw-media-card-caption';caption.textContent=item.name;button.append(caption);picker.append(button);return button});
+const cards=items.map((item,i)=>{const button=document.createElement('button');button.className='iw-scene-card';button.type='button';button.setAttribute('aria-label',`Choose ${kind} ${i+1}: ${item.name}`);button.setAttribute('aria-pressed',String(i===selected));const img=document.createElement('img');img.src=item.still||item.art;img.alt='';img.draggable=false;button.append(img);const caption=document.createElement('span');caption.className='iw-media-card-caption';caption.textContent=item.name;button.append(caption);picker.append(button);return button});
 const status=document.createElement('span');status.className='iw-scene-picker-status';status.setAttribute('aria-live','polite');picker.append(status);phone.append(picker);
 trigger.setAttribute('aria-controls',picker.id);trigger.setAttribute('aria-expanded','false');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -1113,14 +1113,15 @@ function tick(now){
  if(drag||Math.abs(target-current)>.001||Math.abs(velocity)>.01||entrance<1)raf=requestAnimationFrame(tick);
  else{current=target=wrap(target);velocity=0;raf=0;last=0;paint()}
 }
+function updateCardArt(){cards.forEach((card,i)=>{const item=items[i],url=i===selected&&!picker.hidden?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
 function animate(){if(!raf){last=0;raf=requestAnimationFrame(tick)}}
 async function choose(index){
  target=Math.round(index);selected=wrap(target);cards.forEach((c,i)=>c.setAttribute('aria-pressed',String(i===selected)));status.textContent=`${label}: ${items[selected].name}, ${selected+1} of ${items.length}`;animate();
- onChoose(selected,status);
+ updateCardArt();onChoose(selected,status);
 }
-function open(){for(const other of wheels)other.close();picker.hidden=false;root.classList.add('iw-scene-picker-open');trigger.setAttribute('aria-expanded','true');current=target=selected<0?0:selected;velocity=0;entrance=reduced.matches?1:.8;animate();picker.focus({preventScroll:true})}
+function open(){for(const other of wheels)other.close();picker.hidden=false;root.classList.add('iw-scene-picker-open');trigger.setAttribute('aria-expanded','true');current=target=selected<0?0:selected;velocity=0;entrance=reduced.matches?1:.8;updateCardArt();animate();picker.focus({preventScroll:true})}
 function close(){
- if(picker.hidden)return;picker.hidden=true;root.classList.remove('iw-scene-picker-open');trigger.setAttribute('aria-expanded','false');
+ if(picker.hidden)return;picker.hidden=true;updateCardArt();root.classList.remove('iw-scene-picker-open');trigger.setAttribute('aria-expanded','false');
  if(drag&&picker.hasPointerCapture(drag.id))picker.releasePointerCapture(drag.id);drag=null;
  cancelAnimationFrame(raf);raf=0;last=0;clearTimeout(wheelTimer);
 }
@@ -1160,7 +1161,7 @@ async function changeScene(index,status){
  try{await preload.decode();if(version!==loadVersion)return;const next=1-front;layers[next].src=url;await layers[next].decode();if(version!==loadVersion)return;layers[next].style.opacity='1';layers[front].style.opacity='0';front=next;}catch{status.textContent='Image could not load. Please choose again.'}
 }
 createWheel({id:'iw-scene-picker',trigger:sceneTrigger,items:scenes,label:'Meditation scenery',kind:'scenery',onChoose:changeScene});
-const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.svg`}));
+const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.svg`,still:`assets/meditate/sound-art/${key}.still.svg`}));
 const audio=new Audio();audio.loop=true;audio.preload='none';audio.volume=.45;
 let activeSound=-1,playVersion=0;
 const controls=document.createElement('div');controls.className='iw-sound-player';controls.hidden=true;
