@@ -4,4 +4,4 @@ Rain, waves, stream, forest birds, wind, and summer-night cards embed locally do
 
 The fireplace card is an original animated SVG hearth/flame illustration. All nine sound cards are locally animated SVGs; they are not presented as downloaded live-action GIF footage.
 
-Aurora and moon scenery are sourced illustrations; firefly scenery is a sourced forest photograph with original animated light points. Other scenery remains photographs.
+The former Aurora, Wildflower sky, and Moonlit scenery have been replaced by real Unsplash photographs; see ../scenes/sources.json for photo IDs, authors, acquisition paths, and hashes. Firefly scenery remains a sourced forest photograph with original animated light points. Existing sound-card photographs remain embedded locally in their SVG assets.

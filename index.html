@@ -1102,6 +1102,7 @@ function paint(){
  card.style.transform=dist>2.5?'translate3d(0,0,0) scale(.68)':`translate3d(${x+(1-entrance)*65}px,${y}px,0) scale(${scale*entrance})`;
  card.style.visibility=dist>2.5?'hidden':'visible';
  card.style.opacity=String(clamp(1-dist*.19,.3,1)*clamp((2.5-dist)/.65,0,1)*entrance);card.style.zIndex=String(10-Math.round(dist*2));});
+ updateCardArt();
 }
 function tick(now){
  const dt=Math.min((now-(last||now))/1000,.032);last=now;
@@ -1111,20 +1112,20 @@ function tick(now){
  if(drag||Math.abs(target-current)>.001||Math.abs(velocity)>.01||entrance<1)raf=requestAnimationFrame(tick);
  else{current=target=wrap(target);velocity=0;raf=0;last=0;paint()}
 }
-function updateCardArt(){cards.forEach((card,i)=>{const item=items[i],url=i===selected&&!picker.hidden&&!reduced.matches?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
+function updateCardArt(){cards.forEach((card,i)=>{const item=items[i],url=!picker.hidden&&card.style.visibility!=='hidden'&&!reduced.matches&&(item.key!=='white-noise'||i===selected)?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
 reduced.addEventListener('change',updateCardArt);
 function animate(){if(!raf){last=0;raf=requestAnimationFrame(tick)}}
 async function choose(index){
  target=Math.round(index);selected=wrap(target);cards.forEach((c,i)=>c.setAttribute('aria-pressed',String(i===selected)));status.textContent=`${label}: ${items[selected].name}, ${selected+1} of ${items.length}`;animate();
  updateCardArt();onChoose(selected,status);
 }
-function open(){for(const other of wheels)other.close();picker.hidden=false;root.classList.add('iw-scene-picker-open');trigger.setAttribute('aria-expanded','true');current=target=selected<0?0:selected;velocity=0;entrance=reduced.matches?1:.8;updateCardArt();animate();picker.focus({preventScroll:true})}
+function open(){if(!picker.hidden)return;for(const other of wheels)other.close();picker.hidden=false;root.classList.add('iw-scene-picker-open');trigger.setAttribute('aria-expanded','true');current=target=selected<0?0:selected;velocity=0;entrance=reduced.matches?1:.8;updateCardArt();animate();picker.focus({preventScroll:true})}
 function close(){
  if(picker.hidden)return;picker.hidden=true;updateCardArt();root.classList.remove('iw-scene-picker-open');trigger.setAttribute('aria-expanded','false');
  if(drag&&picker.hasPointerCapture(drag.id))picker.releasePointerCapture(drag.id);drag=null;
  cancelAnimationFrame(raf);raf=0;last=0;clearTimeout(wheelTimer);
 }
-trigger.addEventListener('click',()=>picker.hidden?open():close());
+trigger.addEventListener('click',open);
 cards.forEach((c,i)=>c.addEventListener('click',event=>{if(suppressClick&&event.detail){suppressClick=false;return}choose(nearest(i))}));
 picker.addEventListener('pointerdown',event=>{if(event.button>0)return;event.preventDefault();suppressClick=false;velocity=0;drag={id:event.pointerId,y:event.clientY,start:current,lastY:event.clientY,time:performance.now(),speed:0,moved:false,scale:phone.getBoundingClientRect().width/phone.offsetWidth};});
 picker.addEventListener('pointermove',event=>{
@@ -1152,7 +1153,7 @@ paint();
 const wheel={close,get isOpen(){return !picker.hidden}};wheels.push(wheel);return wheel;
 
 }
-const scenes=[[1,'Starry lake'],[2,'Aurora'],[3,'Fireflies'],[4,'Seaside'],[5,'Misty forest'],[6,'Rainy lake'],[7,'Waterfall'],[9,'Wildflower sky'],[10,'Moonlit landscape']].map(([number,name])=>({name,art:`assets/meditate/scenes/scene-${number}.${number===3?'svg':'jpg'}`}));
+const scenes=[{"name":"Starry lake","art":"assets/meditate/scenes/scene-1.jpg"},{"name":"Alpine dusk","art":"assets/meditate/scenes/alpine-dusk-unsplash.jpg"},{"name":"Fireflies","art":"assets/meditate/scenes/scene-3.svg"},{"name":"Seaside","art":"assets/meditate/scenes/scene-4.jpg"},{"name":"Misty forest","art":"assets/meditate/scenes/scene-5.jpg"},{"name":"Rainy lake","art":"assets/meditate/scenes/scene-6.jpg"},{"name":"Waterfall","art":"assets/meditate/scenes/scene-7.jpg"},{"name":"Forest canopy","art":"assets/meditate/scenes/forest-canopy-unsplash.jpg"},{"name":"Starry peaks","art":"assets/meditate/scenes/starry-peaks-unsplash.jpg"}];
 const layers=[base,base.cloneNode()];layers[1].style.opacity='0';base.after(layers[1]);let front=0,loadVersion=0;
 async function changeScene(index,status){
  stopMeditation();
