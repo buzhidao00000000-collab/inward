@@ -20,9 +20,9 @@ const offset=n=>wrap(n+count/2)-count/2;
 const nearest=index=>current+offset(index-current);
 function paint(){
  cards.forEach((card,i)=>{const d=offset(i-current),dist=Math.abs(d),scale=1-.16*Math.min(dist,2),x=10+26*d*d,y=158+d*107;
- card.style.transform=`translate3d(${x+(1-entrance)*65}px,${y}px,0) scale(${scale*entrance})`;
+ card.style.transform=dist>2.5?'translate3d(0,0,0) scale(.68)':`translate3d(${x+(1-entrance)*65}px,${y}px,0) scale(${scale*entrance})`;
  card.style.visibility=dist>2.5?'hidden':'visible';
- card.style.opacity=String(clamp(1-dist*.19,.3,1)*entrance);card.style.zIndex=String(10-Math.round(dist*2));});
+ card.style.opacity=String(clamp(1-dist*.19,.3,1)*clamp((2.5-dist)/.65,0,1)*entrance);card.style.zIndex=String(10-Math.round(dist*2));});
 }
 function tick(now){
  const dt=Math.min((now-(last||now))/1000,.032);last=now;
