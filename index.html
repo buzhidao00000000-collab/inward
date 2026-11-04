@@ -76,6 +76,33 @@ body{margin:0}
 #inward-preview.iw-sound-selected .iw-meditate-placeholder{display:none}
 
 </style>
+<style>
+#inward-preview .iw-duration-overlay{position:absolute;inset:0;z-index:30;display:flex;align-items:flex-end;background:#20162c00;transition:background .24s ease;border-radius:inherit;overflow:hidden}
+#inward-preview .iw-duration-overlay[hidden]{display:none}
+#inward-preview .iw-duration-overlay.is-open{background:#20162c42;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#inward-preview .iw-duration-sheet{--duration-progress:.159664;box-sizing:border-box;position:relative;width:100%;padding:12px 26px 30px;border:1px solid #ffffffc9;border-radius:34px 34px 0 0;background:linear-gradient(160deg,#fff,#f1ebfa);box-shadow:0 -12px 45px #47315b1c;text-align:center;color:#544560;transform:translateY(105%);transition:transform .48s cubic-bezier(.22,1,.36,1)}
+#inward-preview .is-open .iw-duration-sheet{transform:translateY(0)}
+#inward-preview .iw-duration-handle{width:34px;height:4px;border-radius:4px;background:#d6ccdf;margin:0 auto 28px}
+#inward-preview .iw-duration-close{position:absolute;right:15px;top:16px;width:32px;height:32px;min-height:0;padding:0;border:0;border-radius:50%;font-size:23px;font-weight:300;line-height:1;color:#887695;background:#e9e0f280;box-shadow:none}
+#inward-preview .iw-duration-eyebrow{font-size:9px;letter-spacing:2.2px;color:#a18ab6;margin:0 0 12px}
+#inward-preview .iw-duration-sheet h2{font-size:22px;font-weight:500;letter-spacing:-.5px;line-height:1.3;margin:0 0 10px}
+#inward-preview .iw-duration-description{font-size:12px;color:#a08fae;margin:0}
+#inward-preview .iw-duration-control{position:relative;height:133px;margin:24px 5px 18px;padding-top:78px;box-sizing:border-box;--thumb-size:28px}
+#inward-preview .iw-duration-bubble{position:absolute;top:0;left:calc(14px + (100% - 28px)*var(--duration-progress));display:flex;align-items:baseline;gap:4px;justify-content:center;width:76px;height:54px;padding-top:8px;box-sizing:border-box;border-radius:21px;background:#b997e2;color:#fff;box-shadow:0 6px 17px #a781d133;transform:translateX(-50%);transition:left .18s cubic-bezier(.2,.8,.2,1),transform .4s cubic-bezier(.34,1.56,.64,1)}
+#inward-preview .iw-duration-bubble:after{content:'';position:absolute;bottom:-5px;left:33px;width:10px;height:10px;background:#b997e2;transform:rotate(45deg);border-radius:2px}
+#inward-preview .iw-duration-bubble span{font-size:29px;line-height:35px;font-weight:500;font-variant-numeric:tabular-nums}
+#inward-preview .iw-duration-bubble small{font-size:11px;opacity:.86}
+#inward-preview .is-dragging .iw-duration-bubble{transform:translateX(-50%) translateY(-8px) scale(1.07);transition:left .045s linear,transform .25s ease}
+#inward-preview .iw-duration-track{position:absolute;top:88px;left:14px;right:14px;height:6px;border-radius:5px;background:#e1d6eb;overflow:hidden}
+#inward-preview .iw-duration-fill{width:calc(var(--duration-progress)*100%);height:100%;background:#b997e2;border-radius:inherit}
+#inward-preview .iw-duration-range{position:absolute;top:73px;left:0;width:100%;height:36px;margin:0;padding:0;appearance:none;-webkit-appearance:none;background:transparent;cursor:ew-resize;touch-action:pan-y;outline-offset:4px}
+#inward-preview .iw-duration-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:28px;height:28px;border:5px solid #fff;border-radius:50%;background:#b997e2;box-shadow:0 2px 8px #80659633;transition:box-shadow .2s}
+#inward-preview .iw-duration-range::-moz-range-thumb{width:18px;height:18px;border:5px solid #fff;border-radius:50%;background:#b997e2;box-shadow:0 2px 8px #80659633}
+#inward-preview .iw-duration-labels{position:absolute;left:0;right:0;top:116px;display:flex;justify-content:space-between;font-size:10px;color:#ac9bb9}
+#inward-preview .iw-duration-confirm{width:100%;height:46px;min-height:0;border:1px solid #ffffffa6;border-radius:25px;background:linear-gradient(120deg,#c9afe9,#b692df);color:#fff;font-size:14px;font-weight:500;letter-spacing:.3px;box-shadow:inset 0 1px 1px #ffffff80,0 5px 12px #a481cc22}
+#inward-preview .iw-duration-footnote{font-size:10px;color:#a595b1;margin:14px 0 0}
+@media(prefers-reduced-motion:reduce){#inward-preview .iw-duration-sheet,#inward-preview .iw-duration-overlay,#inward-preview .iw-duration-bubble{transition-duration:.01s}}
+</style>
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -1076,6 +1103,31 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseAll(
 <script>
 (()=>{
 'use strict';
+const root=document.getElementById('inward-preview'),phone=root?.querySelector('.iw-phone');if(!phone)return;
+const overlay=document.createElement('div');overlay.className='iw-duration-overlay';overlay.hidden=true;
+overlay.innerHTML=`<section class="iw-duration-sheet" role="dialog" aria-modal="true" aria-labelledby="iw-duration-title"><div class="iw-duration-handle" aria-hidden="true"></div><button class="iw-duration-close" type="button" aria-label="Close duration picker">×</button><p class="iw-duration-eyebrow">A MOMENT FOR YOURSELF</p><h2 id="iw-duration-title">How long would you like?</h2><p class="iw-duration-description">Make a little space to simply be.</p><div class="iw-duration-control"><div class="iw-duration-bubble" aria-hidden="true"><span>20</span><small>min</small></div><div class="iw-duration-track" aria-hidden="true"><div class="iw-duration-fill"></div></div><input class="iw-duration-range" type="range" min="1" max="120" step="1" value="20" aria-label="Meditation duration" aria-valuetext="20 minutes"><div class="iw-duration-labels" aria-hidden="true"><span>1 min</span><span>2 h</span></div></div><button class="iw-duration-confirm" type="button">Begin · 20 min</button><p class="iw-duration-footnote">Your sound will gently stop when time is up.</p></section>`;
+phone.append(overlay);
+const sheet=overlay.querySelector('section'),range=overlay.querySelector('input'),bubble=overlay.querySelector('.iw-duration-bubble span'),confirm=overlay.querySelector('.iw-duration-confirm');
+let request=null,returnFocus=null,closingTimer=0;
+function paint(){const minutes=Number(range.value),progress=(minutes-1)/119;sheet.style.setProperty('--duration-progress',progress);bubble.textContent=minutes;confirm.textContent=`Begin · ${minutes} min`;range.setAttribute('aria-valuetext',`${minutes} minutes`)}
+function close(restore=true){if(overlay.hidden)return;request=null;overlay.classList.remove('is-open');clearTimeout(closingTimer);closingTimer=setTimeout(()=>{overlay.hidden=true},220);if(restore&&returnFocus?.isConnected)returnFocus.focus({preventScroll:true})}
+function open(event){clearTimeout(closingTimer);request=event.detail;returnFocus=document.activeElement;overlay.hidden=false;paint();requestAnimationFrame(()=>overlay.classList.add('is-open'));range.focus({preventScroll:true})}
+range.addEventListener('input',paint);
+range.addEventListener('pointerdown',()=>sheet.classList.add('is-dragging'));
+const release=()=>sheet.classList.remove('is-dragging');window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);
+overlay.querySelector('.iw-duration-close').addEventListener('click',()=>close());
+overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
+overlay.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close()}if(event.key==='Tab'){const elements=[overlay.querySelector('.iw-duration-close'),range,confirm],index=elements.indexOf(document.activeElement);if(event.shiftKey&&index===0){event.preventDefault();confirm.focus()}else if(!event.shiftKey&&index===2){event.preventDefault();elements[0].focus()}}});
+confirm.addEventListener('click',()=>{const start=request?.start;if(!start)return;const minutes=Number(range.value);close();start(minutes)});
+document.addEventListener('inward:meditationrequest',open);
+document.addEventListener('inward:tabchange',()=>close(false));document.addEventListener('inward:relaxmodechange',()=>close(false));
+paint();
+})();
+
+</script>
+<script>
+(()=>{
+'use strict';
 const root=document.getElementById('inward-preview');if(!root)return;
 const phone=root.querySelector('.iw-phone'),base=root.querySelector('.iw-meditate-background');
 const sceneTrigger=root.querySelector('.iw-meditate-controls button[aria-label="Scenery"]'),soundTrigger=root.querySelector('.iw-meditate-controls button[aria-label="Audio"]');
@@ -1160,7 +1212,7 @@ async function changeScene(index,status){
 createWheel({id:'iw-scene-picker',trigger:sceneTrigger,items:scenes,label:'Meditation scenery',kind:'scenery',onChoose:changeScene});
 const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.gif`,still:`assets/meditate/sound-art/${key}.still.svg`}));
 const audio=new Audio();audio.loop=true;audio.preload='none';audio.volume=.45;
-let activeSound=-1,playVersion=0;
+let activeSound=-1,playVersion=0,sessionDeadline=0,sessionTimer=0;
 const meditationButton=root.querySelector('.iw-meditate-start');
 const soundStatus=document.createElement('span');soundStatus.className='iw-scene-picker-status';soundStatus.setAttribute('aria-live','polite');phone.append(soundStatus);
 function syncPlayer(){
@@ -1173,21 +1225,23 @@ function syncPlayer(){
   image.src=playing?'assets/breathing/end-button.svg':'assets/meditate/start-button.svg';image.alt=playing?'End':'Start';
  }
 }
-async function startAudio(){
+async function startAudio(minutes){
  const version=++playVersion;
- try{await audio.play();if(version!==playVersion)return;soundStatus.textContent=`Playing ${sounds[activeSound].name}`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
+ try{await audio.play();if(version!==playVersion)return;sessionDeadline=Date.now()+minutes*60000;sessionTimer=setInterval(checkSession,1000);soundStatus.textContent=`Playing ${sounds[activeSound].name} for ${minutes} minutes`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
 }
 function changeSound(index,status){
  stopMeditation();activeSound=index;audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;status.textContent=`Selected ${sounds[index].name}. Press Start to begin.`;root.classList.add('iw-sound-selected');
 }
 createWheel({id:'iw-sound-picker',trigger:soundTrigger,items:sounds,label:'Ambient sounds',kind:'sound',onChoose:changeSound});
 meditationButton?.addEventListener('click',()=>{
- if(audio.paused){if(activeSound<0){if(soundTrigger.getAttribute('aria-expanded')!=='true')soundTrigger.click()}else{for(const wheel of wheels)wheel.close();startAudio()}}
+ if(audio.paused){for(const wheel of wheels)wheel.close();document.dispatchEvent(new CustomEvent('inward:meditationrequest',{detail:{start(minutes){if(activeSound<0)changeSound(0,soundStatus);startAudio(minutes)}}}))}
  else{stopMeditation();soundStatus.textContent='Meditation ended'}
 });
 audio.addEventListener('play',syncPlayer);audio.addEventListener('pause',syncPlayer);audio.addEventListener('error',()=>{soundStatus.textContent='Audio could not load. Choose again.';syncPlayer()});
 syncPlayer();
-function stopMeditation(){++playVersion;audio.pause();syncPlayer()}
+function checkSession(){if(sessionDeadline&&Date.now()>=sessionDeadline){stopMeditation();soundStatus.textContent='Meditation complete'}}
+function stopMeditation(){++playVersion;clearInterval(sessionTimer);sessionTimer=0;sessionDeadline=0;audio.pause();syncPlayer()}
+document.addEventListener('visibilitychange',checkSession);
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')stopMeditation()});
 document.addEventListener('inward:relaxmodechange',event=>{if(event.detail.mode!=='meditate')stopMeditation()});
 window.addEventListener('pagehide',stopMeditation);

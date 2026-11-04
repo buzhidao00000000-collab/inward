@@ -84,7 +84,7 @@ async function changeScene(index,status){
 createWheel({id:'iw-scene-picker',trigger:sceneTrigger,items:scenes,label:'Meditation scenery',kind:'scenery',onChoose:changeScene});
 const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.gif`,still:`assets/meditate/sound-art/${key}.still.svg`}));
 const audio=new Audio();audio.loop=true;audio.preload='none';audio.volume=.45;
-let activeSound=-1,playVersion=0;
+let activeSound=-1,playVersion=0,sessionDeadline=0,sessionTimer=0;
 const meditationButton=root.querySelector('.iw-meditate-start');
 const soundStatus=document.createElement('span');soundStatus.className='iw-scene-picker-status';soundStatus.setAttribute('aria-live','polite');phone.append(soundStatus);
 function syncPlayer(){
@@ -97,21 +97,23 @@ function syncPlayer(){
   image.src=playing?'assets/breathing/end-button.svg':'assets/meditate/start-button.svg';image.alt=playing?'End':'Start';
  }
 }
-async function startAudio(){
+async function startAudio(minutes){
  const version=++playVersion;
- try{await audio.play();if(version!==playVersion)return;soundStatus.textContent=`Playing ${sounds[activeSound].name}`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
+ try{await audio.play();if(version!==playVersion)return;sessionDeadline=Date.now()+minutes*60000;sessionTimer=setInterval(checkSession,1000);soundStatus.textContent=`Playing ${sounds[activeSound].name} for ${minutes} minutes`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
 }
 function changeSound(index,status){
  stopMeditation();activeSound=index;audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;status.textContent=`Selected ${sounds[index].name}. Press Start to begin.`;root.classList.add('iw-sound-selected');
 }
 createWheel({id:'iw-sound-picker',trigger:soundTrigger,items:sounds,label:'Ambient sounds',kind:'sound',onChoose:changeSound});
 meditationButton?.addEventListener('click',()=>{
- if(audio.paused){if(activeSound<0){if(soundTrigger.getAttribute('aria-expanded')!=='true')soundTrigger.click()}else{for(const wheel of wheels)wheel.close();startAudio()}}
+ if(audio.paused){for(const wheel of wheels)wheel.close();document.dispatchEvent(new CustomEvent('inward:meditationrequest',{detail:{start(minutes){if(activeSound<0)changeSound(0,soundStatus);startAudio(minutes)}}}))}
  else{stopMeditation();soundStatus.textContent='Meditation ended'}
 });
 audio.addEventListener('play',syncPlayer);audio.addEventListener('pause',syncPlayer);audio.addEventListener('error',()=>{soundStatus.textContent='Audio could not load. Choose again.';syncPlayer()});
 syncPlayer();
-function stopMeditation(){++playVersion;audio.pause();syncPlayer()}
+function checkSession(){if(sessionDeadline&&Date.now()>=sessionDeadline){stopMeditation();soundStatus.textContent='Meditation complete'}}
+function stopMeditation(){++playVersion;clearInterval(sessionTimer);sessionTimer=0;sessionDeadline=0;audio.pause();syncPlayer()}
+document.addEventListener('visibilitychange',checkSession);
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')stopMeditation()});
 document.addEventListener('inward:relaxmodechange',event=>{if(event.detail.mode!=='meditate')stopMeditation()});
 window.addEventListener('pagehide',stopMeditation);
