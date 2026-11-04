@@ -29,9 +29,9 @@ function updateWaveTargets(){ticks.forEach((tick,index)=>{const distance=Math.ab
 function animateWave(now){
  const dt=waveTime?Math.min((now-waveTime)/1000,.032):1/60;waveTime=now;
  // Animate a continuous screen-space crest; its return remains visible after input stops.
- const effectiveSpeed=waveSpeed*Math.exp(-Math.max(0,now-lastWaveMove-24)/85);
+ const effectiveSpeed=waveSpeed*Math.exp(-Math.max(0,now-lastWaveMove-24)/100);
  const desiredOffset=offsetForSpeed(effectiveSpeed);
- waveOffset+=(desiredOffset-waveOffset)*(1-Math.exp(-dt/.09));
+ waveOffset+=(desiredOffset-waveOffset)*(1-Math.exp(-dt/.105));
  wavePosition=clamp(position-waveOffset);
  updateWaveTargets();
  ticks.forEach((tick,i)=>{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0;tick.style.setProperty('--tick-height',tickHeights[i]+'px')});
