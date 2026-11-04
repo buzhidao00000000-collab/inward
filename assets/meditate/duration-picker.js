@@ -9,17 +9,15 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const min=1,max=120,step=12,clamp=n=>Math.max(min,Math.min(max,n));
 const ticks=[],tickHeights=[],tickTargets=[],tickSpeeds=[];
 let waveFrame=0,waveTime=0,wavePosition=20,gestureMotion=false;
-const waveSamples=[];
-let waveSpeed=0,lastWaveMove=0,waveClock=0;
-function delayForSpeed(speed){const amount=Math.max(0,Math.min(1,(speed-3)/37));return 110*amount*amount*(3-2*amount)}
+let waveSpeed=0,lastWaveMove=0,waveOffset=0,lastWavePosition=20,lastWaveSampleTime=performance.now();
+function offsetForSpeed(speed){const amount=Math.max(0,Math.min(1,(Math.abs(speed)-3)/37));return Math.sign(speed)*4.5*amount*amount*(3-2*amount)}
 for(let minute=min;minute<=max;minute++){const tick=document.createElement('span');tick.className='iw-duration-tick'+(minute%5===0||minute===min?' is-major':'');tick.style.left=`${(minute-min)*step}px`;if(minute%15===0||minute===min){const label=document.createElement('span');label.textContent=minute;tick.append(label)}track.append(tick);ticks.push(tick)}
 let request=null,returnFocus=null,closingTimer=0,value=20,position=20,target=20,velocity=0,raf=0,last=0,drag=null,displayed=20,numberTimer=0,openFrame=0;
 function paint(){
- const now=performance.now(),previous=waveSamples[waveSamples.length-1];
- if(!previous)waveSamples.push({time:now,position});
- else if(previous.position!==position){waveSpeed=Math.min(120,Math.abs(position-previous.position)/Math.max(.008,(now-previous.time)/1000));lastWaveMove=now;if(now-previous.time>50)waveSamples.push({time:now-16,position:previous.position});waveSamples.push({time:now,position})}
+ const now=performance.now();
+ if(lastWavePosition!==position){waveSpeed=Math.max(-120,Math.min(120,(position-lastWavePosition)/Math.max(.008,(now-lastWaveSampleTime)/1000)));lastWaveMove=now;lastWavePosition=position;lastWaveSampleTime=now}
  const animated=!reduced.matches||gestureMotion;
- if(!animated)wavePosition=position;
+ if(!animated){waveOffset=0;wavePosition=position}
  updateWaveTargets();
  ticks.forEach((tick,index)=>{if(tickHeights[index]===undefined||!animated){tickHeights[index]=tickTargets[index];tickSpeeds[index]=0;tick.style.setProperty('--tick-height',tickHeights[index]+'px')}});
  if(animated&&!waveFrame&&(wavePosition!==position||tickTargets.some((height,i)=>Math.abs(height-tickHeights[i])>.025))){waveTime=0;waveFrame=requestAnimationFrame(animateWave)}
@@ -29,21 +27,18 @@ function paint(){
 }
 function updateWaveTargets(){ticks.forEach((tick,index)=>{const distance=Math.abs(index+min-wavePosition),influence=distance<7?Math.exp(-distance*1.1):0;tickTargets[index]=6+46*influence})}
 function animateWave(now){
- waveTime=now;
- // Slow adjustment stays attached; a fast swipe earns a short, bounded trail.
- const effectiveSpeed=waveSpeed*Math.exp(-Math.max(0,now-lastWaveMove-32)/95);
- const waveDelay=delayForSpeed(effectiveSpeed);
- const delayedTime=Math.max(waveClock,now-waveDelay);waveClock=delayedTime;
- while(waveSamples.length>1&&waveSamples[1].time<=delayedTime)waveSamples.shift();
- const first=waveSamples[0],next=waveSamples[1];
- if(first){const mix=next?Math.max(0,Math.min(1,(delayedTime-first.time)/Math.max(1,next.time-first.time))):0,delayed=next?first.position+(next.position-first.position)*mix:first.position;wavePosition=position-Math.max(-4.5,Math.min(4.5,position-delayed))}
+ const dt=waveTime?Math.min((now-waveTime)/1000,.032):1/60;waveTime=now;
+ // Animate a continuous screen-space crest; its return remains visible after input stops.
+ const effectiveSpeed=waveSpeed*Math.exp(-Math.max(0,now-lastWaveMove-24)/85);
+ const desiredOffset=offsetForSpeed(effectiveSpeed);
+ waveOffset+=(desiredOffset-waveOffset)*(1-Math.exp(-dt/.09));
+ wavePosition=clamp(position-waveOffset);
  updateWaveTargets();
- // Keep a tall, sharp delayed crest instead of averaging it away across tick springs.
  ticks.forEach((tick,i)=>{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0;tick.style.setProperty('--tick-height',tickHeights[i]+'px')});
- const waiting=waveSamples.length>1||Math.abs(wavePosition-position)>.001;
+ const waiting=Math.abs(waveOffset)>.002||Math.abs(desiredOffset)>.002;
  if(waiting&&!overlay.hidden&&(!reduced.matches||gestureMotion))waveFrame=requestAnimationFrame(animateWave);else resetWave();
 }
-function resetWave(){cancelAnimationFrame(waveFrame);waveFrame=0;waveTime=0;waveSpeed=0;lastWaveMove=performance.now();waveClock=lastWaveMove;wavePosition=position;waveSamples.length=0;waveSamples.push({time:performance.now(),position});updateWaveTargets();ticks.forEach((tick,i)=>{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0;tick.style.setProperty('--tick-height',tickHeights[i]+'px')})}
+function resetWave(){cancelAnimationFrame(waveFrame);waveFrame=0;waveTime=0;waveSpeed=0;waveOffset=0;lastWaveMove=lastWaveSampleTime=performance.now();lastWavePosition=wavePosition=position;updateWaveTargets();ticks.forEach((tick,i)=>{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0;tick.style.setProperty('--tick-height',tickHeights[i]+'px')})}
 function tick(now){
  const dt=Math.min((now-(last||now))/1000,.032);last=now;
  const acceleration=(target-position)*220-velocity*28;velocity+=acceleration*dt;position=clamp(position+velocity*dt);paint();
@@ -53,7 +48,7 @@ function choose(next){target=clamp(Math.round(next));if(reduced.matches&&!gestur
 function cancelMotion(){cancelAnimationFrame(raf);raf=0;last=0;velocity=0;if(drag&&ruler.hasPointerCapture(drag.id))ruler.releasePointerCapture(drag.id);drag=null;sheet.classList.remove('is-dragging')}
 function close(restore=true){if(overlay.hidden)return;request=null;gestureMotion=false;cancelAnimationFrame(openFrame);cancelMotion();position=target=value;paint();resetWave();overlay.classList.remove('is-open');clearTimeout(closingTimer);closingTimer=setTimeout(()=>{overlay.hidden=true},reduced.matches?0:260);if(restore&&returnFocus?.isConnected)returnFocus.focus({preventScroll:true})}
 function open(event){clearTimeout(closingTimer);cancelMotion();gestureMotion=false;request=event.detail;returnFocus=document.activeElement;overlay.hidden=false;position=target=value;paint();resetWave();openFrame=requestAnimationFrame(()=>overlay.classList.add('is-open'));ruler.focus({preventScroll:true})}
-ruler.addEventListener('pointerdown',event=>{if(event.button>0)return;gestureMotion=true;event.preventDefault();cancelMotion();waveSamples.push({time:performance.now(),position});ruler.focus({preventScroll:true});const scale=phone.getBoundingClientRect().width/phone.offsetWidth;drag={id:event.pointerId,x:event.clientX,start:position,lastX:event.clientX,time:performance.now(),speed:0,scale};ruler.setPointerCapture(event.pointerId);sheet.classList.add('is-dragging')});
+ruler.addEventListener('pointerdown',event=>{if(event.button>0)return;gestureMotion=true;event.preventDefault();cancelMotion();lastWaveSampleTime=performance.now();lastWavePosition=position;ruler.focus({preventScroll:true});const scale=phone.getBoundingClientRect().width/phone.offsetWidth;drag={id:event.pointerId,x:event.clientX,start:position,lastX:event.clientX,time:performance.now(),speed:0,scale};ruler.setPointerCapture(event.pointerId);sheet.classList.add('is-dragging')});
 ruler.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.id)return;const now=performance.now();drag.speed=-(event.clientX-drag.lastX)/drag.scale/step/Math.max(.008,(now-drag.time)/1000);drag.lastX=event.clientX;drag.time=now;position=clamp(drag.start-(event.clientX-drag.x)/drag.scale/step);target=position;paint()});
 function release(event,cancelled=false){if(!drag||event.pointerId!==drag.id)return;const state=drag;drag=null;if(ruler.hasPointerCapture(event.pointerId))ruler.releasePointerCapture(event.pointerId);sheet.classList.remove('is-dragging');const momentum=!cancelled&&!reduced.matches&&performance.now()-state.time<100?Math.max(-8,Math.min(8,state.speed*.12)):0;choose(position+momentum)}
 ruler.addEventListener('pointerup',event=>release(event));ruler.addEventListener('pointercancel',event=>release(event,true));ruler.addEventListener('lostpointercapture',event=>release(event,true));
