@@ -1,7 +1,12 @@
 #inward-preview .iw-duration-overlay{position:absolute;inset:0;z-index:30;display:flex;align-items:flex-end;background:#20162c00;transition:background .26s ease;border-radius:inherit;overflow:hidden}
 #inward-preview .iw-duration-overlay[hidden]{display:none}
-#inward-preview .iw-duration-overlay.is-open{background:#20162c30}
-#inward-preview .iw-duration-sheet{--duration-accent:var(--iw-send,#805fe3);box-sizing:border-box;position:relative;width:calc(100% - 16px);max-height:calc(100% - 24px);overflow-y:auto;margin:0 8px 12px;padding:12px 24px 23px;border:1px solid #ffffffe0;border-radius:32px;background:#f7f4f9a8;backdrop-filter:blur(28px) saturate(155%);-webkit-backdrop-filter:blur(28px) saturate(155%);box-shadow:inset 0 1px 1px #fff,inset 0 -1px 1px #ffffff70,0 12px 36px #30223b24;text-align:center;color:#332b3b;transform:translateY(calc(100% + 24px));transition:transform .4s cubic-bezier(.22,1,.36,1);font-family:inherit}
+#inward-preview .iw-duration-overlay.is-open{background:#20162c14}
+#inward-preview .iw-duration-sheet{--duration-accent:var(--iw-send,#805fe3);box-sizing:border-box;position:relative;width:calc(100% - 16px);max-height:calc(100% - 24px);overflow-y:auto;margin:0 8px 12px;padding:12px 24px 23px;border:0;border-radius:32px;background:none;isolation:isolate;box-shadow:inset 0 1px 1px #ffffff99,inset 0 -1px 2px #b9b4c314,0 4px 14px #7463860a;text-align:center;color:#332b3b;transform:translateY(calc(100% + 24px));transition:transform .4s cubic-bezier(.22,1,.36,1);font-family:inherit}
+/* Same surface, blur and edge reflection as the navigation bar. */
+#inward-preview .iw-duration-sheet::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;clip-path:inset(0 round 32px);background:linear-gradient(145deg,#ffffff59,#f5f1fb1f 55%,#e8e1f533);backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);pointer-events:none}
+#inward-preview .iw-duration-sheet::after{content:"";position:absolute;inset:0;z-index:2;padding:1px;border-radius:inherit;pointer-events:none;background:linear-gradient(120deg,#ffffff0a 4%,#ffffffcc 30%,#ffffff33 54%,#b7a6cc26 74%,#ffffff14 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.85}
+#inward-preview .iw-duration-sheet>:not(.iw-duration-close){position:relative;z-index:1}
+#inward-preview .iw-duration-sheet>.iw-duration-close{z-index:3}
 #inward-preview .is-open .iw-duration-sheet{transform:translateY(0)}
 #inward-preview .iw-duration-handle{width:32px;height:4px;border-radius:4px;background:#ffffffc9;margin:0 auto 25px}
 #inward-preview .iw-duration-close{position:absolute;right:9px;top:19px;display:grid;place-items:center;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:50%;font-size:26px;font-weight:300;line-height:1;color:#62566e;background:transparent;box-shadow:none}
@@ -20,8 +25,15 @@
 #inward-preview .iw-duration-pointer{position:absolute;left:calc(50% - 1px);top:7px;width:2px;height:38px;border-radius:2px;background:var(--duration-accent);box-shadow:0 0 0 3px #f9f6fc66;pointer-events:none;transition:height .18s ease,top .18s ease}
 #inward-preview .is-dragging .iw-duration-pointer{height:44px;top:4px}
 #inward-preview .iw-duration-limits{display:flex;justify-content:space-between;font-size:11px;line-height:16px;color:#62566e;margin:5px 0 24px}
-#inward-preview .iw-duration-confirm{width:100%;height:48px;min-height:48px;padding:0 16px;border:1px solid #ffffffb0;border-radius:24px;background:#805fe3d9;color:#fff;font-size:15px;font-weight:500;box-shadow:inset 0 1px 1px #ffffff52}
+#inward-preview .iw-duration-confirm{width:100%;height:48px;min-height:48px;padding:0 16px;border:1px solid #ffffff80;border-radius:24px;background:#eeedf338;color:inherit;backdrop-filter:blur(15px) saturate(165%);-webkit-backdrop-filter:blur(15px) saturate(165%);font-size:15px;font-weight:500;box-shadow:inset 0 1px 1px #ffffff52}
 #inward-preview .iw-duration-footnote{font-size:11px;line-height:18px;color:#62566e;text-align:center;margin:12px 0 0}
 #inward-preview .iw-duration-sheet button:focus-visible,#inward-preview .iw-duration-ruler:focus-visible{outline:2px solid #514067;outline-offset:3px}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#inward-preview .iw-duration-sheet{background:#f5f2f9f5}}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet{color:#fff;text-shadow:0 1px 4px #100b2580;box-shadow:inset 0 1px 1px #ffffff99,inset 0 -1px 2px #b9b4c314,0 4px 16px #100b2520}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet::before{background:linear-gradient(145deg,#ffffff14,#f5f1fb08 55%,#e8e1f510)}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet h2,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-close,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-unit,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-limits,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-footnote,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick>span{color:#f5f1fb}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick{background:#ffffff70}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick.is-major{background:#ffffffb3}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-pointer{background:#d9c2ff;box-shadow:0 0 0 2px #ffffff14}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet button:focus-visible,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-ruler:focus-visible{outline-color:#eadfff}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#inward-preview .iw-duration-sheet::before{background:#f5f2f9f5}#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet::before{background:#30283df5}}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-duration-sheet,#inward-preview .iw-duration-overlay,#inward-preview .iw-duration-pointer{transition-duration:.01s}#inward-preview .iw-duration-number.is-changing{animation:none}}
