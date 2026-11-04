@@ -7,9 +7,12 @@ phone.append(overlay);
 const sheet=overlay.querySelector('section'),ruler=overlay.querySelector('.iw-duration-ruler'),track=overlay.querySelector('.iw-duration-ticks'),number=overlay.querySelector('.iw-duration-number'),confirm=overlay.querySelector('.iw-duration-confirm');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const min=1,max=120,step=12,clamp=n=>Math.max(min,Math.min(max,n));
-for(let minute=min;minute<=max;minute++){const tick=document.createElement('span');tick.className='iw-duration-tick'+(minute%5===0||minute===min?' is-major':'');tick.style.left=`${(minute-min)*step}px`;if(minute%15===0||minute===min){const label=document.createElement('span');label.textContent=minute;tick.append(label)}track.append(tick)}
+const ticks=[],tickHeights=[];
+for(let minute=min;minute<=max;minute++){const tick=document.createElement('span');tick.className='iw-duration-tick'+(minute%5===0||minute===min?' is-major':'');tick.style.left=`${(minute-min)*step}px`;if(minute%15===0||minute===min){const label=document.createElement('span');label.textContent=minute;tick.append(label)}track.append(tick);ticks.push(tick)}
 let request=null,returnFocus=null,closingTimer=0,value=20,position=20,target=20,velocity=0,raf=0,last=0,drag=null,displayed=20,numberTimer=0,openFrame=0;
 function paint(){
+ // A continuous six-minute falloff keeps the crest attached to the moving selection.
+ ticks.forEach((tick,index)=>{const distance=Math.abs(index+min-position),influence=distance<6?Math.pow(Math.cos(distance/6*Math.PI/2),2):0,height=12+32*influence;if(tickHeights[index]!==height){tick.style.setProperty('--tick-height',height+'px');tickHeights[index]=height}});
  track.style.transform=`translate3d(${-(position-min)*step}px,0,0)`;
  value=clamp(Math.round(position));ruler.setAttribute('aria-valuenow',String(value));ruler.setAttribute('aria-valuetext',`${value} ${value===1?'minute':'minutes'}`);
  if(value!==displayed){number.textContent=value;number.style.setProperty('--digit-shift',value>displayed?'5px':'-5px');number.classList.remove('is-changing');void number.offsetWidth;number.classList.add('is-changing');clearTimeout(numberTimer);numberTimer=setTimeout(()=>number.classList.remove('is-changing'),160);displayed=value}
