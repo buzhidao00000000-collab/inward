@@ -46,7 +46,7 @@ function close(){
  if(drag&&picker.hasPointerCapture(drag.id))picker.releasePointerCapture(drag.id);drag=null;
  cancelAnimationFrame(raf);raf=0;last=0;clearTimeout(wheelTimer);
 }
-trigger.addEventListener('click',open);
+trigger.addEventListener('click',()=>{if(picker.hidden)open();else close()});
 cards.forEach((c,i)=>c.addEventListener('click',event=>{if(suppressClick&&event.detail){suppressClick=false;return}choose(nearest(i))}));
 picker.addEventListener('pointerdown',event=>{if(event.button>0)return;event.preventDefault();suppressClick=false;velocity=0;drag={id:event.pointerId,y:event.clientY,start:current,lastY:event.clientY,time:performance.now(),speed:0,moved:false,scale:phone.getBoundingClientRect().width/phone.offsetWidth};});
 picker.addEventListener('pointermove',event=>{
