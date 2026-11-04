@@ -26,11 +26,10 @@
 #inward-preview .is-dragging .iw-duration-pointer{height:56px;top:10px}
 #inward-preview .iw-duration-limits{display:flex;justify-content:space-between;font-size:11px;line-height:16px;color:#62566e;margin:5px 0 24px}
 #inward-preview .iw-duration-confirm{width:100%;height:48px;min-height:48px;padding:0 16px;border:1px solid #ffffff80;border-radius:24px;background:#eeedf338;color:inherit;backdrop-filter:blur(15px) saturate(165%);-webkit-backdrop-filter:blur(15px) saturate(165%);font-size:15px;font-weight:500;box-shadow:inset 0 1px 1px #ffffff52}
-#inward-preview .iw-duration-footnote{font-size:11px;line-height:18px;color:#62566e;text-align:center;margin:12px 0 0}
 #inward-preview .iw-duration-sheet button:focus-visible,#inward-preview .iw-duration-ruler:focus-visible{outline:2px solid #514067;outline-offset:3px}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet{color:#fff;text-shadow:0 1px 4px #100b2580;box-shadow:inset 0 1px 1px #ffffff99,inset 0 -1px 2px #b9b4c314,0 4px 16px #100b2520}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet::before{background:linear-gradient(145deg,#ffffff14,#f5f1fb08 55%,#e8e1f510)}
-#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet h2,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-close,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-unit,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-limits,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-footnote,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick>span{color:#f5f1fb}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet h2,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-close,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-unit,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-limits,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick>span{color:#f5f1fb}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick{background:#ffffff70}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick.is-major{background:#ffffffb3}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-pointer{background:#d9c2ff;box-shadow:0 0 0 2px #ffffff14}

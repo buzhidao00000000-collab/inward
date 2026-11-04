@@ -2,7 +2,7 @@
 'use strict';
 const root=document.getElementById('inward-preview'),phone=root?.querySelector('.iw-phone');if(!phone)return;
 const overlay=document.createElement('div');overlay.className='iw-duration-overlay';overlay.hidden=true;
-overlay.innerHTML=`<section class="iw-duration-sheet" role="dialog" aria-modal="true" aria-labelledby="iw-duration-title"><div class="iw-duration-handle" aria-hidden="true"></div><button class="iw-duration-close" type="button" aria-label="Close duration picker">×</button><h2 id="iw-duration-title">Meditation duration</h2><div class="iw-duration-readout" aria-hidden="true"><span class="iw-duration-number">20</span><span class="iw-duration-unit">min</span></div><div class="iw-duration-ruler" role="slider" tabindex="0" aria-label="Meditation duration in minutes" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="120" aria-valuenow="20" aria-valuetext="20 minutes"><div class="iw-duration-ticks" aria-hidden="true"></div><span class="iw-duration-pointer" aria-hidden="true"></span></div><div class="iw-duration-limits" aria-hidden="true"><span>1 min</span><span>2 h</span></div><button class="iw-duration-confirm" type="button">Start meditation</button><p class="iw-duration-footnote">Sound stops when the timer ends.</p></section>`;
+overlay.innerHTML=`<section class="iw-duration-sheet" role="dialog" aria-modal="true" aria-labelledby="iw-duration-title"><div class="iw-duration-handle" aria-hidden="true"></div><button class="iw-duration-close" type="button" aria-label="Close duration picker">×</button><h2 id="iw-duration-title">Meditation duration</h2><div class="iw-duration-readout" aria-hidden="true"><span class="iw-duration-number">20</span><span class="iw-duration-unit">min</span></div><div class="iw-duration-ruler" role="slider" tabindex="0" aria-label="Meditation duration in minutes" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="120" aria-valuenow="20" aria-valuetext="20 minutes"><div class="iw-duration-ticks" aria-hidden="true"></div><span class="iw-duration-pointer" aria-hidden="true"></span></div><div class="iw-duration-limits" aria-hidden="true"><span>1 min</span><span>2 h</span></div><button class="iw-duration-confirm" type="button">Start meditation</button></section>`;
 phone.append(overlay);
 const sheet=overlay.querySelector('section'),ruler=overlay.querySelector('.iw-duration-ruler'),track=overlay.querySelector('.iw-duration-ticks'),number=overlay.querySelector('.iw-duration-number'),confirm=overlay.querySelector('.iw-duration-confirm');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -11,7 +11,7 @@ const ticks=[],tickHeights=[],tickTargets=[],tickSpeeds=[];
 let waveFrame=0,waveTime=0,wavePosition=20,gestureMotion=false;
 const waveSamples=[];
 let waveSpeed=0,lastWaveMove=0,waveClock=0;
-function delayForSpeed(speed){const amount=Math.max(0,Math.min(1,(speed-3)/37));return 85*amount*amount*(3-2*amount)}
+function delayForSpeed(speed){const amount=Math.max(0,Math.min(1,(speed-3)/37));return 110*amount*amount*(3-2*amount)}
 for(let minute=min;minute<=max;minute++){const tick=document.createElement('span');tick.className='iw-duration-tick'+(minute%5===0||minute===min?' is-major':'');tick.style.left=`${(minute-min)*step}px`;if(minute%15===0||minute===min){const label=document.createElement('span');label.textContent=minute;tick.append(label)}track.append(tick);ticks.push(tick)}
 let request=null,returnFocus=null,closingTimer=0,value=20,position=20,target=20,velocity=0,raf=0,last=0,drag=null,displayed=20,numberTimer=0,openFrame=0;
 function paint(){
@@ -29,19 +29,19 @@ function paint(){
 }
 function updateWaveTargets(){ticks.forEach((tick,index)=>{const distance=Math.abs(index+min-wavePosition),influence=distance<7?Math.exp(-distance*1.1):0;tickTargets[index]=6+46*influence})}
 function animateWave(now){
- const dt=waveTime?Math.min((now-waveTime)/1000,.024):1/60;waveTime=now;let moving=false;
+ waveTime=now;
  // Slow adjustment stays attached; a fast swipe earns a short, bounded trail.
- const effectiveSpeed=waveSpeed*Math.exp(-Math.max(0,now-lastWaveMove-24)/60);
- const waveDelay=delayForSpeed(effectiveSpeed),amount=waveDelay/85;
- const stiffness=1000-520*amount,damping=50-26*amount;
+ const effectiveSpeed=waveSpeed*Math.exp(-Math.max(0,now-lastWaveMove-32)/95);
+ const waveDelay=delayForSpeed(effectiveSpeed);
  const delayedTime=Math.max(waveClock,now-waveDelay);waveClock=delayedTime;
  while(waveSamples.length>1&&waveSamples[1].time<=delayedTime)waveSamples.shift();
  const first=waveSamples[0],next=waveSamples[1];
- if(first){const mix=next?Math.max(0,Math.min(1,(delayedTime-first.time)/Math.max(1,next.time-first.time))):0;wavePosition=next?first.position+(next.position-first.position)*mix:first.position}
+ if(first){const mix=next?Math.max(0,Math.min(1,(delayedTime-first.time)/Math.max(1,next.time-first.time))):0,delayed=next?first.position+(next.position-first.position)*mix:first.position;wavePosition=position-Math.max(-4.5,Math.min(4.5,position-delayed))}
  updateWaveTargets();
- ticks.forEach((tick,i)=>{const delta=tickTargets[i]-tickHeights[i],speed=(tickSpeeds[i]||0)+(delta*stiffness-(tickSpeeds[i]||0)*damping)*dt;tickSpeeds[i]=speed;tickHeights[i]=Math.max(4,Math.min(56,tickHeights[i]+speed*dt));if(Math.abs(tickTargets[i]-tickHeights[i])>.025||Math.abs(speed)>.15)moving=true;else{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0}tick.style.setProperty('--tick-height',tickHeights[i]+'px')});
+ // Keep a tall, sharp delayed crest instead of averaging it away across tick springs.
+ ticks.forEach((tick,i)=>{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0;tick.style.setProperty('--tick-height',tickHeights[i]+'px')});
  const waiting=waveSamples.length>1||Math.abs(wavePosition-position)>.001;
- if((moving||waiting)&&!overlay.hidden&&(!reduced.matches||gestureMotion))waveFrame=requestAnimationFrame(animateWave);else resetWave();
+ if(waiting&&!overlay.hidden&&(!reduced.matches||gestureMotion))waveFrame=requestAnimationFrame(animateWave);else resetWave();
 }
 function resetWave(){cancelAnimationFrame(waveFrame);waveFrame=0;waveTime=0;waveSpeed=0;lastWaveMove=performance.now();waveClock=lastWaveMove;wavePosition=position;waveSamples.length=0;waveSamples.push({time:performance.now(),position});updateWaveTargets();ticks.forEach((tick,i)=>{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0;tick.style.setProperty('--tick-height',tickHeights[i]+'px')})}
 function tick(now){
