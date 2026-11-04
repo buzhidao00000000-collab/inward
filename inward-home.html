@@ -77,29 +77,43 @@ body{margin:0}
 
 </style>
 <style>
-#inward-preview .iw-duration-overlay{position:absolute;inset:0;z-index:30;display:flex;align-items:flex-end;background:#20162c00;transition:background .22s ease;border-radius:inherit;overflow:hidden}
+#inward-preview .iw-duration-overlay{position:absolute;inset:0;z-index:30;display:flex;align-items:flex-end;background:#20162c00;transition:background .26s ease;border-radius:inherit;overflow:hidden}
 #inward-preview .iw-duration-overlay[hidden]{display:none}
-#inward-preview .iw-duration-overlay.is-open{background:#20162c4d}
-#inward-preview .iw-duration-sheet{--duration-progress:.159664;--duration-accent:var(--iw-send,#805fe3);box-sizing:border-box;position:relative;width:100%;max-height:100%;overflow-y:auto;padding:12px 24px 28px;border:0;border-radius:24px 24px 0 0;background:#fff;text-align:left;color:#332b3b;transform:translateY(105%);transition:transform .32s cubic-bezier(.22,1,.36,1);font-family:inherit}
+#inward-preview .iw-duration-overlay.is-open{background:#20162c30}
+#inward-preview .iw-duration-sheet{--duration-accent:var(--iw-send,#805fe3);box-sizing:border-box;position:relative;width:calc(100% - 16px);max-height:calc(100% - 24px);overflow-y:auto;margin:0 8px 12px;padding:12px 24px 23px;border:1px solid #ffffffe0;border-radius:32px;background:#f7f4f9a8;backdrop-filter:blur(28px) saturate(155%);-webkit-backdrop-filter:blur(28px) saturate(155%);box-shadow:inset 0 1px 1px #fff,inset 0 -1px 1px #ffffff70,0 12px 36px #30223b24;text-align:center;color:#332b3b;transform:translateY(calc(100% + 24px));transition:transform .4s cubic-bezier(.22,1,.36,1);font-family:inherit}
 #inward-preview .is-open .iw-duration-sheet{transform:translateY(0)}
-#inward-preview .iw-duration-handle{width:32px;height:4px;border-radius:4px;background:#d6d0db;margin:0 auto 26px}
-#inward-preview .iw-duration-close{position:absolute;right:10px;top:24px;display:grid;place-items:center;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:50%;font-size:26px;font-weight:300;line-height:1;color:#6c6276;background:transparent;box-shadow:none}
-#inward-preview .iw-duration-sheet h2{font-size:20px;font-weight:500;letter-spacing:-.3px;line-height:28px;margin:0 32px 0 0;color:inherit}
-#inward-preview .iw-duration-control{position:relative;height:136px;margin:28px 0 22px;box-sizing:border-box}
-#inward-preview .iw-duration-bubble{position:absolute;top:0;left:clamp(40px,calc(14px + (100% - 28px)*var(--duration-progress)),calc(100% - 40px));display:flex;align-items:baseline;gap:4px;justify-content:center;width:80px;height:52px;box-sizing:border-box;background:transparent;color:#332b3b;transform:translateX(-50%);transition:transform .2s ease}
-#inward-preview .iw-duration-bubble span{font-size:40px;line-height:50px;font-weight:400;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
-#inward-preview .iw-duration-bubble small{font-size:13px;color:#71667c}
-#inward-preview .is-dragging .iw-duration-bubble{transform:translateX(-50%) translateY(-4px)}
-#inward-preview .iw-duration-track{position:absolute;top:82px;left:14px;right:14px;height:4px;border-radius:4px;background:#e9e5ee;overflow:hidden}
-#inward-preview .iw-duration-fill{width:calc(var(--duration-progress)*100%);height:100%;background:var(--duration-accent);border-radius:inherit}
-#inward-preview .iw-duration-range{position:absolute;top:62px;left:0;width:100%;height:44px;margin:0;padding:0;appearance:none;-webkit-appearance:none;background:transparent;cursor:ew-resize;touch-action:pan-y;outline-offset:4px}
-#inward-preview .iw-duration-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:28px;height:28px;border:2px solid var(--duration-accent);border-radius:50%;background:#fff;box-shadow:0 1px 3px #332b3b1a}
-#inward-preview .iw-duration-range::-moz-range-thumb{width:24px;height:24px;border:2px solid var(--duration-accent);border-radius:50%;background:#fff;box-shadow:0 1px 3px #332b3b1a}
-#inward-preview .iw-duration-labels{position:absolute;left:0;right:0;top:116px;display:flex;justify-content:space-between;font-size:12px;color:#71667c}
-#inward-preview .iw-duration-confirm{width:100%;height:48px;min-height:48px;padding:0 16px;border:0;border-radius:24px;background:var(--duration-accent);color:#fff;font-size:15px;font-weight:500;box-shadow:none}
-#inward-preview .iw-duration-footnote{font-size:12px;line-height:18px;color:#71667c;text-align:center;margin:12px 0 0}
-#inward-preview .iw-duration-sheet button:focus-visible,#inward-preview .iw-duration-range:focus-visible{outline:2px solid #514067;outline-offset:4px}
-@media(prefers-reduced-motion:reduce){#inward-preview .iw-duration-sheet,#inward-preview .iw-duration-overlay,#inward-preview .iw-duration-bubble{transition-duration:.01s}}
+#inward-preview .iw-duration-handle{width:32px;height:4px;border-radius:4px;background:#ffffffc9;margin:0 auto 25px}
+#inward-preview .iw-duration-close{position:absolute;right:9px;top:19px;display:grid;place-items:center;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:50%;font-size:26px;font-weight:300;line-height:1;color:#62566e;background:transparent;box-shadow:none}
+#inward-preview .iw-duration-sheet h2{font-size:15px;font-weight:500;letter-spacing:-.2px;line-height:24px;margin:0 24px 16px;color:#62566e}
+#inward-preview .iw-duration-readout{display:flex;align-items:baseline;justify-content:center;gap:7px;height:72px;margin:0 0 12px;font-variant-numeric:tabular-nums}
+#inward-preview .iw-duration-number{display:inline-block;min-width:1.5ch;font-size:56px;line-height:68px;font-weight:500;letter-spacing:-2px}
+#inward-preview .iw-duration-unit{font-size:19px;font-weight:400;color:#62566e}
+#inward-preview .iw-duration-number.is-changing{animation:iw-duration-digit .16s ease-out}
+@keyframes iw-duration-digit{from{transform:translateY(var(--digit-shift,5px));filter:blur(1px);opacity:.7}to{transform:translateY(0);filter:blur(0);opacity:1}}
+#inward-preview .iw-duration-ruler{position:relative;width:100%;height:72px;overflow:hidden;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;outline-offset:3px;mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent)}
+#inward-preview .is-dragging .iw-duration-ruler{cursor:grabbing}
+#inward-preview .iw-duration-ticks{position:absolute;left:50%;top:14px;width:1428px;height:52px;will-change:transform}
+#inward-preview .iw-duration-tick{position:absolute;top:8px;display:block;width:1px;height:16px;background:#77688470}
+#inward-preview .iw-duration-tick.is-major{top:0;height:27px;background:#62566e99}
+#inward-preview .iw-duration-tick>span{position:absolute;left:50%;top:34px;transform:translateX(-50%);font-size:10px;line-height:14px;color:#62566e}
+#inward-preview .iw-duration-pointer{position:absolute;left:calc(50% - 1px);top:7px;width:2px;height:38px;border-radius:2px;background:var(--duration-accent);box-shadow:0 0 0 3px #f9f6fc66;pointer-events:none;transition:height .18s ease,top .18s ease}
+#inward-preview .is-dragging .iw-duration-pointer{height:44px;top:4px}
+#inward-preview .iw-duration-limits{display:flex;justify-content:space-between;font-size:11px;line-height:16px;color:#62566e;margin:5px 0 24px}
+#inward-preview .iw-duration-confirm{width:100%;height:48px;min-height:48px;padding:0 16px;border:1px solid #ffffffb0;border-radius:24px;background:#805fe3d9;color:#fff;font-size:15px;font-weight:500;box-shadow:inset 0 1px 1px #ffffff52}
+#inward-preview .iw-duration-footnote{font-size:11px;line-height:18px;color:#62566e;text-align:center;margin:12px 0 0}
+#inward-preview .iw-duration-sheet button:focus-visible,#inward-preview .iw-duration-ruler:focus-visible{outline:2px solid #514067;outline-offset:3px}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#inward-preview .iw-duration-sheet{background:#f5f2f9f5}}
+@media(prefers-reduced-motion:reduce){#inward-preview .iw-duration-sheet,#inward-preview .iw-duration-overlay,#inward-preview .iw-duration-pointer{transition-duration:.01s}#inward-preview .iw-duration-number.is-changing{animation:none}}
+</style>
+<style id="iw-sf-pro-typography">
+/* Use the installed Apple SF family; retain a system fallback on other platforms. */
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text"),local("SFProText-Regular"),local("SF Pro"),local("SFPro-Regular");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text Medium"),local("SFProText-Medium"),local("SF Pro Medium");font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text Semibold"),local("SFProText-Semibold"),local("SF Pro Semibold");font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text Bold"),local("SFProText-Bold"),local("SF Pro Bold");font-style:normal;font-weight:700;font-display:swap}
+:root{--iw-font:"INWARD SF Pro","SF Pro Text","SF Pro Display",-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
+#inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
 </head>
 <body>
@@ -170,7 +184,7 @@ body{margin:0}
 #inward-preview{padding:28px 12px 32px;display:flex;justify-content:center}
 #inward-preview *{box-sizing:border-box}
 #inward-preview [hidden]{display:none!important}
-#inward-preview .iw-phone{--iw-send:#805FE3;--iw-active:#B37FFF;position:relative;width:390px;max-width:100%;background:radial-gradient(ellipse 180px 155px at 12% 87%,#e8e6f380,transparent),radial-gradient(ellipse 190px 150px at 95% 86%,#e8f2ee80,transparent),#fafafd;color:#242329;border:7px solid #eae9ef;border-radius:48px;box-shadow:0 24px 70px #4e3b7820,0 2px 5px #37254b0c;overflow:hidden;font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:17px;font-weight:500;font-synthesis:none;letter-spacing:-.3px}
+#inward-preview .iw-phone{--iw-send:#805FE3;--iw-active:#B37FFF;position:relative;width:390px;max-width:100%;background:radial-gradient(ellipse 180px 155px at 12% 87%,#e8e6f380,transparent),radial-gradient(ellipse 190px 150px at 95% 86%,#e8f2ee80,transparent),#fafafd;color:#242329;border:7px solid #eae9ef;border-radius:48px;box-shadow:0 24px 70px #4e3b7820,0 2px 5px #37254b0c;overflow:hidden;font-family:var(--iw-font);font-size:17px;font-weight:500;font-synthesis:none;letter-spacing:-.3px}
 #inward-preview button,#inward-preview input{font-family:inherit;font-size:17px;font-weight:500;letter-spacing:-.3px;line-height:22px;color:inherit}
 #inward-preview button{cursor:pointer;border:0}
 #inward-preview button,#inward-preview input{-webkit-tap-highlight-color:transparent;outline:none}
@@ -1103,22 +1117,40 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseAll(
 'use strict';
 const root=document.getElementById('inward-preview'),phone=root?.querySelector('.iw-phone');if(!phone)return;
 const overlay=document.createElement('div');overlay.className='iw-duration-overlay';overlay.hidden=true;
-overlay.innerHTML=`<section class="iw-duration-sheet" role="dialog" aria-modal="true" aria-labelledby="iw-duration-title"><div class="iw-duration-handle" aria-hidden="true"></div><button class="iw-duration-close" type="button" aria-label="Close duration picker">×</button><h2 id="iw-duration-title">Meditation duration</h2><div class="iw-duration-control"><div class="iw-duration-bubble" aria-hidden="true"><span>20</span><small>min</small></div><div class="iw-duration-track" aria-hidden="true"><div class="iw-duration-fill"></div></div><input class="iw-duration-range" type="range" min="1" max="120" step="1" value="20" aria-label="Meditation duration" aria-valuetext="20 minutes"><div class="iw-duration-labels" aria-hidden="true"><span>1 min</span><span>2 h</span></div></div><button class="iw-duration-confirm" type="button">Start meditation</button><p class="iw-duration-footnote">Sound stops when the timer ends.</p></section>`;
+overlay.innerHTML=`<section class="iw-duration-sheet" role="dialog" aria-modal="true" aria-labelledby="iw-duration-title"><div class="iw-duration-handle" aria-hidden="true"></div><button class="iw-duration-close" type="button" aria-label="Close duration picker">×</button><h2 id="iw-duration-title">Meditation duration</h2><div class="iw-duration-readout" aria-hidden="true"><span class="iw-duration-number">20</span><span class="iw-duration-unit">min</span></div><div class="iw-duration-ruler" role="slider" tabindex="0" aria-label="Meditation duration in minutes" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="120" aria-valuenow="20" aria-valuetext="20 minutes"><div class="iw-duration-ticks" aria-hidden="true"></div><span class="iw-duration-pointer" aria-hidden="true"></span></div><div class="iw-duration-limits" aria-hidden="true"><span>1 min</span><span>2 h</span></div><button class="iw-duration-confirm" type="button">Start meditation</button><p class="iw-duration-footnote">Sound stops when the timer ends.</p></section>`;
 phone.append(overlay);
-const sheet=overlay.querySelector('section'),range=overlay.querySelector('input'),bubble=overlay.querySelector('.iw-duration-bubble span'),confirm=overlay.querySelector('.iw-duration-confirm');
-let request=null,returnFocus=null,closingTimer=0;
-function paint(){const minutes=Number(range.value),progress=(minutes-1)/119;sheet.style.setProperty('--duration-progress',progress);bubble.textContent=minutes;confirm.textContent='Start meditation';range.setAttribute('aria-valuetext',`${minutes} minutes`)}
-function close(restore=true){if(overlay.hidden)return;request=null;overlay.classList.remove('is-open');clearTimeout(closingTimer);closingTimer=setTimeout(()=>{overlay.hidden=true},220);if(restore&&returnFocus?.isConnected)returnFocus.focus({preventScroll:true})}
-function open(event){clearTimeout(closingTimer);request=event.detail;returnFocus=document.activeElement;overlay.hidden=false;paint();requestAnimationFrame(()=>overlay.classList.add('is-open'));range.focus({preventScroll:true})}
-range.addEventListener('input',paint);
-range.addEventListener('pointerdown',()=>sheet.classList.add('is-dragging'));
-const release=()=>sheet.classList.remove('is-dragging');window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);
+const sheet=overlay.querySelector('section'),ruler=overlay.querySelector('.iw-duration-ruler'),track=overlay.querySelector('.iw-duration-ticks'),number=overlay.querySelector('.iw-duration-number'),confirm=overlay.querySelector('.iw-duration-confirm');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const min=1,max=120,step=12,clamp=n=>Math.max(min,Math.min(max,n));
+for(let minute=min;minute<=max;minute++){const tick=document.createElement('span');tick.className='iw-duration-tick'+(minute%5===0||minute===min?' is-major':'');tick.style.left=`${(minute-min)*step}px`;if(minute%15===0||minute===min){const label=document.createElement('span');label.textContent=minute;tick.append(label)}track.append(tick)}
+let request=null,returnFocus=null,closingTimer=0,value=20,position=20,target=20,velocity=0,raf=0,last=0,drag=null,displayed=20,numberTimer=0,openFrame=0;
+function paint(){
+ track.style.transform=`translate3d(${-(position-min)*step}px,0,0)`;
+ value=clamp(Math.round(position));ruler.setAttribute('aria-valuenow',String(value));ruler.setAttribute('aria-valuetext',`${value} ${value===1?'minute':'minutes'}`);
+ if(value!==displayed){number.textContent=value;number.style.setProperty('--digit-shift',value>displayed?'5px':'-5px');number.classList.remove('is-changing');void number.offsetWidth;number.classList.add('is-changing');clearTimeout(numberTimer);numberTimer=setTimeout(()=>number.classList.remove('is-changing'),160);displayed=value}
+}
+function tick(now){
+ const dt=Math.min((now-(last||now))/1000,.032);last=now;
+ const acceleration=(target-position)*220-velocity*28;velocity+=acceleration*dt;position=clamp(position+velocity*dt);paint();
+ if(Math.abs(target-position)>.001||Math.abs(velocity)>.01){raf=requestAnimationFrame(tick)}else{position=target;velocity=0;raf=0;last=0;paint()}
+}
+function choose(next){target=clamp(Math.round(next));if(reduced.matches){position=target;velocity=0;paint();return}if(!raf){last=0;raf=requestAnimationFrame(tick)}}
+function cancelMotion(){cancelAnimationFrame(raf);raf=0;last=0;velocity=0;if(drag&&ruler.hasPointerCapture(drag.id))ruler.releasePointerCapture(drag.id);drag=null;sheet.classList.remove('is-dragging')}
+function close(restore=true){if(overlay.hidden)return;request=null;cancelAnimationFrame(openFrame);cancelMotion();position=target=value;paint();overlay.classList.remove('is-open');clearTimeout(closingTimer);closingTimer=setTimeout(()=>{overlay.hidden=true},reduced.matches?0:260);if(restore&&returnFocus?.isConnected)returnFocus.focus({preventScroll:true})}
+function open(event){clearTimeout(closingTimer);cancelMotion();request=event.detail;returnFocus=document.activeElement;overlay.hidden=false;position=target=value;paint();openFrame=requestAnimationFrame(()=>overlay.classList.add('is-open'));ruler.focus({preventScroll:true})}
+ruler.addEventListener('pointerdown',event=>{if(event.button>0)return;event.preventDefault();cancelMotion();ruler.focus({preventScroll:true});const scale=phone.getBoundingClientRect().width/phone.offsetWidth;drag={id:event.pointerId,x:event.clientX,start:position,lastX:event.clientX,time:performance.now(),speed:0,scale};ruler.setPointerCapture(event.pointerId);sheet.classList.add('is-dragging')});
+ruler.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.id)return;const now=performance.now();drag.speed=-(event.clientX-drag.lastX)/drag.scale/step/Math.max(.008,(now-drag.time)/1000);drag.lastX=event.clientX;drag.time=now;position=clamp(drag.start-(event.clientX-drag.x)/drag.scale/step);target=position;paint()});
+function release(event,cancelled=false){if(!drag||event.pointerId!==drag.id)return;const state=drag;drag=null;if(ruler.hasPointerCapture(event.pointerId))ruler.releasePointerCapture(event.pointerId);sheet.classList.remove('is-dragging');const momentum=!cancelled&&!reduced.matches&&performance.now()-state.time<100?Math.max(-8,Math.min(8,state.speed*.12)):0;choose(position+momentum)}
+ruler.addEventListener('pointerup',event=>release(event));ruler.addEventListener('pointercancel',event=>release(event,true));ruler.addEventListener('lostpointercapture',event=>release(event,true));
+ruler.addEventListener('wheel',event=>{event.preventDefault();choose(target+(Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY)/12)},{passive:false});
+ruler.addEventListener('keydown',event=>{const delta={ArrowRight:1,ArrowUp:1,ArrowLeft:-1,ArrowDown:-1,PageUp:10,PageDown:-10}[event.key];if(delta||event.key==='Home'||event.key==='End'){event.preventDefault();choose(event.key==='Home'?min:event.key==='End'?max:target+delta)}});
 overlay.querySelector('.iw-duration-close').addEventListener('click',()=>close());
 overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
-overlay.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close()}if(event.key==='Tab'){const elements=[overlay.querySelector('.iw-duration-close'),range,confirm],index=elements.indexOf(document.activeElement);if(event.shiftKey&&index===0){event.preventDefault();confirm.focus()}else if(!event.shiftKey&&index===2){event.preventDefault();elements[0].focus()}}});
-confirm.addEventListener('click',()=>{const start=request?.start;if(!start)return;const minutes=Number(range.value);close();start(minutes)});
+overlay.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close()}if(event.key==='Tab'){const elements=[overlay.querySelector('.iw-duration-close'),ruler,confirm],index=elements.indexOf(document.activeElement);if(event.shiftKey&&index===0){event.preventDefault();confirm.focus()}else if(!event.shiftKey&&index===2){event.preventDefault();elements[0].focus()}}});
+confirm.addEventListener('click',()=>{const start=request?.start;if(!start)return;const minutes=value;close();start(minutes)});
 document.addEventListener('inward:meditationrequest',open);
 document.addEventListener('inward:tabchange',()=>close(false));document.addEventListener('inward:relaxmodechange',()=>close(false));
+window.addEventListener('blur',()=>{if(drag)release({pointerId:drag.id},true)});
 paint();
 })();
 
