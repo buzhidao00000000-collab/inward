@@ -7,16 +7,24 @@ phone.append(overlay);
 const sheet=overlay.querySelector('section'),ruler=overlay.querySelector('.iw-duration-ruler'),track=overlay.querySelector('.iw-duration-ticks'),number=overlay.querySelector('.iw-duration-number'),confirm=overlay.querySelector('.iw-duration-confirm');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const min=1,max=120,step=12,clamp=n=>Math.max(min,Math.min(max,n));
-const ticks=[],tickHeights=[];
+const ticks=[],tickHeights=[],tickTargets=[],tickSpeeds=[];
+let waveFrame=0,waveTime=0;
 for(let minute=min;minute<=max;minute++){const tick=document.createElement('span');tick.className='iw-duration-tick'+(minute%5===0||minute===min?' is-major':'');tick.style.left=`${(minute-min)*step}px`;if(minute%15===0||minute===min){const label=document.createElement('span');label.textContent=minute;tick.append(label)}track.append(tick);ticks.push(tick)}
 let request=null,returnFocus=null,closingTimer=0,value=20,position=20,target=20,velocity=0,raf=0,last=0,drag=null,displayed=20,numberTimer=0,openFrame=0;
 function paint(){
- // A continuous six-minute falloff keeps the crest attached to the moving selection.
- ticks.forEach((tick,index)=>{const distance=Math.abs(index+min-position),influence=distance<6?Math.pow(Math.cos(distance/6*Math.PI/2),2):0,height=12+32*influence;if(tickHeights[index]!==height){tick.style.setProperty('--tick-height',height+'px');tickHeights[index]=height}});
+ // Each tick retains its own spring state, leaving a trailing crest on fast swipes.
+ ticks.forEach((tick,index)=>{const distance=Math.abs(index+min-position),influence=distance<7?Math.pow(Math.cos(distance/7*Math.PI/2),2):0;tickTargets[index]=6+46*influence;if(tickHeights[index]===undefined||reduced.matches){tickHeights[index]=tickTargets[index];tickSpeeds[index]=0;tick.style.setProperty('--tick-height',tickHeights[index]+'px')}});
+ if(!reduced.matches&&!waveFrame&&tickTargets.some((height,i)=>Math.abs(height-tickHeights[i])>.025)){waveTime=0;waveFrame=requestAnimationFrame(animateWave)}
  track.style.transform=`translate3d(${-(position-min)*step}px,0,0)`;
  value=clamp(Math.round(position));ruler.setAttribute('aria-valuenow',String(value));ruler.setAttribute('aria-valuetext',`${value} ${value===1?'minute':'minutes'}`);
  if(value!==displayed){number.textContent=value;number.style.setProperty('--digit-shift',value>displayed?'5px':'-5px');number.classList.remove('is-changing');void number.offsetWidth;number.classList.add('is-changing');clearTimeout(numberTimer);numberTimer=setTimeout(()=>number.classList.remove('is-changing'),160);displayed=value}
 }
+function animateWave(now){
+ const dt=waveTime?Math.min((now-waveTime)/1000,.024):1/60;waveTime=now;let moving=false;
+ ticks.forEach((tick,i)=>{const delta=tickTargets[i]-tickHeights[i],speed=(tickSpeeds[i]||0)+(delta*170-(tickSpeeds[i]||0)*17)*dt;tickSpeeds[i]=speed;tickHeights[i]=Math.max(4,Math.min(56,tickHeights[i]+speed*dt));if(Math.abs(tickTargets[i]-tickHeights[i])>.025||Math.abs(speed)>.15)moving=true;else{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0}tick.style.setProperty('--tick-height',tickHeights[i]+'px')});
+ if(moving&&!overlay.hidden&&!reduced.matches)waveFrame=requestAnimationFrame(animateWave);else resetWave();
+}
+function resetWave(){cancelAnimationFrame(waveFrame);waveFrame=0;waveTime=0;ticks.forEach((tick,i)=>{tickHeights[i]=tickTargets[i];tickSpeeds[i]=0;tick.style.setProperty('--tick-height',tickHeights[i]+'px')})}
 function tick(now){
  const dt=Math.min((now-(last||now))/1000,.032);last=now;
  const acceleration=(target-position)*220-velocity*28;velocity+=acceleration*dt;position=clamp(position+velocity*dt);paint();
@@ -24,8 +32,8 @@ function tick(now){
 }
 function choose(next){target=clamp(Math.round(next));if(reduced.matches){position=target;velocity=0;paint();return}if(!raf){last=0;raf=requestAnimationFrame(tick)}}
 function cancelMotion(){cancelAnimationFrame(raf);raf=0;last=0;velocity=0;if(drag&&ruler.hasPointerCapture(drag.id))ruler.releasePointerCapture(drag.id);drag=null;sheet.classList.remove('is-dragging')}
-function close(restore=true){if(overlay.hidden)return;request=null;cancelAnimationFrame(openFrame);cancelMotion();position=target=value;paint();overlay.classList.remove('is-open');clearTimeout(closingTimer);closingTimer=setTimeout(()=>{overlay.hidden=true},reduced.matches?0:260);if(restore&&returnFocus?.isConnected)returnFocus.focus({preventScroll:true})}
-function open(event){clearTimeout(closingTimer);cancelMotion();request=event.detail;returnFocus=document.activeElement;overlay.hidden=false;position=target=value;paint();openFrame=requestAnimationFrame(()=>overlay.classList.add('is-open'));ruler.focus({preventScroll:true})}
+function close(restore=true){if(overlay.hidden)return;request=null;cancelAnimationFrame(openFrame);cancelMotion();position=target=value;paint();resetWave();overlay.classList.remove('is-open');clearTimeout(closingTimer);closingTimer=setTimeout(()=>{overlay.hidden=true},reduced.matches?0:260);if(restore&&returnFocus?.isConnected)returnFocus.focus({preventScroll:true})}
+function open(event){clearTimeout(closingTimer);cancelMotion();request=event.detail;returnFocus=document.activeElement;overlay.hidden=false;position=target=value;paint();resetWave();openFrame=requestAnimationFrame(()=>overlay.classList.add('is-open'));ruler.focus({preventScroll:true})}
 ruler.addEventListener('pointerdown',event=>{if(event.button>0)return;event.preventDefault();cancelMotion();ruler.focus({preventScroll:true});const scale=phone.getBoundingClientRect().width/phone.offsetWidth;drag={id:event.pointerId,x:event.clientX,start:position,lastX:event.clientX,time:performance.now(),speed:0,scale};ruler.setPointerCapture(event.pointerId);sheet.classList.add('is-dragging')});
 ruler.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.id)return;const now=performance.now();drag.speed=-(event.clientX-drag.lastX)/drag.scale/step/Math.max(.008,(now-drag.time)/1000);drag.lastX=event.clientX;drag.time=now;position=clamp(drag.start-(event.clientX-drag.x)/drag.scale/step);target=position;paint()});
 function release(event,cancelled=false){if(!drag||event.pointerId!==drag.id)return;const state=drag;drag=null;if(ruler.hasPointerCapture(event.pointerId))ruler.releasePointerCapture(event.pointerId);sheet.classList.remove('is-dragging');const momentum=!cancelled&&!reduced.matches&&performance.now()-state.time<100?Math.max(-8,Math.min(8,state.speed*.12)):0;choose(position+momentum)}
