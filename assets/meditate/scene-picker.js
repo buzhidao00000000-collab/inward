@@ -33,7 +33,7 @@ function tick(now){
  if(drag||Math.abs(target-current)>.001||Math.abs(velocity)>.01||entrance<1)raf=requestAnimationFrame(tick);
  else{current=target=wrap(target);velocity=0;raf=0;last=0;paint()}
 }
-function updateCardArt(){cards.forEach((card,i)=>{const item=items[i],url=!picker.hidden&&card.style.visibility!=='hidden'?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
+function updateCardArt(){const center=wrap(Math.round(current));cards.forEach((card,i)=>{const item=items[i],url=!picker.hidden&&card.style.visibility!=='hidden'&&i===center?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
 reduced.addEventListener('change',updateCardArt);
 function animate(){if(!raf){last=0;raf=requestAnimationFrame(tick)}}
 async function choose(index){
