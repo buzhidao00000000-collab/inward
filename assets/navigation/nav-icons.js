@@ -6,11 +6,11 @@
     me: ['M315.5 10.8078C315.5 15.4027 310.5 18.9444 306.5 20.141C310.5 21.5769 318.5 25.5974 318.5 30.1923C318.5 35.9359 294.5 35.9359 294.5 30.1923C294.5 25.5974 301.929 21.3951 305.643 19.8683C301.461 18.4635 297 15.0938 297 10.8077C297 5.0641 315.5 5.06416 315.5 10.8078Z']
   };
   const transforms = { dialogue: 'translate(11 6)', relax: 'translate(12 6)', report: 'translate(12 6)', me: 'translate(12 6)' };
+  const labels = { dialogue: 'Dialogue', relax: 'Relax', report: 'Report', me: 'Me' };
   Object.entries(icons).forEach(([tab, paths]) => {
     document.querySelectorAll(`.iw-glass-nav [data-tab="${tab}"] .iw-nav-art`).forEach((svg) => {
       const artwork = Array.from(svg.children).filter((node) => node.tagName.toLowerCase() !== 'defs');
-      const label = artwork.at(-1);
-      artwork.slice(0, -1).forEach((node) => node.remove());
+      artwork.forEach((node) => node.remove());
       paths.forEach((data) => {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', data);
@@ -20,9 +20,61 @@
           path.setAttribute('fill-rule', 'evenodd');
           path.setAttribute('clip-rule', 'evenodd');
         }
-        svg.insertBefore(path, label);
+        svg.append(path);
       });
+      const button = svg.closest('button');
+      if (button && !button.querySelector('.iw-nav-label')) {
+        const label = document.createElement('span');
+        label.className = 'iw-nav-label';
+        label.textContent = labels[tab];
+        button.append(label);
+      }
     });
+  });
+
+  document.querySelectorAll('.iw-options button[data-option-text]').forEach((button) => {
+    if (button.querySelector('.iw-option-label')) return;
+    const label = document.createElement('span');
+    label.className = 'iw-option-label';
+    label.textContent = button.dataset.optionText;
+    button.append(label);
+  });
+
+  document.querySelectorAll('.iw-relax-mode-switch button[data-relax-mode]').forEach((button) => {
+    if (button.querySelector('.iw-mode-label')) return;
+    const label = document.createElement('span');
+    label.className = 'iw-mode-label';
+    label.textContent = button.dataset.relaxMode === 'breathe' ? 'Breathe' : 'Meditate';
+    button.append(label);
+  });
+
+  const breathing = document.querySelector('#iw-breathing');
+  [['breath-label-inhale', 'Inhale'], ['breath-label-exhale', 'Exhale']].forEach(([id, value]) => {
+    const group = breathing?.querySelector(`#${id}`);
+    if (!group) return;
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '38');
+    text.setAttribute('y', '18');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-size', '20');
+    text.setAttribute('font-weight', '500');
+    text.setAttribute('fill', '#805FE3');
+    text.textContent = value;
+    group.replaceChildren(text);
+  });
+  [['breath-start-art', 'Start'], ['breath-end-art', 'End']].forEach(([id, value]) => {
+    const group = breathing?.querySelector(`#${id}`);
+    if (!group) return;
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '94');
+    text.setAttribute('y', '16.5');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('font-size', '15');
+    text.setAttribute('font-weight', '500');
+    text.setAttribute('fill', '#272727');
+    text.textContent = value;
+    group.replaceChildren(text);
   });
 
   document.querySelectorAll('nav.iw-glass-nav').forEach((nav) => {
