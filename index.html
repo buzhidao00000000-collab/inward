@@ -36,7 +36,7 @@ body{margin:0}
 </style>
 <style>
 /* Preserve the supplied SVG artwork; recolor inactive tabs over the night scene. */
-#inward-preview.iw-show-relax[data-relax-mode=meditate] nav.iw-glass-nav button:not([data-tab=relax]){color:#fff}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] nav.iw-glass-nav button:not([data-tab=relax]){color:#a8a8a8}
 </style>
 <style>
 /* Keep the selected mode translucent over the scenery. */
@@ -435,6 +435,7 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 </style>
 <style>
 #inward-preview.iw-show-relax main{padding:18px 22px 8px;overflow-x:hidden}
+#inward-preview.iw-show-relax .iw-avatar{display:none}
 #inward-preview .iw-relax-view{min-height:100%;display:flex;align-items:center;justify-content:center}
 #inward-preview .iw-relax-view>svg{width:288px;max-width:100%;flex-shrink:0;transform:translateY(5px)}
 #inward-preview.iw-show-relax .iw-bottom{padding-top:0}
@@ -449,7 +450,7 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 #inward-preview .iw-nav-selection::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(var(--iw-light-angle),#ffffff14 0%,#ffffffed 30%,#b37fff66 52%,#ffffffb3 73%,#ded8e980 88%,#ffffff14 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 #inward-preview .iw-nav-selection::after{content:"";position:absolute;inset:1px;border-radius:inherit;background:radial-gradient(ellipse 58px 29px at var(--iw-local-light,48%) 0%,#ffffff52,transparent 78%);pointer-events:none}
 #inward-preview .iw-nav-reflection{position:absolute;inset:0;z-index:2;padding:1px;border-radius:inherit;pointer-events:none;background:linear-gradient(var(--iw-light-angle),#ffffff0a 4%,#ffffffcc 30%,#ffffff33 54%,#b7a6cc26 74%,#ffffff14 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.85}
-#inward-preview nav.iw-glass-nav button{position:absolute;left:calc(2.941176% + var(--iw-slot)*23.529412%);top:0;width:23.262032%;height:70px;min-height:70px;display:block;padding:0;border:0;border-radius:28px;background:none;box-shadow:none;color:#000;z-index:3;touch-action:manipulation;transition:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+#inward-preview nav.iw-glass-nav button{position:absolute;left:calc(2.941176% + var(--iw-slot)*23.529412%);top:0;width:23.262032%;height:70px;min-height:70px;display:block;padding:0;border:0;border-radius:28px;background:none;box-shadow:none;color:#a8a8a8;z-index:3;touch-action:manipulation;transition:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 #inward-preview nav.iw-glass-nav button.iw-active{color:#b37fff;background:none;box-shadow:none}
 #inward-preview nav.iw-glass-nav button::before,#inward-preview nav.iw-glass-nav button::after{content:none}
 #inward-preview nav.iw-glass-nav button:focus-visible{outline:2px solid #b37fff;outline-offset:-5px}
