@@ -24,4 +24,16 @@
       });
     });
   });
+
+  document.querySelectorAll('nav.iw-glass-nav').forEach((nav) => {
+    const scene = nav.querySelector('.iw-nav-lens-scene');
+    if (!scene) return;
+    scene.setAttribute('viewBox', '0 0 374 70');
+    scene.replaceChildren();
+    nav.querySelectorAll(':scope > button[data-tab] .iw-nav-art').forEach((art) => {
+      Array.from(art.children).forEach((node) => {
+        if (node.tagName.toLowerCase() !== 'defs') scene.append(node.cloneNode(true));
+      });
+    });
+  });
 })();
