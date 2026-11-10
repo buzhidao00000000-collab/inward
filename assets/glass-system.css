@@ -24,16 +24,21 @@
 #inward-preview .iw-options button:nth-child(3){left:14.4004px;top:115.4px;width:129px;background:transparent}
 #inward-preview .iw-option-label{display:none}
 #inward-preview .iw-input{background:#fff!important}
-#inward-preview .iw-composer{position:relative;display:block;height:122px;margin-inline:-16px;padding:0;background:url("dialogue/composer-panel.svg?v=20261110") 0 0/100% 100% no-repeat}
+#inward-preview .iw-composer{position:relative;display:block;height:122px;margin:12px -16px 0;padding:0;background:url("dialogue/composer-panel.svg?v=20261110") 0 0/100% 100% no-repeat}
 #inward-preview .iw-composer::after{content:"";position:absolute;left:14px;top:19px;width:346px;height:79px;border-radius:18px;box-shadow:inset 0 0 0 1px #ffffffb5;opacity:.48;pointer-events:none;animation:iw-composer-glow 5s cubic-bezier(.42,0,.58,1) infinite}
 #inward-preview .iw-composer .iw-input{position:absolute;left:14px;top:19px;width:346px;height:79px;min-height:79px;padding:0;background:transparent!important;border:0;border-radius:18px;box-shadow:none;z-index:1}
-#inward-preview .iw-composer .iw-composer-outline{inset:0;width:100%;height:100%;opacity:.55;z-index:0}
+#inward-preview .iw-composer .iw-composer-outline{display:none!important}
 #inward-preview .iw-composer .iw-text-row{height:56px;align-items:flex-start}
 #inward-preview .iw-composer .iw-input input{height:38px;margin-top:10px;padding:8px 16px 8px 56px;color:#272727;font-family:var(--iw-font);font-size:15px;line-height:22px;position:relative;z-index:2}
 #inward-preview .iw-composer .iw-cloud-button{display:block;position:absolute;left:38px;top:34px;width:28px;height:28px;padding:0;border:0;background:transparent;box-shadow:none;opacity:0;z-index:4}
 #inward-preview .iw-composer .iw-cloud-asset{display:none}
 #inward-preview .iw-composer .iw-send{position:absolute;left:320px;top:70px;width:22px;min-width:22px;height:22px;padding:0;border:0;background:transparent;box-shadow:none;opacity:0;z-index:3}
 #inward-preview .iw-composer .iw-send-art{display:none}
+#inward-preview .iw-quick-actions>[data-quick-action=feeling],#inward-preview .iw-quick-actions>[data-quick-action=post]{display:none!important}
+#inward-preview .iw-composer .iw-inline-action{position:absolute;top:70px;width:22px;height:22px;padding:0;border:0;border-radius:50%;background:transparent;box-shadow:none;z-index:5;cursor:pointer}
+#inward-preview .iw-composer .iw-inline-action-plus{left:36px}
+#inward-preview .iw-composer .iw-inline-action-feeling{left:67px}
+#inward-preview .iw-composer .iw-inline-action:focus-visible{outline:2px solid #805fe3;outline-offset:2px}
 #inward-preview .iw-composer .iw-send:focus-visible,#inward-preview .iw-composer .iw-cloud-button:focus-visible{opacity:1;outline:2px solid #805fe3;outline-offset:2px;border-radius:12px}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo){display:flex;align-items:flex-end;gap:8px;height:auto;min-height:156px;margin-inline:0;background:none}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo)::after{display:none}
@@ -41,6 +46,7 @@
 #inward-preview .iw-composer .iw-input.iw-has-photo .iw-cloud-button{left:8px;top:auto;bottom:6px}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-send{position:relative;left:auto;top:auto;width:75px;min-width:75px;height:40px;opacity:1;border-radius:20px;overflow:hidden}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-send-art{display:block;width:100%;height:100%}
+#inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-inline-action{display:none}
 @keyframes iw-composer-glow{0%,100%{opacity:.32;filter:brightness(.98)}50%{opacity:.82;filter:brightness(1.12)}}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-composer::after{animation:none}}
 #inward-preview nav.iw-glass-nav button>.iw-nav-art{position:absolute;inset:0}

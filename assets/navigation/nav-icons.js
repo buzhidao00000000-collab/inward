@@ -77,6 +77,26 @@
     group.replaceChildren(text);
   });
 
+  document.querySelectorAll('.iw-composer').forEach((composer) => {
+    if (composer.querySelector('.iw-inline-action')) return;
+    const actions = [
+      ['plus', 'Add a photo', '.iw-quick-actions [data-quick-action="post"]'],
+      ['feeling', 'Choose a feeling', '.iw-quick-actions [data-quick-action="feeling"]']
+    ];
+    actions.forEach(([name, label, targetSelector]) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `iw-inline-action iw-inline-action-${name}`;
+      button.setAttribute('aria-label', label);
+      button.addEventListener('pointerdown', (event) => event.stopPropagation());
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        document.querySelector(targetSelector)?.click();
+      });
+      composer.append(button);
+    });
+  });
+
   document.querySelectorAll('nav.iw-glass-nav').forEach((nav) => {
     const scene = nav.querySelector('.iw-nav-lens-scene');
     if (!scene) return;
