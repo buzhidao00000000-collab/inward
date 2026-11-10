@@ -17,7 +17,8 @@
 #inward-preview .iw-options button,#inward-preview .iw-options button::before{border:0}
 #inward-preview .iw-options .iw-edge-light{display:block}
 #inward-preview .iw-options .iw-option-art{display:none}
-#inward-preview .iw-options{position:relative;width:282px;height:160px;display:block;padding:0;background:url("dialogue/option-stack.svg") 0 0/100% 100% no-repeat}
+#inward-preview .iw-background-motion{transform:scale(1.18);transform-origin:50% 50%;filter:saturate(1.42) contrast(1.08)}
+#inward-preview .iw-options{position:relative;width:282px;height:160px;display:block;padding:0;background:url("dialogue/option-stack.svg?v=20261110") 0 0/100% 100% no-repeat}
 #inward-preview .iw-options button{position:absolute;left:14.4004px;top:13.4004px;width:253px;height:31px;min-height:31px;display:flex;align-items:center;padding:0 20px;color:#726b7e;font-size:15px;font-weight:400;background:transparent;overflow:visible;border-radius:15.5px}
 #inward-preview .iw-options button:nth-child(2){left:14.4004px;top:64.4004px;width:202px;background:transparent}
 #inward-preview .iw-options button:nth-child(3){left:14.4004px;top:115.4px;width:129px;background:transparent}
