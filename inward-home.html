@@ -638,7 +638,7 @@ window.visualViewport?.addEventListener('scroll',fitDevice);
 window.addEventListener('resize',fitDevice);
 new ResizeObserver(fitDevice).observe(deviceStage);fitDevice();root.dataset.inputMethod='pointer';document.addEventListener('pointerdown',()=>{root.dataset.inputMethod='pointer'},true);document.addEventListener('keydown',e=>{if(e.key==='Tab')root.dataset.inputMethod='keyboard'},true);phone.append(popover);
 const edgeLights=[];
-root.querySelectorAll('.iw-options button').forEach(button=>{const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg'),rect=document.createElementNS(ns,'rect');svg.classList.add('iw-edge-light');svg.setAttribute('aria-hidden','true');rect.setAttribute('x','1');rect.setAttribute('y','1');rect.setAttribute('width','calc(100% - 2px)');rect.setAttribute('height','calc(100% - 2px)');rect.setAttribute('rx','23');rect.setAttribute('pathLength','100');svg.append(rect);button.append(svg);edgeLights.push(rect)});
+root.querySelectorAll('.iw-options button').forEach(button=>{const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg'),rect=document.createElementNS(ns,'rect'),w=button.offsetWidth,h=button.offsetHeight,inset=1.2;svg.classList.add('iw-edge-light');svg.setAttribute('aria-hidden','true');svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.setAttribute('preserveAspectRatio','none');rect.setAttribute('x',String(inset));rect.setAttribute('y',String(inset));rect.setAttribute('width',String(w-inset*2));rect.setAttribute('height',String(h-inset*2));rect.setAttribute('rx',String((h-inset*2)/2));rect.setAttribute('pathLength','100');svg.append(rect);button.append(svg);edgeLights.push(rect)});
 let edgeStart=null;function orbitFrame(now){if(edgeStart===null)edgeStart=now;const sweepMs=2000/3,phase=(now-edgeStart)%(sweepMs+5000),active=phase<sweepMs,offset=active?-phase/sweepMs*100:-100;edgeLights.forEach(rect=>{rect.style.strokeDashoffset=String(offset);rect.style.opacity=active?'1':'0'});requestAnimationFrame(orbitFrame)}requestAnimationFrame(orbitFrame);
 popover.setAttribute('role','region');popover.setAttribute('aria-label','Quick view');let active=null,sent=[],conversations=[],currentId=makeId();
 function makeId(){return 'dialogue-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8)}
@@ -1333,6 +1333,6 @@ window.addEventListener('pagehide',stopMeditation);
 
 </script>
 
-<script src="assets/navigation/nav-icons.js?v=composer-panel-2"></script>
+<script src="assets/navigation/nav-icons.js"></script>
 </body>
 </html>
