@@ -53,9 +53,9 @@
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-composer::after,#inward-preview .iw-composer .iw-cloud-button[aria-expanded=true] .iw-cloud-asset{animation:none}}
 #inward-preview nav.iw-glass-nav button>.iw-nav-art{position:absolute;inset:0}
 #inward-preview .iw-nav-label{position:absolute;left:0;right:0;top:45px;font-size:11px;line-height:15px;font-weight:400;text-align:center;color:currentColor;pointer-events:none}
-#inward-preview .iw-relax-mode-switch button>svg{display:none}
 #inward-preview .iw-relax-mode-switch .iw-nav-lens-optics{display:none!important}
-#inward-preview .iw-mode-label{position:relative;z-index:3;font-size:13px;line-height:46px;font-weight:400;color:currentColor;pointer-events:none}
+#inward-preview .iw-relax-mode-switch button>svg{display:none!important}
+#inward-preview .iw-mode-label{position:absolute;inset:0;z-index:3;display:grid;place-items:center;font-family:var(--iw-font);font-size:13px;line-height:1;font-weight:400;color:currentColor;pointer-events:none}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#inward-preview .iw-duration-sheet::before,#inward-preview .iw-relax-mode-switch::before{background:#f3eef5e8}}
 
 #inward-preview .iw-options .iw-edge-light{inset:0;width:100%;height:100%;overflow:hidden;opacity:.96;filter:none;border-radius:inherit}
