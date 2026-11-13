@@ -1,0 +1,19 @@
+<svg width="169" height="154" viewBox="0 0 169 154" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g filter="url(#duration-panel-shadow)">
+    <path d="M20.5 32.8383C20.5 26.0241 26.024 20.5 32.8383 20.5H132.162C138.976 20.5 144.5 26.024 144.5 32.8383V116.429C144.5 123.244 138.975 128.769 132.16 128.769H32.84C26.0248 128.769 20.5 123.244 20.5 116.429V32.8383Z" fill="white" fill-opacity="0.2"/>
+    <path d="M75.0986 25.7432H91.4469" stroke="white" stroke-width="1.85075" stroke-linecap="round"/>
+    <path d="M131.546 30.0625L136.173 34.6894M136.172 30.0625L131.545 34.6894" stroke="white" stroke-width="0.500202" stroke-linecap="round"/>
+  </g>
+  <defs>
+    <filter id="duration-panel-shadow" x="0" y="0" width="169" height="153.269" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dx="2" dy="2"/>
+      <feGaussianBlur stdDeviation="11.25"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.27 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+</svg>
