@@ -63,3 +63,4 @@
 #inward-preview .iw-welcome .iw-options>button{position:absolute;left:14.4004px;top:13.4004px;width:253px;height:31px;min-height:31px;border-radius:15.5px}
 #inward-preview .iw-welcome .iw-options>button:nth-child(2){left:14.4004px;top:64.4004px;width:202px;height:31px}
 #inward-preview .iw-welcome .iw-options>button:nth-child(3){left:14.4004px;top:115.4px;width:129px;height:31px}
+#inward-preview .iw-messages .iw-bubble{background:#fff;color:#242329;box-shadow:0 5px 16px #4e3d6512,inset 0 0 0 1px #ffffffd9}
