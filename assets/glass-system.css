@@ -71,12 +71,12 @@
 
 /* User-supplied duration card: preserve the live ruler and controls inside its silhouette. */
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet{
-  width:338px;height:308px;max-width:calc(100% - 32px);max-height:none;overflow:visible;
-  margin:0 auto 10px;padding:0;border-radius:0;background:url("meditate/duration-panel-shell.svg?v=20261113-1") center/100% 100% no-repeat;
+  width:calc(100% - 16px);height:430px;max-width:none;max-height:calc(100% - 20px);overflow:visible;
+  margin:0 8px 10px;padding:0;border-radius:0;background:url("meditate/duration-panel-shell.svg?v=20261114-1") center/100% 100% no-repeat;
   box-shadow:none;text-shadow:0 1px 4px #100b255c;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet::before{
-  inset:41px 49px 51px 41px;border-radius:25px;clip-path:inset(0 round 25px);
+  inset:57px 56px 70px 47px;border-radius:29px;clip-path:inset(0 round 29px);
   background:linear-gradient(145deg,#ffffff22,#d8cde514 54%,#76668d18);
   backdrop-filter:blur(24px) saturate(155%) brightness(.96);-webkit-backdrop-filter:blur(24px) saturate(155%) brightness(.96);
   box-shadow:inset 0 .5px .5px #ffffff45;
@@ -86,45 +86,41 @@
   position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-handle{
-  position:absolute;z-index:4;left:calc(50% - 44px);top:38px;width:88px;height:32px;min-height:32px;margin:0;opacity:0;
+  position:absolute;z-index:4;left:calc(50% - 52px);top:50px;width:104px;height:44px;min-height:44px;margin:0;opacity:0;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-handle::after{display:none}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-close{
-  right:43px;top:43px;width:44px;height:44px;min-height:44px;color:transparent;font-size:0;background:transparent;
+  right:47px;top:50px;width:44px;height:44px;min-height:44px;color:transparent;font-size:0;background:transparent;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-readout{
-  position:absolute;z-index:2;left:41px;right:49px;top:80px;height:44px;margin:0;gap:5px;align-items:baseline;
+  position:absolute;z-index:2;left:47px;right:56px;top:103px;height:68px;margin:0;gap:7px;align-items:baseline;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-number{
-  min-width:0;font-family:var(--iw-font);font-size:36px;line-height:42px;font-weight:500;letter-spacing:-1.2px;
+  min-width:0;font-family:var(--iw-font);font-size:52px;line-height:64px;font-weight:500;letter-spacing:-1.8px;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-unit{
-  font-family:var(--iw-font);font-size:17px;line-height:22px;font-weight:400;color:#fff;
+  font-family:var(--iw-font);font-size:19px;line-height:26px;font-weight:400;color:#fff;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-ruler{
-  position:absolute;z-index:2;left:61px;top:130px;width:216px;height:61px;margin:0;
+  position:absolute;z-index:2;left:53px;top:183px;width:280px;height:86px;margin:0;
   mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
 }
-#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-ticks{top:0;height:61px}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-ticks{top:10px;height:70px}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick{width:3px;margin-left:-1.5px;border-radius:99px;background:#ffffff80}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick.is-major{background:#ffffffc2}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-tick>span{
-  top:calc(27px + var(--tick-height,6px)/2);font-family:var(--iw-font);font-size:9px;line-height:12px;color:#fff;text-shadow:0 1px 3px #100b2580;
+  top:calc(30px + var(--tick-height,6px)/2);font-family:var(--iw-font);font-size:10px;line-height:14px;color:#fff;text-shadow:0 1px 3px #100b2580;
 }
-#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-pointer{top:0;height:52px;background:#fff;box-shadow:0 0 7px #fff8}
-#inward-preview.iw-show-relax[data-relax-mode=meditate] .is-dragging .iw-duration-pointer{top:0;height:56px}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-pointer{top:8px;height:60px;background:#fff;box-shadow:0 0 7px #fff8}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .is-dragging .iw-duration-pointer{top:6px;height:64px}
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-limits{
-  position:absolute;z-index:2;left:62px;top:180px;width:214px;margin:0;font-family:var(--iw-font);font-size:9px;line-height:12px;color:#fff;
+  position:absolute;z-index:2;left:54px;top:274px;width:278px;margin:0;font-family:var(--iw-font);font-size:10px;line-height:14px;color:#fff;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-confirm{
-  position:absolute;z-index:3;left:78px;top:204px;width:174px;height:30px;min-height:30px;padding:0 12px;border:0;border-radius:15px;
-  background:#fff;color:#24202a;font-family:var(--iw-font);font-size:11px;line-height:30px;font-weight:400;text-shadow:none;
+  position:absolute;z-index:3;left:76px;right:84px;top:314px;width:auto;height:46px;min-height:46px;padding:0 16px;border:0;border-radius:23px;
+  background:#fff;color:#24202a;font-family:var(--iw-font);font-size:14px;line-height:46px;font-weight:400;text-shadow:none;
   backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-confirm::after{
   content:"";position:absolute;inset:-7px 0;pointer-events:none;
-}
-@media(max-width:370px){
-  #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet{transform-origin:bottom center;scale:.92;margin-bottom:0}
-  #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-overlay:not(.is-open) .iw-duration-sheet{transform:translateY(calc(109% + 24px))}
 }
