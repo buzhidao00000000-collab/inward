@@ -71,7 +71,7 @@
 
 /* User-supplied duration card: preserve the live ruler and controls inside its silhouette. */
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-sheet{
-  width:100%;height:50%;max-width:none;max-height:none;overflow:visible;
+  width:100%;height:min(350px,50%);max-width:none;max-height:none;overflow:visible;
   margin:0;padding:0;border-radius:38px 38px 0 0;background:url("meditate/duration-panel-shell.svg?v=20261114-2") center/100% 100% no-repeat;
   box-shadow:none;text-shadow:0 1px 4px #100b255c;
 }
@@ -117,7 +117,7 @@
   position:absolute;z-index:2;left:34px;top:250px;width:calc(100% - 68px);margin:0;font-family:var(--iw-font);font-size:14px;line-height:18px;font-weight:400;color:#fff;
 }
 #inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-duration-confirm{
-  position:absolute;z-index:3;left:40px;right:40px;bottom:46px;top:auto;width:auto;height:48px;min-height:48px;padding:0 16px;border:0;border-radius:24px;
+  position:absolute;z-index:3;left:40px;right:40px;top:284px;bottom:auto;width:auto;height:48px;min-height:48px;padding:0 16px;border:0;border-radius:24px;
   background:#fff;color:#24202a;font-family:var(--iw-font);font-size:14px;line-height:46px;font-weight:400;text-shadow:none;
   backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;
 }
