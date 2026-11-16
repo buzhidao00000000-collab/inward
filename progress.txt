@@ -32,3 +32,4 @@
 [2026-11-16 17:12（北京时间）] Report 卡片修复：用完整 147×200 SVG 替换被裁切的第三张 Strength 卡片。
 [2026-11-16 17:20（北京时间）] Report 对齐微调：移除 Strength 轨道重复的 22px 左缩进，使第一张卡片与标题左对齐。
 [2026-11-16 17:33（北京时间）] Report 标记定位：将 New 分别绑定到 Freedom 行与 Wisdom 卡片，Wisdom 标记随横向拖动同步移动。
+[2026-11-16 17:42（北京时间）] Report 标记微调：Freedom 的 New 上移 15px，并扩展 Strength 轨道顶部空间以完整显示 Wisdom 的 New。

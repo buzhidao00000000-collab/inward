@@ -142,10 +142,10 @@
 #inward-preview .iw-report-values>img:first-child{width:391px;height:auto}
 #inward-preview .iw-report-new{position:absolute;width:40px;height:16px;z-index:2}
 #inward-preview .iw-report-value-first{position:absolute;left:21px;right:22px;top:28px;height:54px;pointer-events:none}
-#inward-preview .iw-report-value-first .iw-report-new{right:2px;top:12px}
+#inward-preview .iw-report-value-first .iw-report-new{right:2px;top:-3px}
 #inward-preview .iw-report-strength{position:relative;width:394px;margin-top:0}
 #inward-preview .iw-report-strength-label{width:346px;height:auto;margin:0 0 9px 22px}
-#inward-preview .iw-report-strength-scroll{width:372px;margin-left:22px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;touch-action:pan-y;padding-top:3px;cursor:grab;user-select:none;-webkit-user-select:none;overscroll-behavior-x:contain}
+#inward-preview .iw-report-strength-scroll{width:372px;margin-left:22px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;touch-action:pan-y;padding-top:11px;cursor:grab;user-select:none;-webkit-user-select:none;overscroll-behavior-x:contain}
 #inward-preview .iw-report-strength-scroll.is-dragging{cursor:grabbing}
 #inward-preview .iw-report-strength-scroll::-webkit-scrollbar{display:none}
 #inward-preview .iw-report-strength-track{display:flex;align-items:flex-start;gap:10px;width:max-content;padding:0 30px 0 0}
