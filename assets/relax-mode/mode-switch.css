@@ -20,3 +20,9 @@
 #inward-preview .iw-relax-mode-switch .iw-nav-lens-optics{filter:url(#iw-mode-lens-refraction)}
 #inward-preview .iw-relax-mode-switch.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.065;transition-duration:.09s}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-relax-mode-switch.iw-glass-pressed[data-motion="idle"] .iw-nav-selection{scale:1.025;transition-duration:.06s}}
+
+/* Keep the source labels visible through the capsule while it moves. */
+#inward-preview .iw-relax-mode-switch .iw-nav-selection{background-color:#f5f0fc38;backdrop-filter:blur(1.5px) saturate(145%);-webkit-backdrop-filter:blur(1.5px) saturate(145%)}
+#inward-preview .iw-relax-mode-switch[data-motion="moving"] .iw-nav-selection,#inward-preview .iw-relax-mode-switch[data-motion="landing"] .iw-nav-selection{background-color:#ffffff18;z-index:4}
+#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-relax-mode-switch[data-motion="moving"] .iw-nav-selection,#inward-preview.iw-show-relax[data-relax-mode=meditate] .iw-relax-mode-switch[data-motion="landing"] .iw-nav-selection{background-color:#ffffff18;z-index:4}
+#inward-preview .iw-relax-mode-switch .iw-nav-lens-optics{color:var(--iw-send,#805fe3)}

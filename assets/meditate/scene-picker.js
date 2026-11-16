@@ -33,7 +33,7 @@ function tick(now){
  if(drag||Math.abs(target-current)>.001||Math.abs(velocity)>.01||entrance<1)raf=requestAnimationFrame(tick);
  else{current=target=wrap(target);velocity=0;raf=0;last=0;paint()}
 }
-function updateCardArt(){cards.forEach((card,i)=>{const item=items[i],url=!picker.hidden&&card.style.visibility!=='hidden'&&!reduced.matches&&(item.key!=='white-noise'||i===selected)?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
+function updateCardArt(){const center=wrap(Math.round(current));cards.forEach((card,i)=>{const item=items[i],url=!picker.hidden&&card.style.visibility!=='hidden'&&i===center?item.art:(item.still||item.art);const image=card.querySelector('img');if(image.getAttribute('src')!==url)image.src=url})}
 reduced.addEventListener('change',updateCardArt);
 function animate(){if(!raf){last=0;raf=requestAnimationFrame(tick)}}
 async function choose(index){
@@ -46,7 +46,7 @@ function close(){
  if(drag&&picker.hasPointerCapture(drag.id))picker.releasePointerCapture(drag.id);drag=null;
  cancelAnimationFrame(raf);raf=0;last=0;clearTimeout(wheelTimer);
 }
-trigger.addEventListener('click',open);
+trigger.addEventListener('click',()=>{if(picker.hidden)open();else close()});
 cards.forEach((c,i)=>c.addEventListener('click',event=>{if(suppressClick&&event.detail){suppressClick=false;return}choose(nearest(i))}));
 picker.addEventListener('pointerdown',event=>{if(event.button>0)return;event.preventDefault();suppressClick=false;velocity=0;drag={id:event.pointerId,y:event.clientY,start:current,lastY:event.clientY,time:performance.now(),speed:0,moved:false,scale:phone.getBoundingClientRect().width/phone.offsetWidth};});
 picker.addEventListener('pointermove',event=>{
@@ -84,7 +84,7 @@ async function changeScene(index,status){
 createWheel({id:'iw-scene-picker',trigger:sceneTrigger,items:scenes,label:'Meditation scenery',kind:'scenery',onChoose:changeScene});
 const sounds=[['rain','Rain'],['waves','Ocean waves'],['stream','Stream'],['birds','Forest birds'],['wind','Wind'],['white-noise','White noise'],['pink-noise','Pink noise'],['summer-night','Summer night'],['fireplace','Fireplace']].map(([key,name])=>({key,name,art:`assets/meditate/sound-art/${key}.gif`,still:`assets/meditate/sound-art/${key}.still.svg`}));
 const audio=new Audio();audio.loop=true;audio.preload='none';audio.volume=.45;
-let activeSound=-1,playVersion=0;
+let activeSound=-1,playVersion=0,sessionDeadline=0,sessionTimer=0;
 const meditationButton=root.querySelector('.iw-meditate-start');
 const soundStatus=document.createElement('span');soundStatus.className='iw-scene-picker-status';soundStatus.setAttribute('aria-live','polite');phone.append(soundStatus);
 function syncPlayer(){
@@ -93,25 +93,26 @@ function syncPlayer(){
  if(meditationButton){
   meditationButton.setAttribute('aria-label',playing?'End meditation':'Start meditation');
   meditationButton.setAttribute('aria-pressed',String(playing));
-  const image=meditationButton.querySelector('img');
-  image.src=playing?'assets/breathing/end-button.svg':'assets/meditate/start-button.svg';image.alt=playing?'End':'Start';
+  meditationButton.querySelector('span').textContent=playing?'End':'Start';
  }
 }
-async function startAudio(){
+async function startAudio(minutes){
  const version=++playVersion;
- try{await audio.play();if(version!==playVersion)return;soundStatus.textContent=`Playing ${sounds[activeSound].name}`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
+ try{await audio.play();if(version!==playVersion)return;sessionDeadline=Date.now()+minutes*60000;sessionTimer=setInterval(checkSession,1000);soundStatus.textContent=`Playing ${sounds[activeSound].name} for ${minutes} minutes`;syncPlayer()}catch{if(version===playVersion){soundStatus.textContent='Audio could not start. Press Start to try again.';syncPlayer()}}
 }
 function changeSound(index,status){
  stopMeditation();activeSound=index;audio.src=`assets/meditate/sounds/${sounds[index].key}.m4a`;status.textContent=`Selected ${sounds[index].name}. Press Start to begin.`;root.classList.add('iw-sound-selected');
 }
 createWheel({id:'iw-sound-picker',trigger:soundTrigger,items:sounds,label:'Ambient sounds',kind:'sound',onChoose:changeSound});
 meditationButton?.addEventListener('click',()=>{
- if(audio.paused){if(activeSound<0){if(soundTrigger.getAttribute('aria-expanded')!=='true')soundTrigger.click()}else{for(const wheel of wheels)wheel.close();startAudio()}}
+ if(audio.paused){for(const wheel of wheels)wheel.close();document.dispatchEvent(new CustomEvent('inward:meditationrequest',{detail:{start(minutes){if(activeSound<0)changeSound(0,soundStatus);startAudio(minutes)}}}))}
  else{stopMeditation();soundStatus.textContent='Meditation ended'}
 });
 audio.addEventListener('play',syncPlayer);audio.addEventListener('pause',syncPlayer);audio.addEventListener('error',()=>{soundStatus.textContent='Audio could not load. Choose again.';syncPlayer()});
 syncPlayer();
-function stopMeditation(){++playVersion;audio.pause();syncPlayer()}
+function checkSession(){if(sessionDeadline&&Date.now()>=sessionDeadline){stopMeditation();soundStatus.textContent='Meditation complete'}}
+function stopMeditation(){++playVersion;clearInterval(sessionTimer);sessionTimer=0;sessionDeadline=0;audio.pause();syncPlayer()}
+document.addEventListener('visibilitychange',checkSession);
 document.addEventListener('inward:tabchange',event=>{if(event.detail.tab!=='relax')stopMeditation()});
 document.addEventListener('inward:relaxmodechange',event=>{if(event.detail.mode!=='meditate')stopMeditation()});
 window.addEventListener('pagehide',stopMeditation);

@@ -1,0 +1,8 @@
+/* Use the installed Apple SF family; retain a system fallback on other platforms. */
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text"),local("SFProText-Regular"),local("SF Pro"),local("SFPro-Regular");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text Medium"),local("SFProText-Medium"),local("SF Pro Medium");font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text Semibold"),local("SFProText-Semibold"),local("SF Pro Semibold");font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:"INWARD SF Pro";src:local("SF Pro Text Bold"),local("SFProText-Bold"),local("SF Pro Bold");font-style:normal;font-weight:700;font-display:swap}
+:root{--iw-font:"INWARD SF Pro","SF Pro Text","SF Pro Display",-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
+#inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
