@@ -148,7 +148,7 @@
 #inward-preview .iw-report-strength-scroll{width:372px;margin-left:22px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;touch-action:pan-y;padding-top:3px;cursor:grab;user-select:none;-webkit-user-select:none;overscroll-behavior-x:contain}
 #inward-preview .iw-report-strength-scroll.is-dragging{cursor:grabbing}
 #inward-preview .iw-report-strength-scroll::-webkit-scrollbar{display:none}
-#inward-preview .iw-report-strength-track{display:flex;align-items:flex-start;gap:10px;width:max-content;padding:0 30px 0 22px}
+#inward-preview .iw-report-strength-track{display:flex;align-items:flex-start;gap:10px;width:max-content;padding:0 30px 0 0}
 #inward-preview .iw-report-strength-track>img{display:block;height:200px;width:auto;flex:none;-webkit-user-drag:none;pointer-events:none}
 #inward-preview .iw-tab-placeholder[data-tab="me"] .iw-me-placeholder{margin:0;display:grid;place-items:center;min-height:100%}
 #inward-preview.iw-secondary-tab main{padding-left:0;padding-right:0}
