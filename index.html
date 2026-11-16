@@ -496,6 +496,28 @@ const placeholderView=document.createElement('section');
 placeholderView.className='iw-tab-placeholder';placeholderView.hidden=true;
 placeholderView.innerHTML='<div class="iw-report-layout"><img class="iw-report-weekly" src="assets/report/weekly-chart.svg" alt="This week activity chart"><img class="iw-report-archive" src="assets/report/archive-card.svg" alt="Personal Archive"><div class="iw-report-values"><img src="assets/report/value-list.svg" alt="Values from this week"><img class="iw-report-new iw-report-new-value" src="assets/report/new-badge.svg" alt="New"></div><div class="iw-report-strength"><img class="iw-report-strength-label" src="assets/report/section-label.svg" alt="Strength in this week"><img class="iw-report-new iw-report-new-strength" src="assets/report/new-badge.svg" alt="New"><div class="iw-report-strength-scroll" aria-label="Strength cards" tabindex="0"><div class="iw-report-strength-track"><img src="assets/report/strength-card-1.svg" alt="Wisdom strength card"><img src="assets/report/strength-card-2.svg" alt="Creativity strength card"><img src="assets/report/strength-card-3.svg" alt="More strength cards"></div></div></div></div><p class="iw-me-placeholder">Coming soon</p>';
 root.querySelector('main').append(placeholderView);
+const strengthScroller=placeholderView.querySelector('.iw-report-strength-scroll');
+let strengthDrag=null;
+strengthScroller.addEventListener('pointerdown',event=>{
+ if(event.pointerType==='mouse'&&event.button!==0)return;
+ strengthDrag={id:event.pointerId,x:event.clientX,left:strengthScroller.scrollLeft};
+ strengthScroller.setPointerCapture(event.pointerId);strengthScroller.classList.add('is-dragging');
+});
+strengthScroller.addEventListener('pointermove',event=>{
+ if(!strengthDrag||strengthDrag.id!==event.pointerId)return;
+ event.preventDefault();
+ strengthScroller.scrollLeft=strengthDrag.left-(event.clientX-strengthDrag.x);
+});
+function endStrengthDrag(event){
+ if(!strengthDrag||strengthDrag.id!==event.pointerId)return;
+ strengthDrag=null;strengthScroller.classList.remove('is-dragging');
+}
+strengthScroller.addEventListener('pointerup',endStrengthDrag);
+strengthScroller.addEventListener('pointercancel',endStrengthDrag);
+strengthScroller.addEventListener('wheel',event=>{
+ const delta=Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY;
+ if(!delta)return;strengthScroller.scrollLeft+=delta;event.preventDefault();
+},{passive:false});
 relaxView.id='iw-breathe-panel';
 relaxView.setAttribute('role','tabpanel');relaxView.setAttribute('aria-labelledby','iw-mode-breathe');
 const meditateView=document.createElement('section');
