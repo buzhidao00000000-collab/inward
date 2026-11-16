@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "skills": {
+    "svg-animations": {
+      "source": "supermemoryai/skills",
+      "sourceType": "github",
+      "skillPath": "svg-animations/SKILL.md",
+      "computedHash": "83236c4e59c4b936eec6a611e66b23158a16a3eec088c7c8da630e510e26f987"
+    }
+  }
+}
