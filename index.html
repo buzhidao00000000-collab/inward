@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=me-content-down25-d3d023e">
+<link rel="stylesheet" href="assets/glass-system.css?v=me-card-bend-2b7346f">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -518,6 +518,36 @@ strengthScroller.addEventListener('wheel',event=>{
  const delta=Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY;
  if(!delta)return;strengthScroller.scrollLeft+=delta;event.preventDefault();
 },{passive:false});
+const meCardStack=placeholderView.querySelector('.iw-me-card-stack');
+const meCards=Array.from(meCardStack.querySelectorAll(':scope>img'));
+const meBendStrength=[1,0.82,0.64,0.46,0.18];
+let meBendDrag=null;
+function setMeCardBend(amount){
+ const bend=Math.max(0,Math.min(1,amount));
+ meCards.forEach((card,index)=>{
+  const strength=meBendStrength[index];
+  card.style.setProperty('--iw-angle',`${(-22*bend*strength).toFixed(2)}deg`);
+  card.style.setProperty('--iw-lift',`${(-13*bend*strength).toFixed(2)}px`);
+  card.style.setProperty('--iw-depth',`${(30*bend*strength).toFixed(2)}px`);
+ });
+}
+meCardStack.addEventListener('pointerdown',event=>{
+ if(event.pointerType==='mouse'&&event.button!==0)return;
+ meBendDrag={id:event.pointerId,y:event.clientY,started:performance.now()};
+ meCardStack.setPointerCapture(event.pointerId);meCardStack.classList.add('is-bending');setMeCardBend(.42);
+});
+meCardStack.addEventListener('pointermove',event=>{
+ if(!meBendDrag||meBendDrag.id!==event.pointerId)return;
+ setMeCardBend(.42+(meBendDrag.y-event.clientY)/105);
+});
+function endMeCardBend(event){
+ if(!meBendDrag||meBendDrag.id!==event.pointerId)return;
+ const wait=Math.max(0,180-(performance.now()-meBendDrag.started));
+ meBendDrag=null;
+ window.setTimeout(()=>{meCardStack.classList.remove('is-bending');setMeCardBend(0)},wait);
+}
+meCardStack.addEventListener('pointerup',endMeCardBend);
+meCardStack.addEventListener('pointercancel',endMeCardBend);
 relaxView.id='iw-breathe-panel';
 relaxView.setAttribute('role','tabpanel');relaxView.setAttribute('aria-labelledby','iw-mode-breathe');
 const meditateView=document.createElement('section');
