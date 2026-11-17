@@ -155,7 +155,7 @@
 #inward-preview .iw-tab-placeholder:not([data-tab="me"]) .iw-me-layout{display:none}
 #inward-preview .iw-tab-placeholder[data-tab="me"]{display:block;overflow-y:auto;overflow-x:hidden;inset:0;padding:0 0 18px;color:inherit;scrollbar-width:none}
 #inward-preview .iw-tab-placeholder[data-tab="me"]::-webkit-scrollbar{display:none}
-#inward-preview .iw-me-layout{width:100%;padding:0 0 12px}
+#inward-preview .iw-me-layout{width:100%;padding:25px 0 12px}
 #inward-preview .iw-me-profile{position:relative;width:290px;height:135px;margin:0 auto 60px}
 #inward-preview .iw-me-profile-progress{position:absolute;left:18px;top:0;width:125px;height:auto;display:block}
 #inward-preview .iw-me-progress-score{position:absolute;right:22px;top:18px;width:88px;height:auto;display:block}
