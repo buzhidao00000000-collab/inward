@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=me-card-order-9639228">
+<link rel="stylesheet" href="assets/glass-system.css?v=me-card-front-d80f227">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -494,7 +494,7 @@ relaxView.innerHTML="<svg id=\"iw-breathing\" data-breathing-scene=\"true\" widt
 root.querySelector('main').append(relaxView);
 const placeholderView=document.createElement('section');
 placeholderView.className='iw-tab-placeholder';placeholderView.hidden=true;
-placeholderView.innerHTML='<div class="iw-report-layout"><img class="iw-report-weekly" src="assets/report/weekly-chart.svg" alt="This week activity chart"><img class="iw-report-archive" src="assets/report/archive-card.svg" alt="Personal Archive"><div class="iw-report-values"><img src="assets/report/value-list.svg" alt="Values from this week"><span class="iw-report-value-first"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></span></div><div class="iw-report-strength"><img class="iw-report-strength-label" src="assets/report/section-label.svg" alt="Strength in this week"><div class="iw-report-strength-scroll" aria-label="Strength cards" tabindex="0"><div class="iw-report-strength-track"><div class="iw-report-strength-card"><img src="assets/report/strength-card-1.svg" alt="Wisdom strength card"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></div><img src="assets/report/strength-card-2.svg" alt="Creativity strength card"><img src="assets/report/strength-card-3.svg" alt="More strength cards"></div></div></div></div><div class="iw-me-layout"><div class="iw-me-profile"><img class="iw-me-profile-progress" src="assets/me/profile-progress.svg" alt="Profile progress"><img class="iw-me-progress-score" src="assets/me/progress-score.svg" alt="98 percent value exploration progress"></div><div class="iw-me-card-stack" aria-label="Profile card sections"><div class="iw-me-card-shell" data-height="248"><img src="assets/me/setting.svg" alt="Setting"></div><div class="iw-me-card-shell" data-height="302"><img src="assets/me/notifications.svg" alt="Notifications"></div><div class="iw-me-card-shell" data-height="248"><img src="assets/me/privacy.svg" alt="Privacy"></div><div class="iw-me-card-shell" data-height="248"><img src="assets/me/personal-archive.svg" alt="Personal Archive"></div><div class="iw-me-card-shell is-active" data-height="248"><img src="assets/me/my-journey.svg" alt="My Journey"></div></div><img class="iw-me-section-indicator" src="assets/me/section-indicator.svg" alt="Profile sections"></div>';
+placeholderView.innerHTML='<div class="iw-report-layout"><img class="iw-report-weekly" src="assets/report/weekly-chart.svg" alt="This week activity chart"><img class="iw-report-archive" src="assets/report/archive-card.svg" alt="Personal Archive"><div class="iw-report-values"><img src="assets/report/value-list.svg" alt="Values from this week"><span class="iw-report-value-first"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></span></div><div class="iw-report-strength"><img class="iw-report-strength-label" src="assets/report/section-label.svg" alt="Strength in this week"><div class="iw-report-strength-scroll" aria-label="Strength cards" tabindex="0"><div class="iw-report-strength-track"><div class="iw-report-strength-card"><img src="assets/report/strength-card-1.svg" alt="Wisdom strength card"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></div><img src="assets/report/strength-card-2.svg" alt="Creativity strength card"><img src="assets/report/strength-card-3.svg" alt="More strength cards"></div></div></div></div><div class="iw-me-layout"><div class="iw-me-profile"><img class="iw-me-profile-progress" src="assets/me/profile-progress.svg" alt="Profile progress"><img class="iw-me-progress-score" src="assets/me/progress-score.svg" alt="98 percent value exploration progress"></div><div class="iw-me-card-stack" aria-label="Profile card sections"><div class="iw-me-card-shell" data-height="248"><img src="assets/me/setting.svg" alt="Setting"></div><div class="iw-me-card-shell" data-height="302" data-openable="false"><img src="assets/me/notifications.svg" alt="Notifications"></div><div class="iw-me-card-shell" data-height="248"><img src="assets/me/privacy.svg" alt="Privacy"></div><div class="iw-me-card-shell" data-height="248"><img src="assets/me/personal-archive.svg" alt="Personal Archive"></div><div class="iw-me-card-shell is-active" data-height="248"><img src="assets/me/my-journey.svg" alt="My Journey"></div></div><img class="iw-me-section-indicator" src="assets/me/section-indicator.svg" alt="Profile sections"></div>';
 root.querySelector('main').append(placeholderView);
 const strengthScroller=placeholderView.querySelector('.iw-report-strength-scroll');
 let strengthDrag=null;
@@ -534,14 +534,27 @@ function setActiveMeCard(activeIndex){
 }
 setActiveMeCard(meCards.length-1);
 function rotateMeCardHeaders(direction){
- const active=meCardStack.querySelector('.iw-me-card-shell.is-active');
- const headers=Array.from(meCardStack.querySelectorAll('.iw-me-card-shell:not(.is-active)'));
- if(headers.length<2)return;
- const before=new Map(headers.map(card=>[card,card.getBoundingClientRect().top]));
- if(direction>0)meCardStack.insertBefore(headers[0],active);
- else meCardStack.insertBefore(headers[headers.length-1],headers[0]);
+ const cards=Array.from(meCardStack.querySelectorAll('.iw-me-card-shell'));
+ if(cards.length<2)return;
+ const before=new Map(cards.map(card=>[card,card.getBoundingClientRect().top]));
+ if(direction>0){
+  meCardStack.prepend(cards[cards.length-1]);
+  while(meCardStack.lastElementChild?.dataset.openable==='false')meCardStack.prepend(meCardStack.lastElementChild);
+ }else{
+  meCardStack.append(cards[0]);
+  while(meCardStack.lastElementChild?.dataset.openable==='false')meCardStack.append(meCardStack.firstElementChild);
+ }
+ const reordered=Array.from(meCardStack.querySelectorAll('.iw-me-card-shell'));
+ reordered.forEach((card,index)=>{
+  const active=index===reordered.length-1;
+  card.classList.toggle('is-active',active);
+  card.classList.toggle('is-before',!active);
+  card.classList.remove('is-after');
+  card.style.setProperty('--iw-card-distance',reordered.length-1-index||1);
+  card.style.setProperty('--iw-card-height',`${card.dataset.height}px`);
+ });
  requestAnimationFrame(()=>{
-  headers.forEach(card=>{
+  reordered.forEach(card=>{
    const delta=before.get(card)-card.getBoundingClientRect().top;
    if(Math.abs(delta)<1)return;
    card.animate([{translate:`0 ${delta}px`},{translate:'0 0'}],{duration:430,easing:'cubic-bezier(.2,.82,.22,1)'});
