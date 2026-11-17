@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=me-card-fold-fix-94504e7">
+<link rel="stylesheet" href="assets/glass-system.css?v=me-card-order-9639228">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -521,6 +521,7 @@ strengthScroller.addEventListener('wheel',event=>{
 const meCardStack=placeholderView.querySelector('.iw-me-card-stack');
 const meCards=Array.from(meCardStack.querySelectorAll('.iw-me-card-shell'));
 let meCardPress=null;
+let meCardWheelLock=false;
 function setActiveMeCard(activeIndex){
  meCards.forEach((card,index)=>{
   const distance=Math.abs(index-activeIndex);
@@ -532,22 +533,47 @@ function setActiveMeCard(activeIndex){
  });
 }
 setActiveMeCard(meCards.length-1);
+function rotateMeCardHeaders(direction){
+ const active=meCardStack.querySelector('.iw-me-card-shell.is-active');
+ const headers=Array.from(meCardStack.querySelectorAll('.iw-me-card-shell:not(.is-active)'));
+ if(headers.length<2)return;
+ const before=new Map(headers.map(card=>[card,card.getBoundingClientRect().top]));
+ if(direction>0)meCardStack.insertBefore(headers[0],active);
+ else meCardStack.insertBefore(headers[headers.length-1],headers[0]);
+ requestAnimationFrame(()=>{
+  headers.forEach(card=>{
+   const delta=before.get(card)-card.getBoundingClientRect().top;
+   if(Math.abs(delta)<1)return;
+   card.animate([{translate:`0 ${delta}px`},{translate:'0 0'}],{duration:430,easing:'cubic-bezier(.2,.82,.22,1)'});
+  });
+ });
+}
 meCardStack.addEventListener('pointerdown',event=>{
  if(event.pointerType==='mouse'&&event.button!==0)return;
  const bounds=meCardStack.getBoundingClientRect();
  if(event.clientY<bounds.top||event.clientY>bounds.bottom)return;
- meCardPress={id:event.pointerId,y:event.clientY};
+ meCardPress={id:event.pointerId,y:event.clientY,lastY:event.clientY};
+ meCardStack.setPointerCapture(event.pointerId);
  meCardStack.classList.add('is-pressing');
 });
 meCardStack.addEventListener('pointermove',event=>{
  if(!meCardPress||meCardPress.id!==event.pointerId)return;
+ meCardPress.lastY=event.clientY;
 });
 function endMeCardPress(event){
  if(!meCardPress||meCardPress.id!==event.pointerId)return;
+ const delta=meCardPress.lastY-meCardPress.y;
  meCardPress=null;meCardStack.classList.remove('is-pressing');
+ if(Math.abs(delta)>=32)rotateMeCardHeaders(delta<0?1:-1);
 }
 meCardStack.addEventListener('pointerup',endMeCardPress);
 meCardStack.addEventListener('pointercancel',()=>{meCardPress=null;meCardStack.classList.remove('is-pressing')});
+meCardStack.addEventListener('wheel',event=>{
+ if(Math.abs(event.deltaY)<8||meCardWheelLock)return;
+ event.preventDefault();meCardWheelLock=true;
+ rotateMeCardHeaders(event.deltaY>0?1:-1);
+ window.setTimeout(()=>{meCardWheelLock=false},440);
+},{passive:false});
 relaxView.id='iw-breathe-panel';
 relaxView.setAttribute('role','tabpanel');relaxView.setAttribute('aria-labelledby','iw-mode-breathe');
 const meditateView=document.createElement('section');
