@@ -156,15 +156,15 @@
 #inward-preview .iw-tab-placeholder[data-tab="me"]{display:block;overflow-y:auto;overflow-x:hidden;inset:0;padding:0 0 18px;color:inherit;scrollbar-width:none}
 #inward-preview .iw-tab-placeholder[data-tab="me"]::-webkit-scrollbar{display:none}
 #inward-preview .iw-me-layout{width:100%;padding:0 0 12px}
-#inward-preview .iw-me-profile{position:relative;width:314px;height:153px;margin:0 auto 2px}
-#inward-preview .iw-me-profile-progress{position:absolute;left:10px;top:0;width:160px;height:157px;display:block}
-#inward-preview .iw-me-progress-score{position:absolute;right:16px;top:24px;width:113px;height:96px;display:block}
+#inward-preview .iw-me-profile{position:relative;width:280px;height:106px;margin:0 auto 35px}
+#inward-preview .iw-me-profile-progress{position:absolute;left:20px;top:0;width:112px;height:auto;display:block}
+#inward-preview .iw-me-progress-score{position:absolute;right:25px;top:16px;width:79px;height:auto;display:block}
 #inward-preview .iw-me-card-stack{position:relative;width:314px;height:412px;margin:0 auto}
 #inward-preview .iw-me-card-stack>img{position:absolute;left:0;width:314px;height:auto;display:block;max-width:none}
-#inward-preview .iw-me-card-setting{top:0;z-index:1}
-#inward-preview .iw-me-card-notifications{top:41px;z-index:2}
-#inward-preview .iw-me-card-privacy{top:82px;z-index:3}
-#inward-preview .iw-me-card-archive{top:123px;z-index:4}
+#inward-preview .iw-me-card-setting{top:-40px;z-index:1}
+#inward-preview .iw-me-card-notifications{top:11px;z-index:2}
+#inward-preview .iw-me-card-privacy{top:62px;z-index:3}
+#inward-preview .iw-me-card-archive{top:113px;z-index:4}
 #inward-preview .iw-me-card-journey{top:164px;z-index:5}
 #inward-preview .iw-me-section-indicator{display:block;width:220px;height:85px;margin:-8px auto -14px}
 #inward-preview[data-main-tab="me"] .iw-avatar{display:none}
