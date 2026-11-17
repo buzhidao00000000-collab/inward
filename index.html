@@ -494,7 +494,7 @@ relaxView.innerHTML="<svg id=\"iw-breathing\" data-breathing-scene=\"true\" widt
 root.querySelector('main').append(relaxView);
 const placeholderView=document.createElement('section');
 placeholderView.className='iw-tab-placeholder';placeholderView.hidden=true;
-placeholderView.innerHTML='<div class="iw-report-layout"><img class="iw-report-weekly" src="assets/report/weekly-chart.svg" alt="This week activity chart"><img class="iw-report-archive" src="assets/report/archive-card.svg" alt="Personal Archive"><div class="iw-report-values"><img src="assets/report/value-list.svg" alt="Values from this week"><span class="iw-report-value-first"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></span></div><div class="iw-report-strength"><img class="iw-report-strength-label" src="assets/report/section-label.svg" alt="Strength in this week"><div class="iw-report-strength-scroll" aria-label="Strength cards" tabindex="0"><div class="iw-report-strength-track"><div class="iw-report-strength-card"><img src="assets/report/strength-card-1.svg" alt="Wisdom strength card"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></div><img src="assets/report/strength-card-2.svg" alt="Creativity strength card"><img src="assets/report/strength-card-3.svg" alt="More strength cards"></div></div></div></div><p class="iw-me-placeholder">Coming soon</p>';
+placeholderView.innerHTML='<div class="iw-report-layout"><img class="iw-report-weekly" src="assets/report/weekly-chart.svg" alt="This week activity chart"><img class="iw-report-archive" src="assets/report/archive-card.svg" alt="Personal Archive"><div class="iw-report-values"><img src="assets/report/value-list.svg" alt="Values from this week"><span class="iw-report-value-first"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></span></div><div class="iw-report-strength"><img class="iw-report-strength-label" src="assets/report/section-label.svg" alt="Strength in this week"><div class="iw-report-strength-scroll" aria-label="Strength cards" tabindex="0"><div class="iw-report-strength-track"><div class="iw-report-strength-card"><img src="assets/report/strength-card-1.svg" alt="Wisdom strength card"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></div><img src="assets/report/strength-card-2.svg" alt="Creativity strength card"><img src="assets/report/strength-card-3.svg" alt="More strength cards"></div></div></div></div><div class="iw-me-layout"><div class="iw-me-profile"><img class="iw-me-profile-progress" src="assets/me/profile-progress.svg" alt="Profile progress"><img class="iw-me-progress-score" src="assets/me/progress-score.svg" alt="98 percent value exploration progress"></div><div class="iw-me-card-stack"><img class="iw-me-card-setting" src="assets/me/setting.svg" alt="Setting"><img class="iw-me-card-notifications" src="assets/me/notifications.svg" alt="Notifications"><img class="iw-me-card-privacy" src="assets/me/privacy.svg" alt="Privacy"><img class="iw-me-card-archive" src="assets/me/personal-archive.svg" alt="Personal Archive"><img class="iw-me-card-journey" src="assets/me/my-journey.svg" alt="My Journey"></div><img class="iw-me-section-indicator" src="assets/me/section-indicator.svg" alt="Profile sections"></div>';
 root.querySelector('main').append(placeholderView);
 const strengthScroller=placeholderView.querySelector('.iw-report-strength-scroll');
 let strengthDrag=null;
@@ -549,6 +549,7 @@ modeSwitch.addEventListener('keydown',event=>{
 
 function setMainTab(tab){
  close();
+ root.dataset.mainTab=tab;
  const relaxing=tab==='relax',dialogue=tab==='dialogue';
  root.classList.toggle('iw-show-relax',relaxing);
  root.classList.toggle('iw-secondary-tab',!dialogue);
@@ -564,7 +565,7 @@ function setMainTab(tab){
  root.querySelector('.iw-composer').hidden=!dialogue;
  root.querySelector('.iw-quick-actions').hidden=!dialogue;
  root.querySelector('h1').hidden=relaxing;
- root.querySelector('h1').firstChild.textContent={dialogue:'Dialogue',relax:'',report:'Report',me:'Me'}[tab];
+ root.querySelector('h1').firstChild.textContent={dialogue:'Dialogue',relax:'',report:'Report',me:'Profile'}[tab];
  root.querySelectorAll('[data-tab]').forEach(button=>{
   const selected=button.dataset.tab===tab;
   button.classList.toggle('iw-active',selected);
