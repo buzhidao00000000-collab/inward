@@ -34,3 +34,4 @@
 [2026-11-16 17:33（北京时间）] Report 标记定位：将 New 分别绑定到 Freedom 行与 Wisdom 卡片，Wisdom 标记随横向拖动同步移动。
 [2026-11-16 17:42（北京时间）] Report 标记微调：Freedom 的 New 上移 15px，并扩展 Strength 轨道顶部空间以完整显示 Wisdom 的 New。
 [2026-11-16 18:25（北京时间）] Personal Archive 动效：安装 svg-animations skill，并为紫/黄背景加入仅右缘流动的 SMIL 路径形变与错相透明度呼吸。
+[2026-11-17 17:36（北京时间）] Personal Archive 动效重做：背景两层由原始轮廓转换为用户提供的新 SVG 轮廓，黄色层相对紫色层延迟 0.35 秒。
