@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=me-indicator-exponential-c55a4c7">
+<link rel="stylesheet" href="assets/glass-system.css?v=report-value-history-9f2c1d8">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -496,6 +496,59 @@ const placeholderView=document.createElement('section');
 placeholderView.className='iw-tab-placeholder';placeholderView.hidden=true;
 placeholderView.innerHTML='<div class="iw-report-layout"><img class="iw-report-weekly" src="assets/report/weekly-chart.svg" alt="This week activity chart"><img class="iw-report-archive" src="assets/report/archive-card.svg" alt="Personal Archive"><div class="iw-report-values"><img src="assets/report/value-list.svg" alt="Values from this week"><span class="iw-report-value-first"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></span></div><div class="iw-report-strength"><img class="iw-report-strength-label" src="assets/report/section-label.svg" alt="Strength in this week"><div class="iw-report-strength-scroll" aria-label="Strength cards" tabindex="0"><div class="iw-report-strength-track"><div class="iw-report-strength-card"><img src="assets/report/strength-card-1.svg" alt="Wisdom strength card"><img class="iw-report-new" src="assets/report/new-badge.svg" alt="New"></div><img src="assets/report/strength-card-2.svg" alt="Creativity strength card"><img src="assets/report/strength-card-3.svg" alt="More strength cards"></div></div></div></div><div class="iw-me-layout"><div class="iw-me-profile"><img class="iw-me-profile-progress" src="assets/me/profile-progress.svg" alt="Profile progress"><img class="iw-me-progress-score" src="assets/me/progress-score.svg" alt="98 percent value exploration progress"></div><div class="iw-me-card-stack" aria-label="Profile card sections"><div class="iw-me-card-shell" data-card="setting" data-height="248"><img src="assets/me/setting.svg" alt="Setting"></div><div class="iw-me-card-shell" data-card="notifications" data-height="248"><img src="assets/me/notifications-standalone.svg" alt="Notifications"></div><div class="iw-me-card-shell" data-card="privacy" data-height="248"><img src="assets/me/privacy.svg" alt="Privacy"></div><div class="iw-me-card-shell" data-card="archive" data-height="248"><img src="assets/me/personal-archive.svg" alt="Personal Archive"></div><div class="iw-me-card-shell is-active" data-card="journey" data-height="248"><img src="assets/me/my-journey.svg" alt="My Journey"></div></div><div class="iw-me-section-indicator" role="img" aria-label="Card order indicator"><svg width="220" height="85" viewBox="0 0 220 85" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g filter="url(#iw-me-indicator-shadow)"><rect x="20.5" y="20.5" width="175" height="40" rx="20" fill="white"/></g><g fill="#D8D8D8"><rect x="54.5" y="32.5" width="2" height="16"/><rect x="64.5" y="32.5" width="2" height="16"/><rect x="86.5" y="32.5" width="2" height="16"/><rect x="96.5" y="32.5" width="2" height="16"/><rect x="118.5" y="32.5" width="2" height="16"/><rect x="128.5" y="32.5" width="2" height="16"/><rect x="150.5" y="32.5" width="2" height="16"/><rect x="160.5" y="32.5" width="2" height="16"/></g><g><rect class="iw-me-indicator-marker" data-card-marker="journey" x="0" y="32.5" width="4" height="16" rx="2" fill="#B283F6"/><rect class="iw-me-indicator-marker" data-card-marker="archive" x="0" y="32.5" width="4" height="16" rx="2" fill="#F9D157"/><rect class="iw-me-indicator-marker" data-card-marker="privacy" x="0" y="32.5" width="4" height="16" rx="2" fill="#CFADFF"/><rect class="iw-me-indicator-marker" data-card-marker="notifications" x="0" y="32.5" width="4" height="16" rx="2" fill="#FEF5A0"/><rect class="iw-me-indicator-marker" data-card-marker="setting" x="0" y="32.5" width="4" height="16" rx="2" fill="#5D5D62"/></g><defs><filter id="iw-me-indicator-shadow" x="0" y="0" width="220" height="85" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dx="2" dy="2"/><feGaussianBlur stdDeviation="11.25"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/></filter></defs></svg></div></div>';
 root.querySelector('main').append(placeholderView);
+const valueHistory={
+ freedom:{title:'Freedom',dates:[
+  {label:'November 14, 2026',datetime:'2026-11-14',items:[['“I don’t want every day planned for me. I need room to decide what feels right when I wake up.”','You protected your ability to choose in the moment, even when a fixed plan would have been easier.']]},
+  {label:'October 28, 2026',datetime:'2026-10-28',items:[['“When I travel, I like leaving one whole day open with nowhere I have to be.”','You described openness and self-direction as part of what makes an experience meaningful.']]},
+  {label:'October 3, 2026',datetime:'2026-10-03',items:[['“I felt relieved after saying no. It was the first decision that actually felt like mine.”','The relief came from reclaiming ownership of the decision.'],['“I want work that lets me choose how I reach the result.”','You valued autonomy in the process, not only the outcome.']]}
+ ]},
+ adventure:{title:'Adventure',dates:[
+  {label:'November 9, 2026',datetime:'2026-11-09',items:[['“I took the unfamiliar route home just because I wanted to know where it went.”','Curiosity was enough reason for you to step beyond the familiar.']]},
+  {label:'October 19, 2026',datetime:'2026-10-19',items:[['“I almost skipped the class because I was going alone, but trying it mattered more.”','You chose a new experience even while feeling uncertain.']]},
+  {label:'September 26, 2026',datetime:'2026-09-26',items:[['“The best part was not knowing what the next town would be like.”','You found energy in discovery rather than predictability.'],['“I keep thinking about learning to dive somewhere I have never been.”','Your goal joined novelty, exploration, and a willingness to stretch yourself.']]}
+ ]},
+ achievement:{title:'Achievement',dates:[
+  {label:'November 12, 2026',datetime:'2026-11-12',items:[['“I restarted the project twice, but I wanted to finish it in a way I could be proud of.”','You stayed with a difficult goal and held the result to your own standard.']]},
+  {label:'October 22, 2026',datetime:'2026-10-22',items:[['“Writing down the small improvements makes me want to keep going.”','You noticed progress and used it to sustain your effort.']]},
+  {label:'September 30, 2026',datetime:'2026-09-30',items:[['“It took six weeks, but I finally completed every step I promised myself.”','Following through mattered to you as much as reaching the final result.'],['“I was tired, but seeing the finished version made the work feel worth it.”','You connected satisfaction with completing something demanding.']]}
+ ]}
+};
+const valueDetail=document.createElement('section');
+valueDetail.className='iw-value-detail';valueDetail.hidden=true;valueDetail.setAttribute('aria-live','polite');
+placeholderView.append(valueDetail);
+let valueDetailOrigin=null;
+function closeValueDetail(){
+ if(valueDetail.hidden)return;
+ valueDetail.hidden=true;placeholderView.classList.remove('iw-value-detail-open');
+ valueDetail.replaceChildren();
+ if(valueDetailOrigin?.isConnected)valueDetailOrigin.focus();
+ valueDetailOrigin=null;
+}
+function openValueDetail(key,origin){
+ const value=valueHistory[key];if(!value)return;
+ valueDetailOrigin=origin||null;valueDetail.replaceChildren();
+ const head=document.createElement('header');head.className='iw-value-detail-head';
+ const back=document.createElement('button');back.type='button';back.className='iw-value-detail-back';back.setAttribute('aria-label','Back to Report');
+ back.innerHTML='<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ const title=document.createElement('h2');title.className='iw-value-detail-title';title.textContent=value.title;
+ head.append(back,title);valueDetail.append(head);back.addEventListener('click',closeValueDetail);
+ value.dates.forEach(date=>{
+  const group=document.createElement('section');group.className='iw-value-date-group';
+  const time=document.createElement('time');time.className='iw-value-date';time.dateTime=date.datetime;time.textContent=date.label;group.append(time);
+  date.items.forEach(([quoteText,reasonText])=>{
+   const card=document.createElement('article');card.className='iw-value-evidence';
+   const quote=document.createElement('blockquote');quote.className='iw-value-quote';quote.textContent=quoteText;
+   const reason=document.createElement('p');reason.className='iw-value-reason';reason.textContent=reasonText;
+   card.append(quote,reason);group.append(card);
+  });valueDetail.append(group);
+ });
+ valueDetail.hidden=false;placeholderView.classList.add('iw-value-detail-open');valueDetail.scrollTop=0;back.focus();
+}
+const reportValues=placeholderView.querySelector('.iw-report-values');
+['freedom','adventure','achievement'].forEach(key=>{
+ const button=document.createElement('button');button.type='button';button.className='iw-report-value-link';button.dataset.value=key;
+ button.setAttribute('aria-label','Open '+valueHistory[key].title+' history');button.addEventListener('click',()=>openValueDetail(key,button));reportValues.append(button);
+});
 const strengthScroller=placeholderView.querySelector('.iw-report-strength-scroll');
 let strengthDrag=null;
 strengthScroller.addEventListener('pointerdown',event=>{
@@ -714,6 +767,7 @@ modeSwitch.addEventListener('keydown',event=>{
 
 function setMainTab(tab){
  close();
+ if(tab!=='report')closeValueDetail();
  root.dataset.mainTab=tab;
  const relaxing=tab==='relax',dialogue=tab==='dialogue';
  root.classList.toggle('iw-show-relax',relaxing);
