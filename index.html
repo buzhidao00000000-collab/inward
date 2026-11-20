@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=me-indicator-wave-final-f32cac8">
+<link rel="stylesheet" href="assets/glass-system.css?v=me-indicator-exponential-c55a4c7">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -633,7 +633,7 @@ function previewMeIndicator(clientX){
   if(colorDistance<nearest){nearest=colorDistance;selected=group}
   group.querySelectorAll('rect').forEach(bar=>{
    const bounds=bar.getBoundingClientRect();const distance=Math.abs(clientX-(bounds.left+bounds.width/2));
-   const scale=1+1.85*Math.exp(-Math.pow(distance/18,2));
+   const scale=1+2*Math.exp(-distance/11.5);
    bar.setAttribute('height',(16*scale).toFixed(2));
    bar.setAttribute('y',(40.5-8*scale).toFixed(2));
   });
