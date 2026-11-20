@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=me-indicator-edge-e761a53">
+<link rel="stylesheet" href="assets/glass-system.css?v=me-indicator-drag-c4c326f">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -623,6 +623,64 @@ meCardStack.addEventListener('wheel',event=>{
  rotateMeCardHeaders(event.deltaY>0?1:-1);
  window.setTimeout(()=>{meCardWheelLock=false},440);
 },{passive:false});
+let meIndicatorPress=null;
+function previewMeIndicator(clientX){
+ const groups=Array.from(meSectionIndicator.querySelectorAll('.iw-me-indicator-marker')).sort((a,b)=>a.getBoundingClientRect().left-b.getBoundingClientRect().left);
+ let selected=groups[0];let nearest=Infinity;
+ groups.forEach(group=>{
+  const bounds=group.getBoundingClientRect();const distance=Math.abs(clientX-(bounds.left+bounds.width/2));
+  if(distance<nearest){nearest=distance;selected=group}
+ });
+ const selectedIndex=groups.indexOf(selected);
+ groups.forEach((group,index)=>{
+  group.classList.toggle('is-selected',group===selected);
+  group.classList.toggle('is-near',group!==selected&&Math.abs(index-selectedIndex)===1);
+ });
+ if(meIndicatorPress)meIndicatorPress.key=selected.dataset.cardMarker;
+}
+function activateMeCardFromIndicator(key){
+ const cards=Array.from(meCardStack.querySelectorAll('.iw-me-card-shell'));
+ const selectedIndex=cards.findIndex(card=>card.dataset.card===key);
+ if(selectedIndex<0||cards[selectedIndex].classList.contains('is-active'))return;
+ const before=new Map(cards.map(card=>[card,card.getBoundingClientRect().top]));
+ const reordered=cards.slice(selectedIndex+1).concat(cards.slice(0,selectedIndex+1));
+ reordered.forEach(card=>meCardStack.appendChild(card));
+ reordered.forEach((card,index)=>{
+  const active=index===reordered.length-1;
+  card.classList.toggle('is-active',active);card.classList.toggle('is-before',!active);card.classList.remove('is-after');
+  card.style.setProperty('--iw-card-distance',reordered.length-1-index||1);
+ });
+ updateMeSectionIndicator();
+ requestAnimationFrame(()=>reordered.forEach(card=>{
+  const delta=before.get(card)-card.getBoundingClientRect().top;
+  if(Math.abs(delta)>1)card.animate([{translate:`0 ${delta}px`},{translate:'0 0'}],{duration:430,easing:'cubic-bezier(.2,.82,.22,1)'});
+ }));
+}
+function clearMeIndicatorPress(commit=false){
+ if(!meIndicatorPress)return;
+ window.clearTimeout(meIndicatorPress.timer);
+ const key=meIndicatorPress.key;const active=meIndicatorPress.active;meIndicatorPress=null;
+ meSectionIndicator.classList.remove('is-dragging');
+ meSectionIndicator.querySelectorAll('.iw-me-indicator-marker').forEach(group=>group.classList.remove('is-selected','is-near'));
+ if(commit&&active&&key)activateMeCardFromIndicator(key);
+}
+meSectionIndicator.addEventListener('pointerdown',event=>{
+ if(meCardPress||(event.pointerType==='mouse'&&event.button!==0))return;
+ meIndicatorPress={id:event.pointerId,lastX:event.clientX,key:null,active:false,timer:0};
+ meSectionIndicator.setPointerCapture(event.pointerId);
+ meIndicatorPress.timer=window.setTimeout(()=>{
+  if(!meIndicatorPress||meIndicatorPress.id!==event.pointerId)return;
+  meIndicatorPress.active=true;meSectionIndicator.classList.add('is-dragging');previewMeIndicator(meIndicatorPress.lastX);
+ },180);
+});
+meSectionIndicator.addEventListener('pointermove',event=>{
+ if(!meIndicatorPress||meIndicatorPress.id!==event.pointerId)return;
+ meIndicatorPress.lastX=event.clientX;if(meIndicatorPress.active)previewMeIndicator(event.clientX);
+});
+meSectionIndicator.addEventListener('pointerup',event=>{
+ if(!meIndicatorPress||meIndicatorPress.id!==event.pointerId)return;clearMeIndicatorPress(true);
+});
+meSectionIndicator.addEventListener('pointercancel',()=>clearMeIndicatorPress(false));
 relaxView.id='iw-breathe-panel';
 relaxView.setAttribute('role','tabpanel');relaxView.setAttribute('aria-labelledby','iw-mode-breathe');
 const meditateView=document.createElement('section');

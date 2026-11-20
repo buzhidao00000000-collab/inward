@@ -170,10 +170,16 @@
 #inward-preview .iw-me-card-stack.is-pressing .iw-me-card-shell.is-after{--iw-card-angle:46deg;transform:translate3d(0,calc(var(--iw-card-distance,1)*3px),var(--iw-card-z,0px)) rotateX(var(--iw-card-angle))}
 #inward-preview .iw-me-card-stack.is-pressing .iw-me-card-shell.is-active{transform:translate3d(0,-3px,30px) rotateX(-2.5deg);filter:drop-shadow(0 18px 16px #3c28452b)}
 #inward-preview .iw-me-card-shell>img{display:block;width:314px;height:auto;max-width:none;pointer-events:none;-webkit-user-drag:none}
-#inward-preview .iw-me-section-indicator{position:relative;top:-25px;display:block;width:220px;height:85px;margin:-8px auto -14px}
+#inward-preview .iw-me-section-indicator{position:relative;top:-25px;display:block;width:220px;height:85px;margin:-8px auto -14px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#inward-preview .iw-me-section-indicator.is-dragging{cursor:grabbing}
 #inward-preview .iw-me-section-indicator>svg{display:block;width:220px;height:85px;overflow:visible}
 #inward-preview .iw-me-indicator-marker{transform-box:fill-box;transform-origin:center;transition:transform .46s cubic-bezier(.22,1.2,.36,1);will-change:transform}
 #inward-preview .iw-me-indicator-marker rect[fill="#D8D8D8"]{transition:opacity .16s ease}
+#inward-preview .iw-me-indicator-marker>rect{transform-box:fill-box;transform-origin:center;transition:transform .18s cubic-bezier(.2,.9,.25,1.3),opacity .16s ease;will-change:transform}
+#inward-preview .iw-me-indicator-marker.is-near>rect:first-child{transform:scaleY(1.42)}
+#inward-preview .iw-me-indicator-marker.is-near>rect[fill="#D8D8D8"]{transform:scaleY(1.18)}
+#inward-preview .iw-me-indicator-marker.is-selected>rect:first-child{transform:scaleY(2.2)}
+#inward-preview .iw-me-indicator-marker.is-selected>rect[fill="#D8D8D8"]{transform:scaleY(1.5)}
 #inward-preview .iw-me-section-indicator.is-initializing .iw-me-indicator-marker{transition:none}
 #inward-preview[data-main-tab="me"] .iw-avatar{display:none}
 #inward-preview[data-main-tab="me"] header{display:none}
