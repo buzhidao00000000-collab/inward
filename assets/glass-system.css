@@ -153,8 +153,8 @@
 #inward-preview .iw-value-detail[hidden]{display:none}
 #inward-preview .iw-tab-placeholder.iw-value-detail-open .iw-report-layout{display:none}
 #inward-preview .iw-value-detail-head{display:flex;align-items:center;gap:13px;margin:0 0 24px}
-#inward-preview .iw-value-detail-back{display:grid;place-items:center;width:38px;height:38px;min-height:38px;padding:0;border:0;border-radius:50%;background:#fffffff2;color:#544c5d;box-shadow:0 6px 20px #6d5b8415,inset 0 1px 1px #fff;font-family:var(--iw-font);cursor:pointer}
-#inward-preview .iw-value-detail-back svg{display:block;width:18px;height:18px}
+#inward-preview .iw-value-detail-back{display:grid;place-items:center;width:42px;height:40px;min-width:42px;min-height:40px;padding:0;border:0;border-radius:0;background:transparent;color:#a8a8a8;box-shadow:none;font-family:var(--iw-font);cursor:pointer}
+#inward-preview .iw-value-detail-back svg{display:block;width:42px;height:40px}
 #inward-preview .iw-value-detail-title{margin:0;font-family:var(--iw-font);font-size:30px;line-height:36px;font-weight:650;letter-spacing:-.8px;color:#242329}
 #inward-preview .iw-value-date-group{margin:0 0 22px}
 #inward-preview .iw-value-date{display:block;margin:0 0 9px 5px;font-family:var(--iw-font);font-size:13px;line-height:18px;font-weight:500;letter-spacing:0;color:#8f8798}
