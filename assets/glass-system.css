@@ -163,9 +163,7 @@
 #inward-preview .iw-me-card-stack.is-pressing{cursor:grabbing}
 #inward-preview .iw-me-card-shell{position:relative;width:314px;height:248px;overflow:visible;transform-origin:50% 48px;transform:translate3d(0,0,var(--iw-card-z,0px)) rotateX(var(--iw-card-angle,-28deg));filter:drop-shadow(0 7px 7px #3c28451c);transition:transform .55s cubic-bezier(.2,.82,.22,1),filter .4s ease;margin-top:-200px;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;isolation:isolate}
 #inward-preview .iw-me-card-shell:first-child{margin-top:0}
-#inward-preview .iw-me-card-shell::after{content:"";position:absolute;left:0;right:0;top:47px;height:1px;background:linear-gradient(90deg,transparent,#ffffffb8 18%,#ffffffd9 50%,#ffffffb8 82%,transparent);pointer-events:none}
 #inward-preview .iw-me-card-shell.is-active{height:248px;margin-top:-200px;--iw-card-angle:0deg;--iw-card-z:20px;transform-origin:50% 0;z-index:8;filter:drop-shadow(0 14px 13px #3c28451e)}
-#inward-preview .iw-me-card-shell.is-active::after{display:none}
 #inward-preview .iw-me-card-shell.is-before{--iw-card-angle:-28deg;--iw-card-z:2px;z-index:calc(7 - var(--iw-card-distance,1))}
 #inward-preview .iw-me-card-shell.is-after{--iw-card-angle:28deg;--iw-card-z:2px;transform-origin:50% 0;z-index:calc(7 - var(--iw-card-distance,1))}
 #inward-preview .iw-me-card-stack.is-pressing .iw-me-card-shell.is-before{--iw-card-angle:-46deg;transform:translate3d(0,calc(var(--iw-card-distance,1)*-3px),var(--iw-card-z,0px)) rotateX(var(--iw-card-angle))}
