@@ -175,11 +175,7 @@
 #inward-preview .iw-me-section-indicator>svg{display:block;width:220px;height:85px;overflow:visible}
 #inward-preview .iw-me-indicator-marker{transform-box:fill-box;transform-origin:center;transition:transform .46s cubic-bezier(.22,1.2,.36,1);will-change:transform}
 #inward-preview .iw-me-indicator-marker rect[fill="#D8D8D8"]{transition:opacity .16s ease}
-#inward-preview .iw-me-indicator-marker>rect{transform-box:fill-box;transform-origin:center;transition:transform .18s cubic-bezier(.2,.9,.25,1.3),opacity .16s ease;will-change:transform}
-#inward-preview .iw-me-indicator-marker.is-near>rect:first-child{transform:scaleY(1.42)}
-#inward-preview .iw-me-indicator-marker.is-near>rect[fill="#D8D8D8"]{transform:scaleY(1.18)}
-#inward-preview .iw-me-indicator-marker.is-selected>rect:first-child{transform:scaleY(2.2)}
-#inward-preview .iw-me-indicator-marker.is-selected>rect[fill="#D8D8D8"]{transform:scaleY(1.5)}
+#inward-preview .iw-me-indicator-marker>rect{transition:opacity .16s ease}
 #inward-preview .iw-me-section-indicator.is-initializing .iw-me-indicator-marker{transition:none}
 #inward-preview[data-main-tab="me"] .iw-avatar{display:none}
 #inward-preview[data-main-tab="me"] header{display:none}
