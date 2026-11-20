@@ -170,7 +170,7 @@
 #inward-preview .iw-me-card-stack.is-pressing .iw-me-card-shell.is-after{--iw-card-angle:46deg;transform:translate3d(0,calc(var(--iw-card-distance,1)*3px),var(--iw-card-z,0px)) rotateX(var(--iw-card-angle))}
 #inward-preview .iw-me-card-stack.is-pressing .iw-me-card-shell.is-active{transform:translate3d(0,-3px,30px) rotateX(-2.5deg);filter:drop-shadow(0 18px 16px #3c28452b)}
 #inward-preview .iw-me-card-shell>img{display:block;width:314px;height:auto;max-width:none;pointer-events:none;-webkit-user-drag:none}
-#inward-preview .iw-me-section-indicator{position:relative;top:-10px;display:block;width:220px;height:85px;margin:-8px auto -14px}
+#inward-preview .iw-me-section-indicator{position:relative;top:-25px;display:block;width:220px;height:85px;margin:-8px auto -14px}
 #inward-preview[data-main-tab="me"] .iw-avatar{display:none}
 #inward-preview[data-main-tab="me"] header{display:none}
 @media(prefers-reduced-motion:reduce){#inward-preview .iw-me-card-shell{transition-duration:.01s}}
