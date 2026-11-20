@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=value-detail-back-reset-6585397">
+<link rel="stylesheet" href="assets/glass-system.css?v=strength-flip-22fd418">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -550,15 +550,39 @@ const reportValues=placeholderView.querySelector('.iw-report-values');
  button.setAttribute('aria-label','Open '+valueHistory[key].title+' history');button.addEventListener('click',()=>openValueDetail(key,button));reportValues.append(button);
 });
 const strengthScroller=placeholderView.querySelector('.iw-report-strength-scroll');
+const strengthTrack=placeholderView.querySelector('.iw-report-strength-track');
+const strengthNames=['Wisdom','Creativity','Curiosity'];
+let strengthWasDragged=false;
+Array.from(strengthTrack.children).forEach((item,index)=>{
+ const shell=item.classList.contains('iw-report-strength-card')?item:document.createElement('div');
+ const artwork=item.classList.contains('iw-report-strength-card')?item.querySelector('img:first-child'):item;
+ if(!item.classList.contains('iw-report-strength-card')){shell.className='iw-report-strength-card';strengthTrack.replaceChild(shell,item)}
+ artwork.remove();
+ const flip=document.createElement('button');flip.type='button';flip.className='iw-strength-flip';flip.dataset.strength=strengthNames[index].toLowerCase();flip.setAttribute('aria-label','Flip '+strengthNames[index]+' strength card');flip.setAttribute('aria-pressed','false');
+ const inner=document.createElement('span');inner.className='iw-strength-flip-inner';
+ const front=document.createElement('span');front.className='iw-strength-face iw-strength-front';artwork.alt=strengthNames[index]+' strength card';
+ const arrow=document.createElement('span');arrow.className='iw-strength-arrow';arrow.setAttribute('aria-hidden','true');arrow.innerHTML='<svg viewBox="0 0 30 20" fill="none"><path d="M8 10h13M16.5 5.5 21 10l-4.5 4.5" stroke="#8D67EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ const back=document.createElement('span');back.className='iw-strength-face iw-strength-back';
+ const backText=document.createElement('span');backText.textContent='Tap again to explore';back.append(backText);front.append(artwork,arrow);inner.append(front,back);flip.append(inner);shell.prepend(flip);
+ flip.addEventListener('click',()=>{
+  if(strengthWasDragged){strengthWasDragged=false;return}
+  if(!shell.classList.contains('is-flipped')){
+   strengthTrack.querySelectorAll('.iw-report-strength-card.is-flipped').forEach(card=>{card.classList.remove('is-flipped');const button=card.querySelector('.iw-strength-flip');button?.setAttribute('aria-pressed','false')});
+   shell.classList.add('is-flipped');flip.setAttribute('aria-pressed','true');flip.setAttribute('aria-label','Explore '+strengthNames[index]+' strength');
+  }else document.dispatchEvent(new CustomEvent('inward:strengthopen',{detail:{strength:strengthNames[index]}}));
+ });
+});
 let strengthDrag=null;
 strengthScroller.addEventListener('pointerdown',event=>{
  if(event.pointerType==='mouse'&&event.button!==0)return;
+ strengthWasDragged=false;
  strengthDrag={id:event.pointerId,x:event.clientX,left:strengthScroller.scrollLeft};
  strengthScroller.setPointerCapture(event.pointerId);strengthScroller.classList.add('is-dragging');
 });
 strengthScroller.addEventListener('pointermove',event=>{
  if(!strengthDrag||strengthDrag.id!==event.pointerId)return;
  event.preventDefault();
+ if(Math.abs(event.clientX-strengthDrag.x)>5)strengthWasDragged=true;
  strengthScroller.scrollLeft=strengthDrag.left-(event.clientX-strengthDrag.x);
 });
 function endStrengthDrag(event){
