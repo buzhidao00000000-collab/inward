@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=me-indicator-carousel-f37d34c">
+<link rel="stylesheet" href="assets/glass-system.css?v=me-indicator-gray-165c49e">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -522,6 +522,21 @@ const meCardStack=placeholderView.querySelector('.iw-me-card-stack');
 const meCards=Array.from(meCardStack.querySelectorAll('.iw-me-card-shell'));
 const meSectionIndicator=placeholderView.querySelector('.iw-me-section-indicator');
 const meIndicatorSlots=[42.5,74.5,106.5,138.5,170.5];
+const meIndicatorSvgNS='http://www.w3.org/2000/svg';
+meSectionIndicator.querySelector('g[fill="#D8D8D8"]')?.remove();
+Array.from(meSectionIndicator.querySelectorAll('rect[data-card-marker]')).forEach(marker=>{
+ const key=marker.dataset.cardMarker;
+ const group=document.createElementNS(meIndicatorSvgNS,'g');
+ group.classList.add('iw-me-indicator-marker');group.dataset.cardMarker=key;
+ marker.parentNode.insertBefore(group,marker);
+ marker.classList.remove('iw-me-indicator-marker');marker.removeAttribute('data-card-marker');marker.setAttribute('x','0');
+ group.appendChild(marker);
+ [12,22].forEach(x=>{
+  const gray=document.createElementNS(meIndicatorSvgNS,'rect');
+  gray.setAttribute('x',String(x));gray.setAttribute('y','32.5');gray.setAttribute('width','2');gray.setAttribute('height','16');gray.setAttribute('fill','#D8D8D8');
+  group.appendChild(gray);
+ });
+});
 let meCardPress=null;
 let meCardWheelLock=false;
 function updateMeSectionIndicator(initial=false){
