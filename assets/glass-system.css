@@ -148,7 +148,7 @@
 #inward-preview .iw-report-value-link[data-value="adventure"]{top:88px}
 #inward-preview .iw-report-value-link[data-value="achievement"]{top:148px}
 #inward-preview .iw-report-value-link:focus-visible{outline:2px solid #8d67ea;outline-offset:2px}
-#inward-preview .iw-value-detail{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:18px 22px 42px;box-sizing:border-box;color:#242329;background:radial-gradient(ellipse 210px 190px at 92% 9%,#fff9b980,transparent 72%),radial-gradient(ellipse 230px 220px at 2% 92%,#efd9ff8f,transparent 74%),#fafafd;scrollbar-width:none;font-family:var(--iw-font)}
+#inward-preview .iw-value-detail{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:18px 22px 42px;box-sizing:border-box;color:#242329;background:transparent;scrollbar-width:none;font-family:var(--iw-font)}
 #inward-preview .iw-value-detail::-webkit-scrollbar{display:none}
 #inward-preview .iw-value-detail[hidden]{display:none}
 #inward-preview .iw-tab-placeholder.iw-value-detail-open .iw-report-layout{display:none}
