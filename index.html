@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=strength-flip-22fd418">
+<link rel="stylesheet" href="assets/glass-system.css?v=strength-flip-click-fix-939c25e">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -576,18 +576,21 @@ let strengthDrag=null;
 strengthScroller.addEventListener('pointerdown',event=>{
  if(event.pointerType==='mouse'&&event.button!==0)return;
  strengthWasDragged=false;
- strengthDrag={id:event.pointerId,x:event.clientX,left:strengthScroller.scrollLeft};
- strengthScroller.setPointerCapture(event.pointerId);strengthScroller.classList.add('is-dragging');
+ strengthDrag={id:event.pointerId,x:event.clientX,left:strengthScroller.scrollLeft,captured:false};
 });
 strengthScroller.addEventListener('pointermove',event=>{
  if(!strengthDrag||strengthDrag.id!==event.pointerId)return;
+ if(Math.abs(event.clientX-strengthDrag.x)>5&&!strengthDrag.captured){
+  strengthWasDragged=true;strengthDrag.captured=true;strengthScroller.setPointerCapture(event.pointerId);strengthScroller.classList.add('is-dragging');
+ }
+ if(!strengthDrag.captured)return;
  event.preventDefault();
- if(Math.abs(event.clientX-strengthDrag.x)>5)strengthWasDragged=true;
  strengthScroller.scrollLeft=strengthDrag.left-(event.clientX-strengthDrag.x);
 });
 function endStrengthDrag(event){
  if(!strengthDrag||strengthDrag.id!==event.pointerId)return;
  strengthDrag=null;strengthScroller.classList.remove('is-dragging');
+ if(strengthWasDragged)setTimeout(()=>{strengthWasDragged=false},0);
 }
 strengthScroller.addEventListener('pointerup',endStrengthDrag);
 strengthScroller.addEventListener('pointercancel',endStrengthDrag);
