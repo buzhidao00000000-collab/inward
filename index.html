@@ -130,7 +130,7 @@ body{margin:0}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=coze-dialogue-b654928">
+<link rel="stylesheet" href="assets/glass-system.css?v=coze-multiselect-b051af7">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -910,7 +910,7 @@ new ResizeObserver(fitDevice).observe(deviceStage);fitDevice();root.dataset.inpu
 const edgeLights=[];
 root.querySelectorAll('.iw-options button').forEach(button=>{const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg'),rect=document.createElementNS(ns,'rect'),w=button.offsetWidth,h=button.offsetHeight,inset=1.2;svg.classList.add('iw-edge-light');svg.setAttribute('aria-hidden','true');svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.setAttribute('preserveAspectRatio','none');rect.setAttribute('x',String(inset));rect.setAttribute('y',String(inset));rect.setAttribute('width',String(w-inset*2));rect.setAttribute('height',String(h-inset*2));rect.setAttribute('rx',String((h-inset*2)/2));rect.setAttribute('pathLength','100');svg.append(rect);button.append(svg);edgeLights.push(rect)});
 let edgeStart=null;function orbitFrame(now){if(edgeStart===null)edgeStart=now;const sweepMs=1300,phase=(now-edgeStart)%(sweepMs+4500),active=phase<sweepMs,offset=active?-phase/sweepMs*100:-100;edgeLights.forEach(rect=>{rect.style.strokeDashoffset=String(offset);rect.style.opacity=active?'1':'0'});requestAnimationFrame(orbitFrame)}requestAnimationFrame(orbitFrame);
-popover.setAttribute('role','region');popover.setAttribute('aria-label','Quick view');let active=null,sent=[],conversations=[],currentId=makeId(),dialoguePending=false;
+popover.setAttribute('role','region');popover.setAttribute('aria-label','Quick view');let active=null,sent=[],conversations=[],currentId=makeId(),dialoguePending=false,activePrompt=null;
 function makeId(){return 'dialogue-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8)}
 function makeUserId(){
  const key='inward-user-id';
@@ -930,7 +930,7 @@ function compactMessage(message){return {role:message.role,text:message.text.sli
 function persist(){sync();const saved=conversations.slice(0,8).map(c=>({id:c.id,messages:c.messages.slice(-10).map(compactMessage)}));const current=sent.slice(-10).map(compactMessage);while(JSON.stringify({saved,current}).length>18000&&saved.length>1)saved.pop();window.openai?.setWidgetState?.({modelContent:{screen:'INWARD Dialogue',messages:current.slice(-10)},privateContent:{version:3,currentId,messages:current,conversations:saved}}).catch(()=>{})}
 function close(){popover.hidden=true;if(active)active.setAttribute('aria-expanded','false');active=null}
 function position(){if(!active)return;const p=phone.getBoundingClientRect(),raw=active.getBoundingClientRect(),scale=p.width/phone.offsetWidth,b={left:p.left+(raw.left-p.left)/scale,top:p.top+(raw.top-p.top)/scale,bottom:p.top+(raw.bottom-p.top)/scale,width:raw.width/scale};const inset=phone.clientLeft,width=Math.min(310,phone.clientWidth-24);popover.style.width=width+'px';const left=Math.max(12,Math.min(b.left-p.left-inset,phone.clientWidth-width-12));popover.style.left=left+'px';const above=b.top-p.top-inset,below=b.bottom-p.top-inset;const height=popover.offsetHeight;popover.style.top=Math.max(12,above>height+20?above-height-10:Math.min(below+10,phone.clientHeight-height-12))+'px'}
-function history(){popover.dataset.content='history';heading.textContent='History';sync();const add=document.createElement('button'),icon=document.createElement('img'),label=document.createElement('span');add.type='button';add.dataset.newDialogue='true';icon.src=plusURI;icon.className='iw-icon';icon.alt='';label.textContent='New dialogue';add.append(icon,label);add.onclick=()=>{sync();currentId=makeId();sent=[];input.value='';clearPhoto();redraw();close();persist();input.focus()};records.append(add);conversations.forEach(c=>{const b=document.createElement('button'),title=document.createElement('span');b.type='button';title.className='iw-history-title';title.textContent=messageText(c.messages.find(m=>m.role==='user')||c.messages[0]);b.setAttribute('aria-current',String(c.id===currentId));b.append(title);b.onclick=()=>{sync();currentId=c.id;sent=c.messages.slice();input.value='';clearPhoto();redraw();close();persist()};records.append(b)})}
+function history(){popover.dataset.content='history';heading.textContent='History';sync();const add=document.createElement('button'),icon=document.createElement('img'),label=document.createElement('span');add.type='button';add.dataset.newDialogue='true';icon.src=plusURI;icon.className='iw-icon';icon.alt='';label.textContent='New dialogue';add.append(icon,label);add.onclick=()=>{sync();currentId=makeId();sent=[];activePrompt=null;input.value='';clearPhoto();redraw();close();persist();input.focus()};records.append(add);conversations.forEach(c=>{const b=document.createElement('button'),title=document.createElement('span');b.type='button';title.className='iw-history-title';title.textContent=messageText(c.messages.find(m=>m.role==='user')||c.messages[0]);b.setAttribute('aria-current',String(c.id===currentId));b.append(title);b.onclick=()=>{sync();currentId=c.id;sent=c.messages.slice();activePrompt=null;input.value='';clearPhoto();redraw();close();persist()};records.append(b)})}
 function show(button,type){if(active===button){close();return}close();active=button;button.setAttribute('aria-expanded','true');records.replaceChildren();note.textContent='';meta.textContent='';if(type==='moments'){heading.textContent='Today’s recordings';popover.dataset.content='moments';samples.forEach(([t,s])=>{const b=document.createElement('button'),body=document.createElement('span'),time=document.createElement('time');time.textContent=t;body.append(time,document.createTextNode(s));b.append(body);b.onclick=()=>{input.value='I recorded: “'+s+'” — help me explore this.';close();input.focus()};records.append(b)})}else if(type==='history'){history()}else{heading.textContent=type==='profile'||type==='me'?'Me':type==='relax'?'Relax':'Report';note.textContent='Coming soon'}popover.hidden=false;position()}
 root.querySelectorAll('[data-action]').forEach(b=>{b.setAttribute('aria-expanded','false');b.onclick=()=>show(b,b.dataset.action)});root.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>setMainTab(b.dataset.tab)});
 document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!active?.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',position);
@@ -938,6 +938,11 @@ function redraw(){
  messages.replaceChildren();welcome.hidden=sent.length>0||dialoguePending||root.classList.contains('iw-secondary-tab');
  sent.forEach((message,index)=>{const b=document.createElement('div');b.className='iw-bubble';b.dataset.role=message.role;const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';enablePhotoPreview(image,()=>photo);b.append(image)}b.append(document.createTextNode(message.text));messages.append(b)});
  if(dialoguePending){const pending=document.createElement('div');pending.className='iw-bubble iw-dialogue-pending';pending.dataset.role='assistant';pending.setAttribute('role','status');pending.setAttribute('aria-label','Inward is responding');pending.innerHTML='<span></span><span></span><span></span>';messages.append(pending)}
+ if(activePrompt&&!dialoguePending){
+  const panel=document.createElement('div');panel.className='iw-response-options';panel.setAttribute('role','group');panel.setAttribute('aria-label','Response options');
+  activePrompt.options.forEach(option=>{const button=document.createElement('button');button.type='button';button.className='iw-response-option';button.textContent=option;button.setAttribute('aria-pressed',String(activePrompt.selected.has(option)));button.addEventListener('click',()=>{if(activePrompt.allowMultiple){activePrompt.selected.has(option)?activePrompt.selected.delete(option):activePrompt.selected.add(option)}else{activePrompt.selected.clear();activePrompt.selected.add(option)}panel.querySelectorAll('.iw-response-option').forEach(item=>item.setAttribute('aria-pressed',String(activePrompt.selected.has(item.textContent))));confirm.disabled=activePrompt.selected.size===0});panel.append(button)});
+  const confirm=document.createElement('button');confirm.type='button';confirm.className='iw-response-confirm';confirm.textContent='Confirm';confirm.disabled=activePrompt.selected.size===0;confirm.addEventListener('click',()=>{const selected=Array.from(activePrompt.selected);if(!selected.length)return;activePrompt=null;submitDialogue(selected.join('、'))});panel.append(confirm);messages.append(panel);
+ }
  requestAnimationFrame(()=>messages.lastElementChild?.scrollIntoView({block:'nearest',behavior:'smooth'}));
 }
 function restore(state){const p=state?.privateContent;if([2,3].includes(p?.version)&&Array.isArray(p.conversations)&&Array.isArray(p.messages)){conversations=p.conversations.filter(c=>typeof c.id==='string'&&Array.isArray(c.messages)).map(c=>({id:c.id,messages:c.messages.map(normalizeMessage).filter(Boolean)}));sent=p.messages.map(normalizeMessage).filter(Boolean);currentId=typeof p.currentId==='string'?p.currentId:makeId()}else if(Array.isArray(state?.modelContent?.messages)){sent=state.modelContent.messages.map(normalizeMessage).filter(Boolean);conversations=[];currentId=makeId();sync()}redraw()}
@@ -967,11 +972,11 @@ function selectDraftChoice(category,label){
  input.focus();
  input.setSelectionRange(input.value.length,input.value.length);
 }
-function extractCozeReply(value){
+function extractCozePayload(value){
  let current=value;
  for(let i=0;i<3&&typeof current==='string';i+=1){try{current=JSON.parse(current)}catch{break}}
- if(current&&typeof current==='object')return typeof current.reply==='string'?current.reply:typeof current.output==='string'?extractCozeReply(current.output):'';
- return typeof current==='string'?current:'';
+ if(current&&typeof current==='object'&&typeof current.output==='string'&&!current.reply)return extractCozePayload(current.output);
+ return current;
 }
 const composerForm=root.querySelector('form');
 const composerSend=root.querySelector('.iw-send');
@@ -981,20 +986,25 @@ async function sendToInward(text){
   const response=await fetch(COZE_PROXY,{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({input:text,user_id:inwardUserId,session_id:currentId,current_time:new Date().toISOString(),exploration_mode:'free_chat'})});
   const result=await response.json().catch(()=>({}));
   if(!response.ok)throw new Error(typeof result.error==='string'?result.error:'Unable to reach Inward');
-  const reply=extractCozeReply(result.output);
+  const payload=extractCozePayload(result.output);
+  const reply=typeof payload==='string'?payload:typeof payload?.reply==='string'?payload.reply:'';
   if(!reply)throw new Error('Inward returned an empty response');
-  return reply;
+  return {reply,options:Array.isArray(payload?.question_options)?payload.question_options.filter(option=>typeof option==='string'&&option.trim()).slice(0,10):[],allowMultiple:payload?.allow_multiple===true};
  }finally{clearTimeout(timeout)}
 }
 root.querySelectorAll('.iw-options button').forEach(b=>b.onclick=()=>{close();selectDraftChoice('topic',b.dataset.optionText||b.textContent.trim())});
-composerForm.onsubmit=async event=>{
- event.preventDefault();if(dialoguePending||(!input.value.trim()&&!selectedPhoto))return;
- close();const userText=input.value.trim()||(selectedPhoto?'I would like to talk about this photo.':'');
+async function submitDialogue(userText){
+ if(dialoguePending||!userText)return;
+ activePrompt=null;
  if(selectedPhoto){messagePhotos.set(currentId+':'+sent.length,selectedPhoto);clearPhoto(false)}
  sent.push({role:'user',text:userText});input.value='';dialoguePending=true;composerForm.setAttribute('aria-busy','true');composerSend.disabled=true;redraw();persist();
- try{sent.push({role:'assistant',text:await sendToInward(userText)})}
+ try{const response=await sendToInward(userText);sent.push({role:'assistant',text:response.reply});if(response.options.length)activePrompt={options:response.options,allowMultiple:response.allowMultiple,selected:new Set()}}
  catch(error){console.error('INWARD dialogue request failed',error);sent.push({role:'assistant',text:error?.name==='AbortError'?'The response took too long. Please try again.':'I’m having trouble connecting right now. Please try again.'})}
  finally{dialoguePending=false;composerForm.removeAttribute('aria-busy');composerSend.disabled=false;redraw();persist();input.focus()}
+}
+composerForm.onsubmit=event=>{
+ event.preventDefault();if(dialoguePending||(!input.value.trim()&&!selectedPhoto))return;
+ close();submitDialogue(input.value.trim()||(selectedPhoto?'I would like to talk about this photo.':''));
 };
 
 const quickActions=root.querySelector('.iw-quick-actions');
