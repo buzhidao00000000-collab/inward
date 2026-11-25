@@ -131,7 +131,7 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
 <link rel="stylesheet" href="assets/glass-system.css?v=reply-feedback-1">
-<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=1">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=thank-you-1">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -939,6 +939,17 @@ function show(button,type){if(active===button){close();return}close();active=but
 root.querySelectorAll('[data-action]').forEach(b=>{b.setAttribute('aria-expanded','false');b.onclick=()=>show(b,b.dataset.action)});root.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>setMainTab(b.dataset.tab)});
 document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!active?.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',position);
 function replyFeedbackKey(index){return 'inward-feedback:'+currentId+':'+index}
+let thankYouTimer;
+function celebrateFeedback(){
+ clearTimeout(thankYouTimer);phone.querySelector('.iw-thank-you')?.remove();
+ const celebration=document.createElement('div');celebration.className='iw-thank-you';celebration.setAttribute('role','status');
+ const label=document.createElement('span');label.className='iw-thank-you-label';label.textContent='Thank you';celebration.append(label);
+ if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const colors=['#A27BEF','#F9D157','#CFADFF','#FFF0A2','#8D67DD'];
+  for(let i=0;i<30;i++){const piece=document.createElement('i');piece.setAttribute('aria-hidden','true');const angle=Math.PI*2*i/30;piece.style.setProperty('--confetti-x',`${Math.cos(angle)*(65+Math.random()*70)}px`);piece.style.setProperty('--confetti-y',`${Math.sin(angle)*(55+Math.random()*65)+65}px`);piece.style.setProperty('--confetti-r',`${180+Math.random()*540}deg`);piece.style.setProperty('--confetti-color',colors[i%colors.length]);piece.style.setProperty('--confetti-delay',`${Math.random()*100}ms`);celebration.append(piece)}
+ }
+ phone.append(celebration);thankYouTimer=setTimeout(()=>celebration.remove(),2000);
+}
 function readReplyFeedback(index){try{return JSON.parse(localStorage.getItem(replyFeedbackKey(index))||'{}')}catch{return {}}}
 function saveReplyFeedback(index,value){try{localStorage.setItem(replyFeedbackKey(index),JSON.stringify({...value,time:new Date().toISOString()}));return true}catch{return false}}
 function createReplyActions(index){
@@ -952,9 +963,9 @@ function createReplyActions(index){
  ['理解有误','重复提问','推进太快','回应不适'].forEach(reason=>{const label=document.createElement('label'),radio=document.createElement('input'),text=document.createElement('span');radio.type='radio';radio.name='reason';radio.value=reason;text.textContent=reason;radio.addEventListener('change',()=>{choice=reason;done.disabled=false});label.append(radio,text);choices.append(label)});
  const done=document.createElement('button');done.type='submit';done.className='iw-reply-feedback-done';done.textContent='完成';done.disabled=true;
  const status=document.createElement('span');status.className='iw-feedback-status';status.setAttribute('role','status');panel.append(choices,done,status);wrap.append(panel);
- buttons.like.onclick=()=>{if(saveReplyFeedback(index,{vote:'like'})){buttons.like.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-pressed','false');panel.hidden=true}};
+ buttons.like.onclick=()=>{if(saveReplyFeedback(index,{vote:'like'})){buttons.like.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-pressed','false');panel.hidden=true;celebrateFeedback()}};
  buttons.dislike.setAttribute('aria-expanded','false');buttons.dislike.onclick=()=>{panel.hidden=!panel.hidden;buttons.dislike.setAttribute('aria-expanded',String(!panel.hidden))};
- panel.onsubmit=event=>{event.preventDefault();if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus()};
+ panel.onsubmit=event=>{event.preventDefault();if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus();celebrateFeedback()};
  buttons.refresh.onclick=async()=>{
   if(dialoguePending)return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
   const original=sent[index].text;let question='';for(let i=index-1;i>=0;i--)if(sent[i].role==='user'){question=sent[i].text;break}
