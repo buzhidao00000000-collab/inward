@@ -131,7 +131,8 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
 <link rel="stylesheet" href="assets/glass-system.css?v=reply-feedback-1">
-<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=thank-you-1">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=confetti-2">
+<script src="assets/dialogue/confetti.browser.min.js"></script>
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -946,11 +947,13 @@ function celebrateFeedback(){
  clearTimeout(thankYouTimer);phone.querySelector('.iw-thank-you')?.remove();
  const celebration=document.createElement('div');celebration.className='iw-thank-you';celebration.setAttribute('role','status');
  const label=document.createElement('span');label.className='iw-thank-you-label';label.textContent='Thank you';celebration.append(label);
- if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-  const colors=['#A27BEF','#F9D157','#CFADFF','#FFF0A2','#8D67DD'];
-  for(let i=0;i<30;i++){const piece=document.createElement('i');piece.setAttribute('aria-hidden','true');const angle=Math.PI*2*i/30;piece.style.setProperty('--confetti-x',`${Math.cos(angle)*(65+Math.random()*70)}px`);piece.style.setProperty('--confetti-y',`${Math.sin(angle)*(55+Math.random()*65)+65}px`);piece.style.setProperty('--confetti-r',`${180+Math.random()*540}deg`);piece.style.setProperty('--confetti-color',colors[i%colors.length]);piece.style.setProperty('--confetti-delay',`${Math.random()*100}ms`);celebration.append(piece)}
+ if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&window.confetti){
+  const canvas=document.createElement('canvas');canvas.className='iw-thanks-canvas';canvas.setAttribute('aria-hidden','true');celebration.append(canvas);
+  const burst=window.confetti.create(canvas,{resize:true});
+  burst({particleCount:52,spread:85,startVelocity:22,gravity:.8,decay:.93,ticks:100,scalar:.75,origin:{x:.5,y:.48},colors:['#A27BEF','#F9D157','#CFADFF','#FFF0A2'],disableForReducedMotion:true});
+  celebration._stopConfetti=()=>burst.reset();
  }
- phone.append(celebration);thankYouTimer=setTimeout(()=>celebration.remove(),2000);
+ phone.append(celebration);thankYouTimer=setTimeout(()=>{celebration._stopConfetti?.();celebration.remove()},2000);
 }
 function readReplyFeedback(index){try{return JSON.parse(localStorage.getItem(replyFeedbackKey(index))||'{}')}catch{return {}}}
 function saveReplyFeedback(index,value){try{localStorage.setItem(replyFeedbackKey(index),JSON.stringify({...value,time:new Date().toISOString()}));return true}catch{return false}}
@@ -977,6 +980,9 @@ function createReplyActions(index){
  };return wrap;
 }
 function redraw(){
+ let generating=root.querySelector('.iw-generating-indicator');
+ if(dialoguePending&&!generating){generating=document.createElement('div');generating.className='iw-generating-indicator';generating.setAttribute('role','status');generating.innerHTML='<span>正在生成</span><i></i><i></i><i></i>';root.querySelector('.iw-composer').append(generating)}
+ if(!dialoguePending)generating?.remove();
  messages.replaceChildren();welcome.hidden=sent.length>0||dialoguePending||root.classList.contains('iw-secondary-tab');
  sent.forEach((message,index)=>{const b=document.createElement('div');b.className='iw-bubble';b.dataset.role=message.role;const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';enablePhotoPreview(image,()=>photo);b.append(image)}b.append(document.createTextNode(message.text));messages.append(b)});
  Array.from(messages.children).forEach((bubble,index)=>{if(sent[index]?.role==='assistant')bubble.after(createReplyActions(index))});
