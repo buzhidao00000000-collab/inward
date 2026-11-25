@@ -24,7 +24,7 @@
  #inward-preview .iw-messages .iw-bubble{background:#fff!important;color:#242329!important}
 }
 #inward-preview .iw-background-motion{transform:scale(1);transform-origin:50% 50%;filter:saturate(2) contrast(1.16)}
-#inward-preview .iw-options{position:relative;width:282px;height:160px;display:block;padding:0;background:url("dialogue/option-stack.svg?v=20261125-sharp") 0 0/100% 100% no-repeat}
+#inward-preview .iw-options{position:relative;width:282px;height:160px;display:block;padding:0;background:url("dialogue/option-stack.svg?v=live-labels-1") 0 0/100% 100% no-repeat}
 #inward-preview .iw-options button{position:absolute;left:14.4004px;top:13.4004px;width:253px;height:31px;min-height:31px;display:flex;align-items:center;padding:0 20px;color:#726b7e;font-size:15px;font-weight:400;background:transparent;overflow:visible;border-radius:15.5px}
 #inward-preview .iw-options button:nth-child(2){left:14.4004px;top:64.4004px;width:202px;background:transparent}
 #inward-preview .iw-options button:nth-child(3){left:14.4004px;top:115.4px;width:129px;background:transparent}
