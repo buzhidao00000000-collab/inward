@@ -946,7 +946,9 @@ document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contain
 function replyFeedbackKey(index){return 'inward-feedback:'+currentId+':'+index}
 let thankYouTimer;
 let feedbackToastTimer;
-function showFeedbackToast(){clearTimeout(feedbackToastTimer);phone.querySelector('.iw-feedback-toast')?.remove();const toast=document.createElement('div');toast.className='iw-feedback-toast';toast.setAttribute('role','status');toast.textContent='You’ve already submitted feedback.';phone.append(toast);feedbackToastTimer=setTimeout(()=>toast.remove(),2000)}
+function showFeedbackToast(text='You’ve already submitted feedback.'){clearTimeout(feedbackToastTimer);phone.querySelector('.iw-feedback-toast')?.remove();const toast=document.createElement('div');toast.className='iw-feedback-toast';toast.setAttribute('role','status');toast.textContent=text;phone.append(toast);feedbackToastTimer=setTimeout(()=>toast.remove(),2000)}
+let regenerationTimes=[];
+function allowRegeneration(){const now=Date.now();regenerationTimes=regenerationTimes.filter(time=>now-time<60000);if(regenerationTimes.length>=2){showFeedbackToast('Too many requests. Please try again later.');return false}regenerationTimes.push(now);return true}
 function celebrateFeedback(){
  clearTimeout(thankYouTimer);const previous=phone.querySelector('.iw-thank-you');previous?._stopConfetti?.();previous?.remove();
  const celebration=document.createElement('div');celebration.className='iw-thank-you';celebration.setAttribute('role','status');
@@ -979,7 +981,7 @@ function createReplyActions(index){
  buttons.dislike.setAttribute('aria-expanded','false');buttons.dislike.onclick=()=>{if(readReplyFeedback(index).vote){showFeedbackToast();return}panel.hidden=!panel.hidden;buttons.dislike.setAttribute('aria-expanded',String(!panel.hidden))};
  panel.onsubmit=event=>{event.preventDefault();if(readReplyFeedback(index).vote){showFeedbackToast();return}if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus();celebrateFeedback()};
  buttons.refresh.onclick=async()=>{
-  if(dialoguePending)return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
+  if(dialoguePending)return;if(!allowRegeneration())return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
   const original=sent[index].text;let question='';for(let i=index-1;i>=0;i--)if(sent[i].role==='user'){question=sent[i].text;break}
   try{const response=await sendToInward('请重新生成下面这轮回答，换一种表达，不要重复已有回答。用户原话：'+question+'\n已有回答：'+original);if(currentId!==session)return;sent[index]={role:'assistant',text:response.reply};if(index===sent.length-1&&response.options.length)activePrompt={options:response.options,allowMultiple:response.allowMultiple,selected:new Set()};else activePrompt=previous;try{localStorage.removeItem(replyFeedbackKey(index))}catch{}}
   catch(error){activePrompt=previous;status.textContent='重新生成失败，请重试';console.error(error)}
