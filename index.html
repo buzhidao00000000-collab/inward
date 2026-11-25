@@ -131,7 +131,7 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
 <link rel="stylesheet" href="assets/glass-system.css?v=pending-dots-2">
-<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=great-vibes-1">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=falling-confetti-1">
 <link rel="preload" href="assets/dialogue/GreatVibes-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <script src="assets/dialogue/confetti.browser.min.js"></script>
 </head>
@@ -944,15 +944,19 @@ root.querySelectorAll('[data-action]').forEach(b=>{b.setAttribute('aria-expanded
 document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!active?.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',position);
 function replyFeedbackKey(index){return 'inward-feedback:'+currentId+':'+index}
 let thankYouTimer;
+let feedbackToastTimer;
+function showFeedbackToast(){clearTimeout(feedbackToastTimer);phone.querySelector('.iw-feedback-toast')?.remove();const toast=document.createElement('div');toast.className='iw-feedback-toast';toast.setAttribute('role','status');toast.textContent='已经提交过意见啦';phone.append(toast);feedbackToastTimer=setTimeout(()=>toast.remove(),2000)}
 function celebrateFeedback(){
  clearTimeout(thankYouTimer);const previous=phone.querySelector('.iw-thank-you');previous?._stopConfetti?.();previous?.remove();
  const celebration=document.createElement('div');celebration.className='iw-thank-you';celebration.setAttribute('role','status');
  const label=document.createElement('span');label.className='iw-thank-you-label';label.textContent='Thank you';celebration.append(label);phone.append(celebration);
  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&window.confetti){
-  const canvas=document.createElement('canvas');canvas.className='iw-thanks-canvas';canvas.width=400;canvas.height=450;canvas.setAttribute('aria-hidden','true');celebration.append(canvas);
+  const canvas=document.createElement('canvas');canvas.className='iw-thanks-canvas';canvas.width=phone.clientWidth;canvas.height=phone.clientHeight;canvas.setAttribute('aria-hidden','true');celebration.append(canvas);
   const burst=window.confetti.create(canvas,{resize:true});
-  requestAnimationFrame(()=>{if(canvas.isConnected)burst({particleCount:70,spread:100,startVelocity:25,gravity:.8,decay:.93,ticks:100,scalar:1,origin:{x:.5,y:.48},colors:['#A27BEF','#F9D157','#CFADFF','#FFF0A2'],disableForReducedMotion:true})});
-  celebration._stopConfetti=()=>burst.reset();
+  let confettiFrame;const started=performance.now();
+  function rain(now){if(!canvas.isConnected)return;if(now-started<1150){burst({particleCount:3,angle:270,spread:45,startVelocity:7,gravity:.75,decay:.98,ticks:140,scalar:1,origin:{x:Math.random(),y:-.03},colors:['#A27BEF','#F9D157','#CFADFF','#FFF0A2'],disableForReducedMotion:true});confettiFrame=requestAnimationFrame(rain)}}
+  confettiFrame=requestAnimationFrame(rain);
+  celebration._stopConfetti=()=>{cancelAnimationFrame(confettiFrame);burst.reset()};
  }
  phone.append(celebration);thankYouTimer=setTimeout(()=>{celebration._stopConfetti?.();celebration.remove()},2000);
 }
@@ -969,9 +973,9 @@ function createReplyActions(index){
  ['理解有误','重复提问','推进太快','回应不适'].forEach(reason=>{const label=document.createElement('label'),radio=document.createElement('input'),text=document.createElement('span');radio.type='radio';radio.name='reason';radio.value=reason;text.textContent=reason;radio.addEventListener('change',()=>{choice=reason;done.disabled=false});label.append(radio,text);choices.append(label)});
  const done=document.createElement('button');done.type='submit';done.className='iw-reply-feedback-done';done.textContent='完成';done.disabled=true;
  const status=document.createElement('span');status.className='iw-feedback-status';status.setAttribute('role','status');panel.append(choices,done,status);wrap.append(panel);
- buttons.like.onclick=()=>{if(saveReplyFeedback(index,{vote:'like'})){buttons.like.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-pressed','false');panel.hidden=true;celebrateFeedback()}};
- buttons.dislike.setAttribute('aria-expanded','false');buttons.dislike.onclick=()=>{panel.hidden=!panel.hidden;buttons.dislike.setAttribute('aria-expanded',String(!panel.hidden))};
- panel.onsubmit=event=>{event.preventDefault();if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus();celebrateFeedback()};
+ buttons.like.onclick=()=>{if(readReplyFeedback(index).vote){showFeedbackToast();return}if(saveReplyFeedback(index,{vote:'like'})){buttons.like.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-pressed','false');panel.hidden=true;celebrateFeedback()}};
+ buttons.dislike.setAttribute('aria-expanded','false');buttons.dislike.onclick=()=>{if(readReplyFeedback(index).vote){showFeedbackToast();return}panel.hidden=!panel.hidden;buttons.dislike.setAttribute('aria-expanded',String(!panel.hidden))};
+ panel.onsubmit=event=>{event.preventDefault();if(readReplyFeedback(index).vote){showFeedbackToast();return}if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus();celebrateFeedback()};
  buttons.refresh.onclick=async()=>{
   if(dialoguePending)return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
   const original=sent[index].text;let question='';for(let i=index-1;i>=0;i--)if(sent[i].role==='user'){question=sent[i].text;break}
