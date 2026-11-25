@@ -130,7 +130,8 @@ html{color-scheme:only light}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=chat-layout-5772959">
+<link rel="stylesheet" href="assets/glass-system.css?v=reply-feedback-1">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=1">
 </head>
 <body>
 <div id="inward-preview" class="viz-dotted-background">
@@ -937,9 +938,35 @@ function history(){popover.dataset.content='history';heading.textContent='Histor
 function show(button,type){if(active===button){close();return}close();active=button;button.setAttribute('aria-expanded','true');records.replaceChildren();note.textContent='';meta.textContent='';if(type==='moments'){heading.textContent='Today’s recordings';popover.dataset.content='moments';samples.forEach(([t,s])=>{const b=document.createElement('button'),body=document.createElement('span'),time=document.createElement('time');time.textContent=t;body.append(time,document.createTextNode(s));b.append(body);b.onclick=()=>{input.value='I recorded: “'+s+'” — help me explore this.';close();input.focus()};records.append(b)})}else if(type==='history'){history()}else{heading.textContent=type==='profile'||type==='me'?'Me':type==='relax'?'Relax':'Report';note.textContent='Coming soon'}popover.hidden=false;position()}
 root.querySelectorAll('[data-action]').forEach(b=>{b.setAttribute('aria-expanded','false');b.onclick=()=>show(b,b.dataset.action)});root.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>setMainTab(b.dataset.tab)});
 document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!active?.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',position);
+function replyFeedbackKey(index){return 'inward-feedback:'+currentId+':'+index}
+function readReplyFeedback(index){try{return JSON.parse(localStorage.getItem(replyFeedbackKey(index))||'{}')}catch{return {}}}
+function saveReplyFeedback(index,value){try{localStorage.setItem(replyFeedbackKey(index),JSON.stringify({...value,time:new Date().toISOString()}));return true}catch{return false}}
+function createReplyActions(index){
+ const wrap=document.createElement('div');wrap.className='iw-reply-feedback';
+ const toolbar=document.createElement('div');toolbar.className='iw-reply-toolbar';toolbar.setAttribute('role','group');toolbar.setAttribute('aria-label','回答反馈');
+ const icons={refresh:'<path d="M15 8a5.6 5.6 0 1 0-5.6 7M12 8l3 2 1.5-3"/>',like:'<path d="M3 8h2v7H3zM7 8c3-1 3-3 3-5 2 0 3 2 2 5h4l-2 7H7z"/>',dislike:'<path d="M3 5h2v7H3zM7 5h7l2 7h-4c1 3 0 5-2 5 0-2 0-4-3-5z"/>'};
+ const feedback=readReplyFeedback(index),buttons={};
+ ['refresh','like','dislike'].forEach((action,i)=>{const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',['重新生成','赞','踩'][i]);button.innerHTML='<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[action]+'</svg>';button.disabled=dialoguePending;if(action!=='refresh')button.setAttribute('aria-pressed',String(feedback.vote===action));buttons[action]=button;toolbar.append(button)});wrap.append(toolbar);
+ const panel=document.createElement('form');panel.className='iw-reply-feedback-panel';panel.hidden=true;panel.setAttribute('aria-label','回应问题反馈');
+ let choice='';const choices=document.createElement('div');choices.className='iw-reply-feedback-choices';
+ ['理解有误','重复提问','推进太快','回应不适'].forEach(reason=>{const label=document.createElement('label'),radio=document.createElement('input'),text=document.createElement('span');radio.type='radio';radio.name='reason';radio.value=reason;text.textContent=reason;radio.addEventListener('change',()=>{choice=reason;done.disabled=false});label.append(radio,text);choices.append(label)});
+ const done=document.createElement('button');done.type='submit';done.className='iw-reply-feedback-done';done.textContent='完成';done.disabled=true;
+ const status=document.createElement('span');status.className='iw-feedback-status';status.setAttribute('role','status');panel.append(choices,done,status);wrap.append(panel);
+ buttons.like.onclick=()=>{if(saveReplyFeedback(index,{vote:'like'})){buttons.like.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-pressed','false');panel.hidden=true}};
+ buttons.dislike.setAttribute('aria-expanded','false');buttons.dislike.onclick=()=>{panel.hidden=!panel.hidden;buttons.dislike.setAttribute('aria-expanded',String(!panel.hidden))};
+ panel.onsubmit=event=>{event.preventDefault();if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus()};
+ buttons.refresh.onclick=async()=>{
+  if(dialoguePending)return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
+  const original=sent[index].text;let question='';for(let i=index-1;i>=0;i--)if(sent[i].role==='user'){question=sent[i].text;break}
+  try{const response=await sendToInward('请重新生成下面这轮回答，换一种表达，不要重复已有回答。用户原话：'+question+'\n已有回答：'+original);if(currentId!==session)return;sent[index]={role:'assistant',text:response.reply};if(index===sent.length-1&&response.options.length)activePrompt={options:response.options,allowMultiple:response.allowMultiple,selected:new Set()};else activePrompt=previous;try{localStorage.removeItem(replyFeedbackKey(index))}catch{}}
+  catch(error){activePrompt=previous;status.textContent='重新生成失败，请重试';console.error(error)}
+  finally{dialoguePending=false;composerSend.disabled=false;composerForm.removeAttribute('aria-busy');redraw();persist();if(sent[index]?.text===original){const failed=messages.querySelectorAll('.iw-reply-feedback')[sent.slice(0,index+1).filter(m=>m.role==='assistant').length-1];if(failed){const note=document.createElement('span');note.className='iw-feedback-status';note.setAttribute('role','status');note.textContent='重新生成失败，请重试';failed.append(note)}}}
+ };return wrap;
+}
 function redraw(){
  messages.replaceChildren();welcome.hidden=sent.length>0||dialoguePending||root.classList.contains('iw-secondary-tab');
  sent.forEach((message,index)=>{const b=document.createElement('div');b.className='iw-bubble';b.dataset.role=message.role;const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';enablePhotoPreview(image,()=>photo);b.append(image)}b.append(document.createTextNode(message.text));messages.append(b)});
+ Array.from(messages.children).forEach((bubble,index)=>{if(sent[index]?.role==='assistant')bubble.after(createReplyActions(index))});
  if(dialoguePending){const pending=document.createElement('div');pending.className='iw-bubble iw-dialogue-pending';pending.dataset.role='assistant';pending.setAttribute('role','status');pending.setAttribute('aria-label','Inward is responding');pending.innerHTML='<span></span><span></span><span></span>';messages.append(pending)}
  if(activePrompt&&!dialoguePending){
   const panel=document.createElement('div');panel.className='iw-response-options';panel.setAttribute('role','group');panel.setAttribute('aria-label','Response options');
