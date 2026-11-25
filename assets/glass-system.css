@@ -63,7 +63,10 @@
 #inward-preview .iw-welcome .iw-options>button{position:absolute;left:14.4004px;top:13.4004px;width:253px;height:31px;min-height:31px;border-radius:15.5px}
 #inward-preview .iw-welcome .iw-options>button:nth-child(2){left:14.4004px;top:64.4004px;width:202px;height:31px}
 #inward-preview .iw-welcome .iw-options>button:nth-child(3){left:14.4004px;top:115.4px;width:129px;height:31px}
-#inward-preview .iw-messages .iw-bubble{background:#fff;color:#242329;box-shadow:0 5px 16px #4e3d6512,inset 0 0 0 1px #ffffffd9}
+#inward-preview .iw-messages .iw-bubble{flex-shrink:0;background:#fff;color:#242329;box-shadow:0 5px 16px #4e3d6512,inset 0 0 0 1px #ffffffd9}
+#inward-preview:not(.iw-secondary-tab) .iw-phone>.iw-bottom{position:absolute;bottom:0;left:0;right:0;z-index:10;box-sizing:border-box}
+#inward-preview:not(.iw-secondary-tab) main{padding-bottom:var(--iw-composer-space,240px);scroll-padding-bottom:var(--iw-composer-space,240px);overscroll-behavior-y:contain}
+#inward-preview .iw-messages{min-height:min-content}
 #inward-preview .iw-messages .iw-bubble[data-role=user]{align-self:flex-end;border-radius:20px 20px 5px 20px}
 #inward-preview .iw-messages .iw-bubble[data-role=assistant]{align-self:flex-start;border-radius:20px 20px 20px 5px;font-weight:400}
 #inward-preview .iw-dialogue-pending{display:flex;align-items:center;gap:5px;width:48px;min-height:22px;box-sizing:border-box;padding:13px 14px}
