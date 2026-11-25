@@ -484,7 +484,7 @@ meditateControls.className='iw-meditate-controls';
 meditateControls.setAttribute('role','group');meditateControls.setAttribute('aria-label','Meditation controls');
 for(const [name,label] of [['scenery','Scenery'],['audio','Audio']]){
  const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',label);
- const icon=document.createElement('img');icon.src='assets/meditate/'+name+'-button.svg';icon.alt='';
+ const icon=document.createElement('img');icon.src='assets/meditate/'+name+'-button.svg?v=sharp-1';icon.alt='';
  button.append(icon);meditateControls.append(button);
 }
 phone.append(meditateControls);
