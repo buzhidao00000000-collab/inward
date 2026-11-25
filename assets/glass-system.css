@@ -24,7 +24,7 @@
 #inward-preview .iw-options button:nth-child(3){left:14.4004px;top:115.4px;width:129px;background:transparent}
 #inward-preview .iw-option-label{display:none}
 #inward-preview .iw-input{background:#fff!important}
-#inward-preview .iw-composer{position:relative;display:block;height:122px;margin:12px -16px 0;padding:0;background:url("dialogue/composer-panel.svg?v=20261110-glass2") 0 0/100% 100% no-repeat;transform:translateY(10px)}
+#inward-preview .iw-composer{position:relative;display:block;height:122px;margin:12px -16px 0;padding:0;background:url("dialogue/composer-panel.svg?v=20261125-sharp") 0 0/100% 100% no-repeat;transform:translateY(10px)}
 #inward-preview .iw-composer::after{content:"";position:absolute;left:14px;top:19px;width:346px;height:79px;border-radius:18px;box-shadow:inset 0 0 0 1px #ffffffb5;opacity:.48;pointer-events:none;animation:iw-composer-glow 5s cubic-bezier(.42,0,.58,1) infinite}
 #inward-preview .iw-composer .iw-input{position:absolute;left:14px;top:19px;width:346px;height:79px;min-height:79px;padding:0;background:transparent!important;border:0;border-radius:18px;box-shadow:none;z-index:1}
 #inward-preview .iw-composer .iw-text-row{height:56px;align-items:flex-start}
@@ -33,19 +33,19 @@
 #inward-preview .iw-composer .iw-cloud-asset{display:block;width:28px;height:20px;object-fit:contain;pointer-events:none;transform-origin:50% 55%}
 #inward-preview .iw-composer .iw-cloud-button:active{transform:scale(.84);filter:saturate(1.18) brightness(1.05)}
 #inward-preview .iw-composer .iw-cloud-button[aria-expanded=true] .iw-cloud-asset{animation:iw-cloud-click .48s cubic-bezier(.2,.85,.28,1)}
-#inward-preview .iw-composer .iw-send{position:absolute;left:320px;top:70px;width:22px;min-width:22px;height:22px;padding:0;border:0;background:transparent;box-shadow:none;opacity:0;z-index:3}
+#inward-preview .iw-composer .iw-send{position:absolute;left:88.557%;top:66.466%;width:36px;min-width:36px;height:36px;transform:translate(-50%,-50%);padding:0;border:0;background:transparent;box-shadow:none;opacity:0;z-index:6;touch-action:manipulation}
 #inward-preview .iw-composer .iw-send-art{display:none}
 #inward-preview .iw-quick-actions>[data-quick-action=feeling],#inward-preview .iw-quick-actions>[data-quick-action=post]{display:none!important}
-#inward-preview .iw-composer .iw-inline-action{position:absolute;top:70px;width:22px;height:22px;padding:0;border:0;border-radius:50%;background:transparent;box-shadow:none;z-index:5;cursor:pointer}
-#inward-preview .iw-composer .iw-inline-action-plus{left:36px}
-#inward-preview .iw-composer .iw-inline-action-feeling{left:67px}
+#inward-preview .iw-composer .iw-inline-action{position:absolute;top:66.466%;width:30px;height:30px;transform:translate(-50%,-50%);padding:0;border:0;border-radius:50%;background:transparent;box-shadow:none;z-index:5;cursor:pointer;touch-action:manipulation}
+#inward-preview .iw-composer .iw-inline-action-plus{left:12.6866%}
+#inward-preview .iw-composer .iw-inline-action-feeling{left:20.8955%}
 #inward-preview .iw-composer .iw-inline-action:focus-visible{outline:2px solid #805fe3;outline-offset:2px}
 #inward-preview .iw-composer .iw-send:focus-visible,#inward-preview .iw-composer .iw-cloud-button:focus-visible{opacity:1;outline:2px solid #805fe3;outline-offset:2px;border-radius:12px}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo){display:flex;align-items:flex-end;gap:8px;height:auto;min-height:156px;margin-inline:0;background:none}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo)::after{display:none}
 #inward-preview .iw-composer .iw-input.iw-has-photo{position:relative;left:auto;top:auto;flex:1;width:auto;height:auto;min-height:156px;padding:10px 8px 2px;border:1px solid #ddd4ec;background:linear-gradient(145deg,#ffffffd9,#f2edf980)!important;box-shadow:inset 0 1px 1px #fff}
 #inward-preview .iw-composer .iw-input.iw-has-photo .iw-cloud-button{left:8px;top:auto;bottom:6px}
-#inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-send{position:relative;left:auto;top:auto;width:75px;min-width:75px;height:40px;opacity:1;border-radius:20px;overflow:hidden}
+#inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-send{position:relative;left:auto;top:auto;transform:none;width:75px;min-width:75px;height:40px;opacity:1;border-radius:20px;overflow:hidden}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-send-art{display:block;width:100%;height:100%}
 #inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-inline-action{display:none}
 @keyframes iw-composer-glow{0%,100%{opacity:.32;filter:brightness(.98)}50%{opacity:.82;filter:brightness(1.12)}}
