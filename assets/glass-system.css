@@ -76,8 +76,8 @@
 #inward-preview .iw-messages{min-height:min-content}
 #inward-preview .iw-messages .iw-bubble[data-role=user]{align-self:flex-end;border-radius:20px 20px 5px 20px}
 #inward-preview .iw-messages .iw-bubble[data-role=assistant]{align-self:flex-start;border-radius:20px 20px 20px 5px;font-weight:400}
-#inward-preview .iw-dialogue-pending{display:flex;align-items:center;gap:5px;width:48px;min-height:22px;box-sizing:border-box;padding:13px 14px}
-#inward-preview .iw-dialogue-pending span{width:5px;height:5px;border-radius:50%;background:#a58bbb;animation:iw-dialogue-dot 1s ease-in-out infinite}
+#inward-preview .iw-dialogue-pending{display:flex;align-items:center;justify-content:center;gap:5px;width:64px;min-height:40px;box-sizing:border-box;padding:13px 14px;flex:none}
+#inward-preview .iw-dialogue-pending span{display:block;flex:0 0 5px;width:5px;height:5px;border-radius:50%;background:#9674c1;animation:iw-dialogue-dot 1s ease-in-out infinite}
 #inward-preview .iw-dialogue-pending span:nth-child(2){animation-delay:.14s}
 #inward-preview .iw-dialogue-pending span:nth-child(3){animation-delay:.28s}
 #inward-preview .iw-composer[aria-busy=true] .iw-send{opacity:.45;pointer-events:none}

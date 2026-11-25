@@ -130,8 +130,8 @@ html{color-scheme:only light}
 html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,#iw-breathing,#iw-breathing text{font-family:var(--iw-font)!important}
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
-<link rel="stylesheet" href="assets/glass-system.css?v=reply-feedback-1">
-<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=confetti-2">
+<link rel="stylesheet" href="assets/glass-system.css?v=pending-dots-2">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=pending-dots-2">
 <script src="assets/dialogue/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -980,9 +980,6 @@ function createReplyActions(index){
  };return wrap;
 }
 function redraw(){
- let generating=root.querySelector('.iw-generating-indicator');
- if(dialoguePending&&!generating){generating=document.createElement('div');generating.className='iw-generating-indicator';generating.setAttribute('role','status');generating.innerHTML='<span>正在生成</span><i></i><i></i><i></i>';root.querySelector('.iw-composer').append(generating)}
- if(!dialoguePending)generating?.remove();
  messages.replaceChildren();welcome.hidden=sent.length>0||dialoguePending||root.classList.contains('iw-secondary-tab');
  sent.forEach((message,index)=>{const b=document.createElement('div');b.className='iw-bubble';b.dataset.role=message.role;const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';enablePhotoPreview(image,()=>photo);b.append(image)}b.append(document.createTextNode(message.text));messages.append(b)});
  Array.from(messages.children).forEach((bubble,index)=>{if(sent[index]?.role==='assistant')bubble.after(createReplyActions(index))});
@@ -992,7 +989,7 @@ function redraw(){
   activePrompt.options.forEach(option=>{const button=document.createElement('button');button.type='button';button.className='iw-response-option';button.textContent=option;button.setAttribute('aria-pressed',String(activePrompt.selected.has(option)));button.addEventListener('click',()=>{if(activePrompt.allowMultiple){activePrompt.selected.has(option)?activePrompt.selected.delete(option):activePrompt.selected.add(option)}else{activePrompt.selected.clear();activePrompt.selected.add(option)}panel.querySelectorAll('.iw-response-option').forEach(item=>item.setAttribute('aria-pressed',String(activePrompt.selected.has(item.textContent))));confirm.disabled=activePrompt.selected.size===0});panel.append(button)});
   const confirm=document.createElement('button');confirm.type='button';confirm.className='iw-response-confirm';confirm.textContent='Confirm';confirm.disabled=activePrompt.selected.size===0;confirm.addEventListener('click',()=>{const selected=Array.from(activePrompt.selected);if(!selected.length)return;activePrompt=null;submitDialogue(selected.join('、'))});panel.append(confirm);messages.append(panel);
  }
- requestAnimationFrame(()=>{const scroller=messages.closest('main');if(scroller&&!root.classList.contains('iw-secondary-tab'))scroller.scrollTo({top:scroller.scrollHeight,behavior:'smooth'})});
+ requestAnimationFrame(()=>{const scroller=messages.closest('main');if(scroller&&!root.classList.contains('iw-secondary-tab'))scroller.scrollTo({top:scroller.scrollHeight,behavior:dialoguePending?'instant':'smooth'})});
 }
 function restore(state){const p=state?.privateContent;if([2,3].includes(p?.version)&&Array.isArray(p.conversations)&&Array.isArray(p.messages)){conversations=p.conversations.filter(c=>typeof c.id==='string'&&Array.isArray(c.messages)).map(c=>({id:c.id,messages:c.messages.map(normalizeMessage).filter(Boolean)}));sent=p.messages.map(normalizeMessage).filter(Boolean);currentId=typeof p.currentId==='string'?p.currentId:makeId()}else if(Array.isArray(state?.modelContent?.messages)){sent=state.modelContent.messages.map(normalizeMessage).filter(Boolean);conversations=[];currentId=makeId();sync()}redraw()}
 restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState)restore(e.detail.globals.widgetState)});
