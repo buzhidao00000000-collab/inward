@@ -16,7 +16,9 @@
 #inward-preview .iw-feedback-status{display:block;font-size:14px;line-height:20px;color:#805fe3}
 /* Keep the transparent input hit layer from painting over the SVG controls. */
 #inward-preview .iw-composer .iw-input:not(.iw-has-photo){left:3.8557%;top:16.0305%;width:92.5373%;height:64.8855%;min-height:0;background:transparent!important}
-#inward-preview .iw-composer{background-image:url('composer-panel.svg?v=opaque-panel-1')}
+#inward-preview .iw-composer{background-image:url('composer-panel.svg?v=speak-single-2')}
+#inward-preview .iw-composer .iw-speak-control{left:calc(64.5346% - 10px);top:57.2%}
+#inward-preview .iw-composer.iw-listening .iw-speak-control{left:calc(72% - 10px);top:55%}
 #inward-preview .iw-speak-control{position:absolute;left:64.5346%;top:57.2%;width:19.19%;height:23px;padding:0 6px;border:1px solid #f4f4f4;border-radius:99px;background:#fff;color:#242329;z-index:7;display:flex;align-items:center;justify-content:center;gap:4px;font-size:12px;line-height:18px;touch-action:manipulation}
 #inward-preview .iw-listening .iw-speak-control{left:72%;width:28px;height:28px;top:55%;border:0;background:#242329;color:#fff}
 #inward-preview .iw-stop-square{width:10px;height:10px;border-radius:2px;background:#fff}

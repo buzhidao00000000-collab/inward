@@ -131,7 +131,7 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
 <link rel="stylesheet" href="assets/glass-system.css?v=option-edges-left20">
-<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=voice-input-1">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=speak-align-2">
 <link rel="preload" href="assets/dialogue/GreatVibes-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <script src="assets/dialogue/confetti.browser.min.js"></script>
 </head>
@@ -1058,7 +1058,8 @@ async function submitDialogue(userText){
  finally{dialoguePending=false;composerForm.removeAttribute('aria-busy');composerSend.disabled=false;redraw();persist();input.focus()}
 }
 let voiceState=null;
-const speak=document.createElement('button');speak.type='button';speak.className='iw-speak-control';speak.setAttribute('aria-label','Start voice input');speak.innerHTML='<span>♩</span> Speak';composerForm.append(speak);
+const speakLabel='<svg width="13" height="16" viewBox="0 0 16 20" fill="none" aria-hidden="true"><rect x="5" y="2" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 9a5.5 5.5 0 0 0 11 0M8 14.5V18M5 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Speak</span>';
+const speak=document.createElement('button');speak.type='button';speak.className='iw-speak-control';speak.setAttribute('aria-label','Start voice input');speak.innerHTML=speakLabel;composerForm.append(speak);
 const voiceWave=document.createElement('div');voiceWave.className='iw-voice-wave';voiceWave.hidden=true;voiceWave.setAttribute('role','status');voiceWave.setAttribute('aria-label','Listening');for(let i=0;i<32;i++)voiceWave.append(document.createElement('i'));composerForm.append(voiceWave);
 function stopVoice(send=false){if(!voiceState)return;voiceState.send=send;speak.disabled=true;try{voiceState.recognition.stop()}catch{voiceState.finish()}}
 speak.onclick=async()=>{
@@ -1067,7 +1068,7 @@ speak.onclick=async()=>{
  if(!Recognition){showFeedbackToast('Voice input is not supported in this browser.');return}
  const recognition=new Recognition();recognition.continuous=true;recognition.interimResults=true;recognition.lang=navigator.language||'en-US';
  const state={recognition,base:input.value.trim(),text:'',send:false,stream:null,context:null,frame:null,finished:false};voiceState=state;
- function clean(){cancelAnimationFrame(state.frame);state.stream?.getTracks().forEach(track=>track.stop());state.context?.close().catch(()=>{});voiceWave.hidden=true;composerForm.classList.remove('iw-listening');speak.disabled=false;speak.innerHTML='<span>♩</span> Speak';speak.setAttribute('aria-label','Start voice input');input.readOnly=false}
+ function clean(){cancelAnimationFrame(state.frame);state.stream?.getTracks().forEach(track=>track.stop());state.context?.close().catch(()=>{});voiceWave.hidden=true;composerForm.classList.remove('iw-listening');speak.disabled=false;speak.innerHTML=speakLabel;speak.setAttribute('aria-label','Start voice input');input.readOnly=false}
  state.finish=()=>{if(state.finished)return;state.finished=true;clean();voiceState=null;const text=[state.base,state.text.trim()].filter(Boolean).join(' ');if(state.send){if(text)submitDialogue(text);else showFeedbackToast('No speech detected. Please try again.')}else{input.value=text;input.dispatchEvent(new Event('input',{bubbles:true}))}};
  recognition.onresult=event=>{state.text=Array.from(event.results).map(result=>result[0].transcript).join(' ')};
  recognition.onerror=event=>{state.send=false;showFeedbackToast(event.error==='not-allowed'?'Microphone access was denied.':event.error==='network'?'Speech recognition is unavailable. Please try again.':'Voice input stopped. Please try again.');state.finish()};recognition.onend=state.finish;
