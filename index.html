@@ -131,7 +131,7 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
 <link rel="stylesheet" href="assets/glass-system.css?v=pending-dots-2">
-<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=falling-confetti-1">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=falling-confetti-2">
 <link rel="preload" href="assets/dialogue/GreatVibes-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <script src="assets/dialogue/confetti.browser.min.js"></script>
 </head>
@@ -954,11 +954,12 @@ function celebrateFeedback(){
   const canvas=document.createElement('canvas');canvas.className='iw-thanks-canvas';canvas.width=phone.clientWidth;canvas.height=phone.clientHeight;canvas.setAttribute('aria-hidden','true');celebration.append(canvas);
   const burst=window.confetti.create(canvas,{resize:true});
   let confettiFrame;const started=performance.now();
-  function rain(now){if(!canvas.isConnected)return;if(now-started<1150){burst({particleCount:3,angle:270,spread:45,startVelocity:7,gravity:.75,decay:.98,ticks:140,scalar:1,origin:{x:Math.random(),y:-.03},colors:['#A27BEF','#F9D157','#CFADFF','#FFF0A2'],disableForReducedMotion:true});confettiFrame=requestAnimationFrame(rain)}}
+  let lastRain=0;
+  function rain(now){if(!canvas.isConnected)return;if(now-started<2400){if(now-lastRain>=55){lastRain=now;for(let lane=0;lane<5;lane++)burst({particleCount:1,angle:270,spread:25,startVelocity:3,gravity:.28,decay:.985,ticks:260,scalar:1.9,drift:(lane-2)*.12,origin:{x:(lane+Math.random())/5,y:-.015},colors:['#8850D6','#E8AF20','#A46CE2','#F1CC36','#6940AF'],disableForReducedMotion:true})}confettiFrame=requestAnimationFrame(rain)}}
   confettiFrame=requestAnimationFrame(rain);
   celebration._stopConfetti=()=>{cancelAnimationFrame(confettiFrame);burst.reset()};
  }
- phone.append(celebration);thankYouTimer=setTimeout(()=>{celebration._stopConfetti?.();celebration.remove()},2000);
+ phone.append(celebration);thankYouTimer=setTimeout(()=>{celebration._stopConfetti?.();celebration.remove()},4200);
 }
 function readReplyFeedback(index){try{return JSON.parse(localStorage.getItem(replyFeedbackKey(index))||'{}')}catch{return {}}}
 function saveReplyFeedback(index,value){try{localStorage.setItem(replyFeedbackKey(index),JSON.stringify({...value,time:new Date().toISOString()}));return true}catch{return false}}
