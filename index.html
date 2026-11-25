@@ -946,7 +946,7 @@ document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contain
 function replyFeedbackKey(index){return 'inward-feedback:'+currentId+':'+index}
 let thankYouTimer;
 let feedbackToastTimer;
-function showFeedbackToast(){clearTimeout(feedbackToastTimer);phone.querySelector('.iw-feedback-toast')?.remove();const toast=document.createElement('div');toast.className='iw-feedback-toast';toast.setAttribute('role','status');toast.textContent='已经提交过意见啦';phone.append(toast);feedbackToastTimer=setTimeout(()=>toast.remove(),2000)}
+function showFeedbackToast(){clearTimeout(feedbackToastTimer);phone.querySelector('.iw-feedback-toast')?.remove();const toast=document.createElement('div');toast.className='iw-feedback-toast';toast.setAttribute('role','status');toast.textContent='You’ve already submitted feedback.';phone.append(toast);feedbackToastTimer=setTimeout(()=>toast.remove(),2000)}
 function celebrateFeedback(){
  clearTimeout(thankYouTimer);const previous=phone.querySelector('.iw-thank-you');previous?._stopConfetti?.();previous?.remove();
  const celebration=document.createElement('div');celebration.className='iw-thank-you';celebration.setAttribute('role','status');
