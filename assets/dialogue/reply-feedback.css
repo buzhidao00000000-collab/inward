@@ -17,6 +17,14 @@
 /* Keep the transparent input hit layer from painting over the SVG controls. */
 #inward-preview .iw-composer .iw-input:not(.iw-has-photo){left:3.8557%;top:16.0305%;width:92.5373%;height:64.8855%;min-height:0;background:transparent!important}
 #inward-preview .iw-composer{background-image:url('composer-panel.svg?v=opaque-panel-1')}
+#inward-preview .iw-speak-control{position:absolute;left:64.5346%;top:57.2%;width:19.19%;height:23px;padding:0 6px;border:1px solid #f4f4f4;border-radius:99px;background:#fff;color:#242329;z-index:7;display:flex;align-items:center;justify-content:center;gap:4px;font-size:12px;line-height:18px;touch-action:manipulation}
+#inward-preview .iw-listening .iw-speak-control{left:72%;width:28px;height:28px;top:55%;border:0;background:#242329;color:#fff}
+#inward-preview .iw-stop-square{width:10px;height:10px;border-radius:2px;background:#fff}
+#inward-preview .iw-voice-wave{position:absolute;left:20%;right:8%;top:24%;height:28px;z-index:4;display:flex;align-items:center;justify-content:center;gap:3px;pointer-events:none}
+#inward-preview .iw-voice-wave i{display:block;flex:1;max-width:4px;height:3px;border-radius:99px;background:#805fe3;transition:height 60ms linear}
+#inward-preview .iw-listening .iw-input input{visibility:hidden}
+#inward-preview .iw-listening::before{content:"";position:absolute;left:64%;top:56%;width:20%;height:26px;border-radius:99px;background:#fff;z-index:6;pointer-events:none}
+#inward-preview .iw-composer:has(.iw-input.iw-has-photo) .iw-speak-control{display:none}
 #inward-preview .iw-thank-you{position:absolute;inset:0;z-index:90;pointer-events:none;animation:iw-thanks-fade 2s ease both}
 @font-face{font-family:'Inward Great Vibes';src:url('GreatVibes-Regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 #inward-preview .iw-thank-you-label{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:block;white-space:nowrap;padding:10px 28px;border-radius:24px;background:#fffffff0;color:#805fe3;font-family:'Inward Great Vibes',cursive!important;font-size:42px;font-weight:400;line-height:1.3;letter-spacing:0;box-shadow:0 8px 30px #69459b18;animation:iw-thanks-pop .4s ease-out both}
