@@ -984,8 +984,8 @@ function createReplyActions(index){
   if(dialoguePending)return;if(!allowRegeneration())return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
   const original=sent[index].text;let question='';for(let i=index-1;i>=0;i--)if(sent[i].role==='user'){question=sent[i].text;break}
   try{const response=await sendToInward('请重新生成下面这轮回答，换一种表达，不要重复已有回答。用户原话：'+question+'\n已有回答：'+original);if(currentId!==session)return;sent[index]={role:'assistant',text:response.reply};if(index===sent.length-1&&response.options.length)activePrompt={options:response.options,allowMultiple:response.allowMultiple,selected:new Set()};else activePrompt=previous;try{localStorage.removeItem(replyFeedbackKey(index))}catch{}}
-  catch(error){activePrompt=previous;status.textContent='重新生成失败，请重试';console.error(error)}
-  finally{dialoguePending=false;composerSend.disabled=false;composerForm.removeAttribute('aria-busy');redraw();persist();if(sent[index]?.text===original){const failed=messages.querySelectorAll('.iw-reply-feedback')[sent.slice(0,index+1).filter(m=>m.role==='assistant').length-1];if(failed){const note=document.createElement('span');note.className='iw-feedback-status';note.setAttribute('role','status');note.textContent='重新生成失败，请重试';failed.append(note)}}}
+  catch(error){activePrompt=previous;console.error(error)}
+  finally{dialoguePending=false;composerSend.disabled=false;composerForm.removeAttribute('aria-busy');redraw();persist()}
  };return wrap;
 }
 function redraw(){
