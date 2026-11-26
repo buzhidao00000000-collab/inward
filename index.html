@@ -1074,7 +1074,19 @@ speak.onclick=async()=>{
  recognition.onerror=event=>{console.warn('INWARD speech recognition:',event.error);if(state.userStopped&&['aborted','no-speech'].includes(event.error)){state.finish();return}state.send=false;if(event.error!=='aborted')showFeedbackToast(event.error==='not-allowed'?'Microphone access was denied.':event.error==='network'?'Unable to reach the browser’s speech recognition service.':event.error==='language-not-supported'?'Speech recognition does not support this language.':event.error==='audio-capture'?'No microphone is available.':event.error==='no-speech'?'No speech detected. Please try again.':'Speech recognition is unavailable.');state.finish()};recognition.onend=state.finish;
  recognition.onstart=async()=>{
   if(state.finished)return;voiceWave.hidden=false;composerForm.classList.add('iw-listening');input.readOnly=true;speak.innerHTML='<span class="iw-stop-square"></span>';speak.setAttribute('aria-label','Finish voice input');
-  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});if(state.finished){stream.getTracks().forEach(track=>track.stop());return}state.stream=stream;const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;state.context=new Audio();const analyser=state.context.createAnalyser();analyser.fftSize=128;state.context.createMediaStreamSource(stream).connect(analyser);await state.context.resume();const data=new Uint8Array(analyser.frequencyBinCount);function draw(){if(state.finished)return;analyser.getByteFrequencyData(data);Array.from(voiceWave.children).forEach((bar,i)=>bar.style.height=`${3+data[i*2]/255*24}px`);state.frame=requestAnimationFrame(draw)}draw()}catch{ /* Speech recognition can continue without the visual analyser. */ }
+  try{
+   const stream=await navigator.mediaDevices.getUserMedia({audio:true});if(state.finished){stream.getTracks().forEach(track=>track.stop());return}state.stream=stream;
+   const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;state.context=new Audio();
+   const analyser=state.context.createAnalyser();analyser.fftSize=1024;state.context.createMediaStreamSource(stream).connect(analyser);await state.context.resume();
+   const data=new Float32Array(analyser.fftSize),bars=Array.from(voiceWave.children),history=new Array(bars.length).fill(3);let lastSample=0,peak=0;
+   bars.forEach(bar=>bar.style.height='3px');
+   function draw(now){
+    if(state.finished)return;analyser.getFloatTimeDomainData(data);let energy=0;for(const sample of data)energy+=sample*sample;
+    const rms=Math.sqrt(energy/data.length);peak=Math.max(peak,rms);
+    if(now-lastSample>=55){lastSample=now;const amplitude=peak<.012?0:Math.min(1,Math.sqrt((peak-.012)*7));history.pop();history.unshift(3+amplitude*24);bars.forEach((bar,i)=>bar.style.height=history[i]+'px');peak=0}
+    state.frame=requestAnimationFrame(draw);
+   }state.frame=requestAnimationFrame(draw);
+  }catch{ /* Speech recognition can continue without the visual analyser. */ }
  };
  try{recognition.start()}catch{state.finish();showFeedbackToast('Unable to start voice input. Please try again.')}
 };
