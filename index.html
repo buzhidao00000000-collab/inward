@@ -944,7 +944,7 @@ function show(button,type){if(active===button){close();return}close();active=but
 root.querySelectorAll('[data-action]').forEach(b=>{b.setAttribute('aria-expanded','false');b.onclick=()=>{if(['profile','me'].includes(b.dataset.action)){root.querySelector('nav [data-tab="me"]').click();return}show(b,b.dataset.action)}});root.querySelectorAll('[data-tab]').forEach(b=>{b.onclick=()=>setMainTab(b.dataset.tab)});
 document.addEventListener('pointerdown',e=>{if(!popover.hidden&&!popover.contains(e.target)&&!active?.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',position);
 function replyFeedbackKey(index){return 'inward-feedback:'+currentId+':'+index}
-let thankYouTimer;
+let thankYouTimer,regeneratingReply=null;
 let feedbackToastTimer;
 function showFeedbackToast(text='You’ve already submitted feedback.'){clearTimeout(feedbackToastTimer);phone.querySelector('.iw-feedback-toast')?.remove();const toast=document.createElement('div');toast.className='iw-feedback-toast';toast.setAttribute('role','status');toast.textContent=text;phone.append(toast);feedbackToastTimer=setTimeout(()=>toast.remove(),2000)}
 let regenerationTimes=[];
@@ -981,18 +981,18 @@ function createReplyActions(index){
  buttons.dislike.setAttribute('aria-expanded','false');buttons.dislike.onclick=()=>{if(readReplyFeedback(index).vote){showFeedbackToast();return}panel.hidden=!panel.hidden;buttons.dislike.setAttribute('aria-expanded',String(!panel.hidden))};
  panel.onsubmit=event=>{event.preventDefault();if(readReplyFeedback(index).vote){showFeedbackToast();return}if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus();showFeedbackToast('Thank you for your feedback. We’ll keep improving.')};
  buttons.refresh.onclick=async()=>{
-  if(dialoguePending)return;if(!allowRegeneration())return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
+  if(dialoguePending)return;if(!allowRegeneration())return;const session=currentId,previous=activePrompt;regeneratingReply={session,index};dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
   const original=sent[index].text;let question='';for(let i=index-1;i>=0;i--)if(sent[i].role==='user'){question=sent[i].text;break}
   try{const response=await sendToInward('请重新生成下面这轮回答，换一种表达，不要重复已有回答。用户原话：'+question+'\n已有回答：'+original);if(currentId!==session)return;sent[index]={role:'assistant',text:response.reply};if(index===sent.length-1&&response.options.length)activePrompt={options:response.options,allowMultiple:response.allowMultiple,selected:new Set()};else activePrompt=previous;try{localStorage.removeItem(replyFeedbackKey(index))}catch{}}
   catch(error){activePrompt=previous;console.error(error)}
-  finally{dialoguePending=false;composerSend.disabled=false;composerForm.removeAttribute('aria-busy');redraw();persist()}
+  finally{regeneratingReply=null;dialoguePending=false;composerSend.disabled=false;composerForm.removeAttribute('aria-busy');redraw();persist()}
  };return wrap;
 }
 function redraw(){
  messages.replaceChildren();welcome.hidden=sent.length>0||dialoguePending||root.classList.contains('iw-secondary-tab');
  sent.forEach((message,index)=>{const b=document.createElement('div');b.className='iw-bubble';b.dataset.role=message.role;const photo=messagePhotos.get(currentId+':'+index);if(photo){const image=document.createElement('img');image.src=photo.url;image.alt=photo.name;image.className='iw-message-photo';enablePhotoPreview(image,()=>photo);b.append(image)}b.append(document.createTextNode(message.text));messages.append(b)});
- Array.from(messages.children).forEach((bubble,index)=>{if(sent[index]?.role==='assistant')bubble.after(createReplyActions(index))});
- if(dialoguePending){const pending=document.createElement('div');pending.className='iw-bubble iw-dialogue-pending';pending.dataset.role='assistant';pending.setAttribute('role','status');pending.setAttribute('aria-label','Inward is responding');pending.innerHTML='<span></span><span></span><span></span>';messages.append(pending)}
+ Array.from(messages.children).forEach((bubble,index)=>{if(regeneratingReply?.session===currentId&&regeneratingReply.index===index){bubble.replaceChildren();bubble.classList.add('iw-dialogue-pending');bubble.setAttribute('role','status');bubble.setAttribute('aria-label','Inward is responding');bubble.innerHTML='<span></span><span></span><span></span>'}else if(sent[index]?.role==='assistant')bubble.after(createReplyActions(index))});
+ if(dialoguePending&&!regeneratingReply){const pending=document.createElement('div');pending.className='iw-bubble iw-dialogue-pending';pending.dataset.role='assistant';pending.setAttribute('role','status');pending.setAttribute('aria-label','Inward is responding');pending.innerHTML='<span></span><span></span><span></span>';messages.append(pending)}
  if(activePrompt&&!dialoguePending){
   const panel=document.createElement('div');panel.className='iw-response-options';panel.setAttribute('role','group');panel.setAttribute('aria-label','Response options');
   activePrompt.options.forEach(option=>{const button=document.createElement('button');button.type='button';button.className='iw-response-option';button.textContent=option;button.setAttribute('aria-pressed',String(activePrompt.selected.has(option)));button.addEventListener('click',()=>{if(activePrompt.allowMultiple){activePrompt.selected.has(option)?activePrompt.selected.delete(option):activePrompt.selected.add(option)}else{activePrompt.selected.clear();activePrompt.selected.add(option)}panel.querySelectorAll('.iw-response-option').forEach(item=>item.setAttribute('aria-pressed',String(activePrompt.selected.has(item.textContent))));confirm.disabled=activePrompt.selected.size===0});panel.append(button)});
