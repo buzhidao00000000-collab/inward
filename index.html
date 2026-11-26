@@ -131,7 +131,7 @@ html,body,button,input,textarea,select,dialog,#inward-preview,#inward-preview *,
 #inward-preview .iw-media-card-caption{font-family:var(--iw-font)!important;font-weight:400;letter-spacing:-.15px}
 </style>
 <link rel="stylesheet" href="assets/glass-system.css?v=option-edges-left20">
-<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=feelings-near-composer-1">
+<link rel="stylesheet" href="assets/dialogue/reply-feedback.css?v=feedback-toast-wrap-1">
 <link rel="preload" href="assets/dialogue/GreatVibes-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <script src="assets/dialogue/confetti.browser.min.js"></script>
 </head>
@@ -979,7 +979,7 @@ function createReplyActions(index){
  const status=document.createElement('span');status.className='iw-feedback-status';status.setAttribute('role','status');panel.append(choices,done,status);wrap.append(panel);
  buttons.like.onclick=()=>{if(readReplyFeedback(index).vote){showFeedbackToast();return}if(saveReplyFeedback(index,{vote:'like'})){buttons.like.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-pressed','false');panel.hidden=true;celebrateFeedback()}};
  buttons.dislike.setAttribute('aria-expanded','false');buttons.dislike.onclick=()=>{if(readReplyFeedback(index).vote){showFeedbackToast();return}panel.hidden=!panel.hidden;buttons.dislike.setAttribute('aria-expanded',String(!panel.hidden))};
- panel.onsubmit=event=>{event.preventDefault();if(readReplyFeedback(index).vote){showFeedbackToast();return}if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus();celebrateFeedback()};
+ panel.onsubmit=event=>{event.preventDefault();if(readReplyFeedback(index).vote){showFeedbackToast();return}if(!choice)return;if(!saveReplyFeedback(index,{vote:'dislike',reason:choice})){status.textContent='保存失败，请重试';return}buttons.like.setAttribute('aria-pressed','false');buttons.dislike.setAttribute('aria-pressed','true');buttons.dislike.setAttribute('aria-expanded','false');panel.hidden=true;buttons.dislike.focus();showFeedbackToast('Thank you for your feedback. We’ll keep improving.')};
  buttons.refresh.onclick=async()=>{
   if(dialoguePending)return;if(!allowRegeneration())return;const session=currentId,previous=activePrompt;dialoguePending=true;activePrompt=null;composerSend.disabled=true;composerForm.setAttribute('aria-busy','true');redraw();
   const original=sent[index].text;let question='';for(let i=index-1;i>=0;i--)if(sent[i].role==='user'){question=sent[i].text;break}
